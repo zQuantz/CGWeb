@@ -1,0 +1,18 @@
+/*Height and size of tab*/
+.btn {
+	padding: 0.1rem;
+	font-size: 0.875rem;
+	line-height: 0;
+}
+
+/*Height of tab*/
+.wheelTab {
+	line-height: 0.5;
+}
+
+.btn-link {
+	color: rgb(255, 255, 255);
+}
+.btn-link:hover {
+	color: rgb(255, 255, 255);
+}
