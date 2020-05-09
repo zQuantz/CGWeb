@@ -10,6 +10,7 @@
 
 	<link rel="stylesheet" type="text/css" href="/static/css/navbar.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/option_chain.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/position_info.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 
 </head>
@@ -50,8 +51,74 @@
 	<div class="container-fluid">
 		
 		<div class="row" id="topRow">
-				
-			<div class="col-lg-12" style="margin-top: 24rem;">
+			
+			<!-- Position Info Column -->
+			<div class="col-lg-5 positionInfoCol">
+
+				<!-- Position Info Carousel -->
+				<div id="carouselExampleInterval" class="carousel slide" data-ride="carousel" data-interval="false">
+
+					<div class="carousel-inner">
+
+						<div class="carousel-item active">
+							<table style="width:100%">
+								<tr>
+									<th>Firstname</th>
+									<th>Lastname</th>
+									<th>Age</th>
+								</tr>
+								<tr>
+									<td>Jill</td>
+									<td>Smith</td>
+									<td>50</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>Jackson</td>
+									<td>94</td>
+								</tr>
+							</table>
+						</div>
+
+						<div class="carousel-item">
+							<table style="width:100%">
+								<tr>
+									<th>Firstname</th>
+									<th>Lastname</th>
+									<th>Age</th>
+								</tr>
+								<tr>
+									<td>Jill</td>
+									<td>Smith</td>
+									<td>50</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>Jackson</td>
+									<td>94</td>
+								</tr>
+							</table>
+						</div>
+
+					</div>
+
+					<a class="carousel-control-prev" href="#carouselExampleInterval" role="button" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true" style="color: black;"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+
+					<a class="carousel-control-next" href="#carouselExampleInterval" role="button" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+
+				</div>
+				<!-- Position Info Carousel End -->
+
+			</div>
+			<!-- Position Info Column End -->
+
+			<div class="col-lg-7">
 
 			</div>
 
@@ -187,9 +254,7 @@
 		</div>
 		<!-- Lower Row End-->
 
-	</div>
-
-	
+	</div>	
 
 </body>
 </html>
