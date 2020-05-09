@@ -1,3 +1,7 @@
 common/__pycache__
 __pycache__
 .ipynb_checkpoints
+tmp/
+*.csv
+config.json
+common/config.json

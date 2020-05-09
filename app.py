@@ -3,6 +3,17 @@ from flask import render_template
 from flask import request
 from flask import Flask
 
+# from common.html import generate_option_card
+from common.builder import Builder
+import pandas as pd
+
+###################################################################################################
+
+df = pd.read_csv("data.csv")
+builder_obj = Builder(df)
+
+###################################################################################################
+
 app = Flask(__name__)
 
 @app.after_request
@@ -13,9 +24,6 @@ def after_request(response):
 	return response
 
 @app.route("/")
-def hello():
-	return "Hello,World!"
-
 @app.route("/builder")
 def builder():
 
@@ -25,7 +33,7 @@ def builder():
 	print("ticker", ticker)
 	print("date", date)
 
-	return render_template("index.html", name=ticker)
+	return render_template("dynamic.html", name=ticker, builder=builder_obj)
 
 if __name__ == '__main__':
 

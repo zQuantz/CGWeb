@@ -20,4 +20,5 @@ body {
 #bottomRow {
 	margin-top: 1.5rem;
 	margin-bottom: 0rem;
+	overflow-y: scroll;
 }
