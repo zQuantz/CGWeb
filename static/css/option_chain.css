@@ -10,9 +10,16 @@
 	line-height: 0.5;
 }
 
+/*Color of option wheel*/
+.wheelCardBody {
+	background-color: #ececec;
+	border: 0.095rem solid var(--dark);
+}
+
 .btn-link {
 	color: rgb(255, 255, 255);
 }
 .btn-link:hover {
 	color: rgb(255, 255, 255);
 }
+
