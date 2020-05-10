@@ -3,7 +3,6 @@ from flask import render_template
 from flask import request
 from flask import Flask
 
-# from common.html import generate_option_card
 from common.builder import Builder
 import pandas as pd
 

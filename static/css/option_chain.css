@@ -1,19 +1,34 @@
 /*Height and size of tab*/
 .btn {
-	padding: 0.1rem;
 	font-size: 0.875rem;
+	padding: 0.1rem;
 	line-height: 0;
 }
 
-/*Height of tab*/
 .wheelTab {
 	line-height: 0.5;
 }
 
-/*Color of option wheel*/
 .wheelCardBody {
-	background-color: #ececec;
 	border: 0.095rem solid var(--dark);
+	overflow-y: auto; height: 20rem; 
+	background-color: #ececec;
+	padding: 0rem;
+}
+
+.dataframe td, .dataframe th {
+	font-size: 0.875rem;
+	text-align: center;
+	padding: 0rem;
+}
+
+.dataframe thead th {
+	background-color: var(--dark);
+	font-weight: lighter;
+	position: sticky;
+	color: white;
+	border: 0;
+	top: 0;
 }
 
 .btn-link {
@@ -21,4 +36,14 @@
 }
 .btn-link:hover {
 	color: rgb(255, 255, 255);
+}
+
+.buyOrder:hover {
+	background-color: #7e73ff;
+	cursor: copy;
+}
+
+.sellOrder:hover {
+	background-color: #ff7373;
+	cursor: copy;
 }
