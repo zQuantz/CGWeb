@@ -1,8 +1,13 @@
 /*Height and size of tab*/
-.btn {
+.chainButton {
+	color: rgb(255, 255, 255);
 	font-size: 0.875rem;
 	padding: 0.1rem;
 	line-height: 0;
+}
+
+.chainButton:hover {
+	color: rgb(255, 255, 255);
 }
 
 .wheelTab {
@@ -11,8 +16,9 @@
 
 .wheelCardBody {
 	border: 0.095rem solid var(--dark);
-	overflow-y: auto; height: 20rem; 
+	overflow-y: auto;
 	background-color: #ececec;
+	height: 25rem; 
 	padding: 0rem;
 }
 
@@ -29,13 +35,6 @@
 	color: white;
 	border: 0;
 	top: 0;
-}
-
-.btn-link {
-	color: rgb(255, 255, 255);
-}
-.btn-link:hover {
-	color: rgb(255, 255, 255);
 }
 
 .buyOrder:hover {

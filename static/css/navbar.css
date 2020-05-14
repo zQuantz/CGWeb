@@ -1,15 +1,32 @@
-.fetchInput,
-.fetchSubmit {
-    display: inline-block;
-    padding: 0.25rem 1rem;
-    font-size: 0.90rem;
-    border-radius: 0;
+.tickerpicker {
+	line-height: 1.25;
+	width: 10rem !important;
 }
 
-.fetchInput {
-	text-align: center;
-	max-width: 7rem;
+.tickerpicker button {
+	border-color: var(--dark);
+	border-radius: 0;
 }
-.fetchSubmit {
-	max-width: 6rem;
+
+.builder-nav-button {
+	border-radius: 0;
+	height: 2.3rem;
+	width: 7rem;
+}
+
+.builder-chain-params {
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+
+.builder-chain-params::placeholder {
+	color: white;
+}
+
+.builder-chain-params::hover {
+	background-color: #ececec;
+}
+
+.builder-chain-params:hover::placeholder {
+	color: black;
 }

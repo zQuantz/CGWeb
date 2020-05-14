@@ -76,7 +76,7 @@ class Builder:
 			_expiration = expiration.replace("-", "")
 
 			header_button = html("button", f"{expiration} - {days} Days", {
-				"class" : f"btn btn-link btn-small{collapsed}",
+				"class" : f"btn btn-link btn-small{collapsed} chainButton",
 				"type" : "button",
 				"data-toggle" : "collapse",
 				"data-target" : f"#collapse{_expiration}",

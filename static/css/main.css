@@ -8,16 +8,17 @@ body {
 }
 
 .row {
-	height: 25rem;
 	border: 1px solid black;
 }
 
 #topRow {
+	height: 17rem;
 	margin-top: 2rem;
 	margin-bottom: 1.5rem;
 }
 
 #bottomRow {
+	height: 31rem;
 	margin-top: 1.5rem;
 	margin-bottom: 0rem;
 	overflow-y: scroll;
