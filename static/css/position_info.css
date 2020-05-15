@@ -9,7 +9,6 @@
 
 .carousel-control-prev,
 .carousel-control-next {
-	top: 12.5rem;
 	width: 2rem;
 }
 
@@ -35,3 +34,30 @@
 	height: 1.5rem;
 }
 
+.viewTab {
+	line-height: 0.5;
+	color: white;
+}
+
+.viewBody {
+	border: 0.095rem solid var(--dark);
+	background-color: #ececec;
+	overflow-y: auto;
+	height: 14.7rem;
+	padding: 0rem;
+}
+
+.info-table td, .info-table th {
+	font-size: 0.875rem;
+	text-align: center;
+	padding: 0rem;
+}
+
+.info-table thead th {
+	background-color: var(--dark);
+	font-weight: lighter;
+	position: sticky;
+	color: white;
+	border: 0;
+	top: 0;
+}
