@@ -32,7 +32,7 @@ def builder():
 	print("ticker", ticker)
 	print("date", date)
 
-	return render_template("dynamic.html", name=ticker, builder=builder_obj)
+	return render_template("index.html", name=ticker, builder=builder_obj)
 
 if __name__ == '__main__':
 
