@@ -1,32 +1,32 @@
-.tickerpicker {
+.tickerPicker {
 	line-height: 1.25;
 	width: 10rem !important;
 }
 
-.tickerpicker button {
+.tickerPicker button {
 	border-color: var(--dark);
 	border-radius: 0;
 }
 
-.builder-nav-button {
+.builderNavButton {
 	border-radius: 0;
 	height: 2.3rem;
 	width: 7rem;
 }
 
-.builder-chain-params {
+.builderChainParams {
 	margin-left: 1rem;
 	margin-right: 1rem;
 }
 
-.builder-chain-params::placeholder {
+.builderChainParams::placeholder {
 	color: white;
 }
 
-.builder-chain-params::hover {
+.builderChainParams::hover {
 	background-color: #ececec;
 }
 
-.builder-chain-params:hover::placeholder {
+.builderChainParams:hover::placeholder {
 	color: black;
 }

@@ -16,17 +16,21 @@
 	padding: 0rem;
 }
 
-.info-table td, .info-table th {
+.infoTable td, .infoTable th {
 	font-size: 0.875rem;
 	text-align: center;
 	padding: 0rem;
 }
 
-.info-table thead th {
+.infoTable thead th {
 	background-color: var(--dark);
 	font-weight: lighter;
 	position: sticky;
 	color: white;
 	border: 0;
 	top: 0;
+}
+
+.positionTotalRow {
+	border-top: 0.125rem solid var(--dark);
 }

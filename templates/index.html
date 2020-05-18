@@ -44,19 +44,19 @@
 
 		<form class="form-inline" action="/builder">
 			
-			<select class="selectpicker form-control tickerpicker" data-live-search="true" title="Ticker..">
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker..">
 				<option data-subtext="Apple Inc.">AAPL</option>
 				<option data-subtext="Microsoft Corporation">MSFT</option>
 				<option data-subtext="Tesla Inc.">TSLA</option>
 			</select>
 
-			<select class="selectpicker form-control tickerpicker" data-live-search="true" title="Date..">
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Date..">
 				<option data-subtext="T-0 Days">2020-05-13</option>
 				<option data-subtext="T-1 Days">2020-05-12</option>
 				<option data-subtext="T-2 Days">2020-05-11</option>
 			</select>
 
-			<button type="button" class="btn btn-outline-light builder-nav-button">Fetch</button>
+			<button type="button" class="btn btn-outline-light builderNavButton">Fetch</button>
 
 		</form>
 
@@ -87,7 +87,7 @@
 				
 						<div class="card-body viewBody">
 
-							<table class="table table-hover info-table">
+							<table class="table table-hover infoTable">
 								
 								<thead>
 									<tr>
@@ -96,6 +96,7 @@
 										<th scope="col">Qty.</th>
 										<th scope="col">Strike</th>
 										<th scope="col">Time</th>
+										<th scope="col">Cost</th>
 										<th scope="col">Delta</th>
 										<th scope="col">Gamma</th>
 										<th scope="col">Theta</th>
@@ -112,6 +113,17 @@
 										<td>-1</td>
 										<td>225.0</td>
 										<td>0.23</td>
+										<td>2.45</td>
+										<td>0.45</td>
+										<td>0.13</td>
+										<td>1.35</td>
+										<td>4.22</td>
+										<td>0.2</td>
+									</tr>
+
+									<tr class="positionTotalRow">
+										<td scope="row" colspan="5"><b>Net</b></td>
+										<td>2.45</td>
 										<td>0.45</td>
 										<td>0.13</td>
 										<td>1.35</td>
@@ -171,12 +183,12 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<input class="btn btn-outline-light builder-nav-button builder-chain-params" placeholder="Multiplier">
-			<input class="btn btn-outline-light builder-nav-button builder-chain-params" placeholder="Moneyness">
+			<input class="btn btn-outline-light builderNavButton builderChainParams" placeholder="Multiplier">
+			<input class="btn btn-outline-light builderNavButton builderChainParams" placeholder="Moneyness">
 		</div>
 
 		<form class="form-inline" action="/builder">
-			<button type="button" class="btn btn-outline-light builder-nav-button">Analyze</button>
+			<button type="button" class="btn btn-outline-light builderNavButton">Analyze</button>
 		</form>
 
 	</nav>
