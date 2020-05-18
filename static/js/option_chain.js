@@ -39,7 +39,6 @@ function onChangeMoneyness(){
 
 }
 
-
 function onChangeMultiplier() {
 
 	let ele = document.getElementById("multiplier");
@@ -56,5 +55,17 @@ function onChangeMultiplier() {
 
 	multiplier = value;
 	ele.value = value;
+
+}
+
+function onWheelClickScroll(i, id){
+
+	$('#optionChainAccordion').on('shown.bs.collapse', function() {
+  		
+		let bottomRow = document.getElementById("bottomRow");
+		let header = document.getElementById(id);
+		bottomRow.scroll(0, i * header.offsetHeight);
+
+	})
 
 }

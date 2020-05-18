@@ -96,7 +96,7 @@ class Builder:
 		show = " show"
 		aria_expanded = "true"
 
-		for expiration, days in expirations.items():
+		for i, (expiration, days) in enumerate(expirations.items()):
 
 			_expiration = expiration.replace("-", "")
 
@@ -106,7 +106,8 @@ class Builder:
 				"data-toggle" : "collapse",
 				"data-target" : f"#collapse{_expiration}",
 				"aria-expanded" : aria_expanded,
-				"aria-controls" : f"collapse{_expiration}"
+				"aria-controls" : f"collapse{_expiration}",
+				"onclick" : f'onWheelClickScroll("{i}","heading{_expiration}")'
 			})
 			header = html("h6", header_button, {"class" : "m-0 wheelTab"})
 			card_header = html("div", header, {
