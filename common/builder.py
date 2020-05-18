@@ -7,6 +7,8 @@ class Builder:
 
 	def __init__(self, option_chain):
 
+		self.stock_price = 273.2
+
 		self.option_chain = option_chain
 		self._option_chain = ""
 
@@ -27,11 +29,26 @@ class Builder:
 		wheel = wheel.fillna("-")
 		wheel = wheel.sort_values("strike_price")
 		wheel = wheel.reset_index(drop=True)
+
+		line = [''] * wheel.shape[1]
+		line[int(len(line) / 2)] = self.stock_price
+		line = pd.DataFrame([line], columns = wheel.columns)
+
+		idx = wheel[wheel.strike_price <= self.stock_price]
+		idx = idx.index.values[-1]
+
+		wheel = pd.concat([
+			wheel.iloc[:idx],
+			line,
+			wheel.iloc[idx:]
+		])
 		wheel.columns = COLS_FMT
 
 		_wheel = wheel.to_html(index=False, classes="table table-hover",
 							   header=True, border=0)
 		_wheel = BeautifulSoup(_wheel, PARSER)
+
+		###########################################################################################
 
 		tds = _wheel.find_all("td")
 		
@@ -41,7 +58,10 @@ class Builder:
 		put_bids = tds[20::23]
 		put_asks = tds[18::23]
 
-		for cb, ca, pb, pa in zip(call_bids, call_asks, put_bids, put_asks):
+		for i, (cb, ca, pb, pa) in enumerate(zip(call_bids, call_asks, put_bids, put_asks)):
+
+			if i == idx:
+				continue
 
 			## CHECK FOR OPTIONS WITH NO DATA AND DO NOT SET THE ATTRIBUTE
 
@@ -58,6 +78,11 @@ class Builder:
 
 		ths[1].insert(0, _wheel.new_tag("br"))
 		ths[1].insert(0, "Puts")
+
+		stock_row = _wheel.find_all("tr")[idx+1]
+		stock_row['class'] = "stockRow"
+
+		###########################################################################################
 
 		return str(_wheel)
 
