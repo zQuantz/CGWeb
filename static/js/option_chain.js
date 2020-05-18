@@ -1,4 +1,5 @@
 
+var defaultMoneyness = "0.4";
 var stockPrice = 272.2;
 var stockPriceIdx = 11;
 var multiplier = 1;
@@ -9,14 +10,14 @@ function onChangeMoneyness(){
 	let value = ele.value;
 
 	if ((value == "") | (value.indexOf("-") != -1)) {
-		value = "0.2";
+		value = defaultMoneyness;
 	}
 
 	let pointCtr = value.split(".").length - 1
 	let pctCtr = value.split("%").length - 1
 
 	if ((pointCtr > 1) || (pctCtr > 1)) {
-		value = "0.2";
+		value = defaultMoneyness;
 	}
 
 	factor = 1;
@@ -36,7 +37,6 @@ function onChangeMoneyness(){
 			row.setAttribute("hidden", true);
 		}
 	})
-
 }
 
 function onChangeMultiplier() {
@@ -61,11 +61,8 @@ function onChangeMultiplier() {
 function onWheelClickScroll(i, id){
 
 	$('#optionChainAccordion').on('shown.bs.collapse', function() {
-  		
 		let bottomRow = document.getElementById("bottomRow");
 		let header = document.getElementById(id);
 		bottomRow.scroll(0, i * header.offsetHeight);
-
 	})
-
 }
