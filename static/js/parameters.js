@@ -1,23 +1,17 @@
 
-var defaultMoneyness = "0.4";
-var stockPrice = 272.2;
-var stockPriceIdx = 11;
-var multiplier = 1;
-
 function onChangeMoneyness(){
 
-	let ele = document.getElementById("moneyness");
-	let value = ele.value;
+	let value = moneyness.value;
 
 	if ((value == "") | (value.indexOf("-") != -1)) {
-		value = defaultMoneyness;
+		value = dMoneyness;
 	}
 
 	let pointCtr = value.split(".").length - 1
 	let pctCtr = value.split("%").length - 1
 
 	if ((pointCtr > 1) || (pctCtr > 1)) {
-		value = defaultMoneyness;
+		value = dMoneyness;
 	}
 
 	factor = 1;
@@ -26,7 +20,7 @@ function onChangeMoneyness(){
 	}
 
 	value = parseFloat(value) * factor;
-	ele.value = (value * 100).toFixed(2) + "%"
+	moneyness.value = (value * 100).toFixed(2) + "%"
 
 	let rows = $(".dataframe tbody tr");
 	rows.removeAttr("hidden");
@@ -41,27 +35,25 @@ function onChangeMoneyness(){
 
 function onChangeMultiplier() {
 
-	let ele = document.getElementById("multiplier");
-	let value = ele.value;
+	let value = multiplier.value;
 
 	if ((value == "") | (value.indexOf("-") != -1)) {
-		value = "1";
+		value = vMultiplier;
 	}
 
 	value = parseInt(value);
 	if (isNaN(value)) {
-		value = 1
+		value = vMultiplier;
 	}
 
-	multiplier = value;
-	ele.value = value;
+	vMultiplier = value;
+	multiplier.value = value;
 
 }
 
 function onWheelClickScroll(i, id){
 
 	$('#optionChainAccordion').on('shown.bs.collapse', function() {
-		let bottomRow = document.getElementById("bottomRow");
 		let header = document.getElementById(id);
 		bottomRow.scroll(0, i * header.offsetHeight);
 	})

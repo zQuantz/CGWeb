@@ -8,6 +8,7 @@ import json
 DIR = os.path.realpath(os.path.dirname(__name__))
 
 COLS = [
+	"option_id",
 	"volume",
 	"open_interest",
 	"bid",
