@@ -17,6 +17,7 @@ class Builder:
 		self.option_data = self.option_data.T.to_dict()
 
 		self.generate_option_chain()
+		self.generate_position_info_rows()
 
 	def generate_option_chain(self):
 
@@ -146,3 +147,81 @@ class Builder:
 			aria_expanded = "false"
 
 			self._option_chain += html("div", card_header+card_body, {"class" : "card bg-dark"})
+
+	def generate_position_info_rows(self):
+
+		empty_row = html("td", "", {"style" : "width: 0.5rem;"})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {"style" : "width: 1.25rem;"})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {"style" : "width: 1.25rem;"})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {})
+		empty_row += html("td", "", {"style" : "width: 0.25rem;"})
+		empty_row = html("tr", empty_row, {"class" : "positionRow"})
+		self.empty_row = empty_row
+
+		sample_row = html("td", "", {"style" : "width: 0.5rem;"})
+		sample_row += html("td", html("a", "X", {"href" : ""}), {})
+		sample_row += html("td", "OPTION_ID", {})
+		sample_row += html("td", "QTY", {})
+		sample_row += html("td", "", {"style" : "width: 1.25rem;"})
+		sample_row += html("td", "COST_PER_UNIT", {})
+		sample_row += html("td", "NET_PREMIUM", {})
+		sample_row += html("td", "IV", {})
+		sample_row += html("td", "MONEYNESS", {})
+		sample_row += html("td", "PCT_PREMIUM", {})
+		sample_row += html("td", "", {"style" : "width: 1.25rem;"})
+		sample_row += html("td", "DELTA_SHARES", {})
+		sample_row += html("td", "DELTA_$", {})
+		sample_row += html("td", "VEGA_$", {})
+		sample_row += html("td", "THETA_$", {})
+		sample_row += html("td", "", {"style" : "width: 0.25rem;"})
+		sample_row = html("tr", sample_row, {"class" : "positionRow"})
+		self.sample_row = sample_row
+
+		empty_agg_row = html("td", "", {"style" : "width: 0.5rem;"})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "Aggregates", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {"style" : "width: 1.25rem;"})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {"style" : "width: 1.25rem;"})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {})
+		empty_agg_row += html("td", "", {"style" : "width: 0.25rem;"})
+		empty_agg_row = html("tr", empty_agg_row, {"class" : "positionTotalRow"})
+		self.empty_agg_row = empty_agg_row
+
+		agg_row = html("td", "", {"style" : "width: 0.5rem;"})
+		agg_row += html("td", "", {})
+		agg_row += html("td", "Aggregates", {})
+		agg_row += html("td", "", {})
+		agg_row += html("td", "", {"style" : "width: 1.25rem;"})
+		agg_row += html("td", "TOTAL_COST", {})
+		agg_row += html("td", "TOTAL_PREMIUM", {})
+		agg_row += html("td", "TOTAL_IV", {})
+		agg_row += html("td", "", {})
+		agg_row += html("td", "TOTAL_PCT_PREMIUM", {})
+		agg_row += html("td", "", {"style" : "width: 1.25rem;"})
+		agg_row += html("td", "TOTAL_DELTA_SHARES", {})
+		agg_row += html("td", "TOTAL_DELTA_$", {})
+		agg_row += html("td", "TOTAL_VEGA_$", {})
+		agg_row += html("td", "TOTAL_THETA_$", {})
+		agg_row += html("td", "", {"style" : "width: 0.25rem;"})
+		agg_row = html("tr", agg_row, {"class" : "positionTotalRow"})
+		self.agg_row = agg_row

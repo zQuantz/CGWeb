@@ -10,8 +10,8 @@
 .viewBody {
 	border: 0.095rem solid var(--dark);
 	background-color: #ececec;
+	max-height: 11rem;
 	overflow-y: auto;
-	height: 14.7rem;
 	padding: 0rem;
 }
 

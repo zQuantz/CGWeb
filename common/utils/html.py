@@ -7,4 +7,4 @@ def html(e, txt, attributes = None):
             for key, value in attributes.items()
         ])
 
-    return f"""<{e} {properties}> {txt}</{e}>"""
+    return f"""<{e} {properties}>{txt}</{e}>"""

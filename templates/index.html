@@ -76,167 +76,63 @@
 			<div class="col-lg-6 positionInfoCol">
 
 				<!-- Position Card -->
-				<div class="card bg-dark">
-					
-					<div class="card-header" id="headingOne">
-						
-						<h6 class="mb-0 viewTab">
-							Position Info
-						</h6>
-
-					</div>
-
-					<!-- Position Card Body -->
-					<div>
+				<div class="card bg-dark" style="margin-top: 7rem;">
 				
-						<div class="card-body viewBody">
+					<div class="card-body viewBody">
 
-							<table class="table table-hover infoTable">
-								
-								<thead>
-									<tr>
-										<th style="width: 0.5rem"></th>
-										<th scope="col"></th>
-										<th scope="col">Options</th>
-										<th scope="col">Qty</th>
-										<th style="width: 1.5rem"></th>
-										<th scope="col">
-											Cost<br>per Unit
-										</th>
-										<th scope="col">Premium</th>
-										<th scope="col">I.V</th>
-										<th scope="col">Moneyness</th>
-										<th scope="col">
-											Net<br>Premium
-										</th>
-										<th style="width: 1.5rem"></th>
-										<th scope="col">
-											Delta
-											<br>
-											(Shares)
-										</th>
-										<th scope="col">
-											Delta<br>($)
-										</th>
-										<th scope="col">
-											Vega<br>($)
-										</th>
-										<th scope="col">
-											Theta<br>($)
-										</th>
-									</tr>
-								</thead>
+						<table class="table table-hover infoTable">
+							
+							<thead>
+								<tr>
+									<th style="width: 0.5rem"></th>
+									<th scope="col"></th>
+									<th scope="col">Options</th>
+									<th scope="col">Qty</th>
+									<th style="width: 1.25rem"></th>
+									<th scope="col">
+										Cost<br>per Unit
+									</th>
+									<th scope="col">Premium</th>
+									<th scope="col">I.V</th>
+									<th scope="col">Moneyness</th>
+									<th scope="col">
+										Net<br>Premium
+									</th>
+									<th style="width: 1.25rem"></th>
+									<th scope="col">
+										Delta
+										<br>
+										(Shares)
+									</th>
+									<th scope="col">
+										Delta<br>($)
+									</th>
+									<th scope="col">
+										Vega<br>($)
+									</th>
+									<th scope="col">
+										Theta<br>($)
+									</th>
+									<th style="width: 0.25rem"></th>
+								</tr>
+							</thead>
 
-								<tbody>
-									
-									<!-- Notional Value Add to Position Info -->
-									<tr class="positionRow">
-										<td style="width: 0.5rem"></td>
-										<td class="positionIndex" scope="row">
-											<a href="">X</a>
-										</td>
-										<td>AAPL US 09-18-20 C280</td>
-										<td>1</td>
-										<td style="width: 1.5rem"></td>
-										<td>14.90$</td>
-										<td>6,705$</td>
-										<td>51%</td>
-										<td>89%</td>
-										<td>14.04%</td>
-										<td style="width: 1.5rem"></td>
-										<td>70</td>
-										<td>21,963$</td>
-										<td>84$</td>
-										<td>-34$</td>
-									</tr>
+							<tbody>
 
-									<tr class="positionRow">
-										<td style="width: 0.5rem"></td>
-										<td class="positionIndex" scope="row">
-											<a href="">X</a>
-										</td>
-										<td>AAPL US 09-18-20 C280</td>
-										<td>1</td>
-										<td style="width: 1.5rem"></td>
-										<td>14.90$</td>
-										<td>6,705$</td>
-										<td>51%</td>
-										<td>89%</td>
-										<td>14.04%</td>
-										<td style="width: 1.5rem"></td>
-										<td>70</td>
-										<td>21,963$</td>
-										<td>84$</td>
-										<td>-34$</td>
-									</tr>
+								{% for i in range(4) %}
+									{{builder.empty_row | safe}}
+								{% endfor %}
 
-									<tr class="positionRow">
-										<td style="width: 0.5rem"></td>
-										<td class="positionIndex" scope="row">
-										</td>
-										<td></td>
-										<td></td>
-										<td style="width: 1.5rem"></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td style="width: 1.5rem"></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
+								{{builder.empty_agg_row | safe}}
 
-									<tr class="positionRow">
-										<td style="width: 0.5rem"></td>
-										<td class="positionIndex" scope="row">
-										</td>
-										<td></td>
-										<td></td>
-										<td style="width: 1.5rem"></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td style="width: 1.5rem"></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
+							</tbody>
 
-									<tr class="positionTotalRow">
-										<th style="width: 0.5rem"></th>
-										<td></td>
-										<td>Aggregates</td>
-										<td></td>
-										<td style="width: 1.5rem"></td>
-										<td>14.90$</td>
-										<td>6,705$</td>
-										<td>51%</td>
-										<td></td>
-										<td>14.04%</td>
-										<td style="width: 1.5rem"></td>
-										<td>70</td>
-										<td>21,963$</td>
-										<td>84$</td>
-										<td>-34$</td>							
-									</tr>
-
-								</tbody>
-
-							</table>
-
-						</div>
+						</table>
 
 					</div>
-					<!-- Position Card Body End -->
 
 				</div>
-				<!-- Position Card End -->
+				<!-- Position Card Body End -->
 
 			</div>
 			<!-- Position Info Column End -->
