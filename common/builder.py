@@ -8,7 +8,7 @@ class Builder:
 
 	def __init__(self, option_chain):
 
-		self.stock_price = 273.2
+		self.stock_price = 316.73
 
 		self.option_chain = option_chain
 		self._option_chain = ""

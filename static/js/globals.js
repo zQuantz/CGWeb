@@ -3,7 +3,7 @@ var options = null;
 var position = null;
 
 var stockPriceIdx = 11;
-var stockPrice = 272.3;
+var stockPrice = 316.73;
 
 var dMoneyness = "0.4";
 var vMultiplier = 1;

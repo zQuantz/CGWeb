@@ -30,10 +30,12 @@
 	top: 0;
 }
 
-.positionTotalRow {
-	border-top: 0.125rem solid var(--dark);
+.positionRow {
+	height:1.5rem;
 }
 
-.positionIndex:hover {
-	cursor: not-allowed;
+.positionTotalRow {
+	border-top: 0.125rem solid var(--dark);
+	font-weight: bold;
+	height: 1.5rem;
 }
