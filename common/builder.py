@@ -150,43 +150,41 @@ class Builder:
 
 	def generate_position_info_rows(self):
 
-		empty_row = html("td", "", {"style" : "width: 0.5rem;"})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {"style" : "width: 1.25rem;"})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {"style" : "width: 1.25rem;"})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {})
-		empty_row += html("td", "", {"style" : "width: 0.25rem;"})
-		empty_row = html("tr", empty_row, {"class" : "positionRow"})
-		self.empty_row = empty_row
+		empty_option_row = html("td", "", {"style" : "width: 0.5rem;"})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {"style" : "width: 1.25rem;"})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {"style" : "width: 1.25rem;"})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {})
+		empty_option_row += html("td", "", {"style" : "width: 0.25rem;"})
+		empty_option_row = html("tr", empty_option_row, {"class" : "positionRow"})
 
-		sample_row = html("td", "", {"style" : "width: 0.5rem;"})
-		sample_row += html("td", html("a", "X", {"href" : ""}), {})
-		sample_row += html("td", "OPTION_ID", {})
-		sample_row += html("td", "QTY", {})
-		sample_row += html("td", "", {"style" : "width: 1.25rem;"})
-		sample_row += html("td", "COST_PER_UNIT", {})
-		sample_row += html("td", "NET_PREMIUM", {})
-		sample_row += html("td", "IV", {})
-		sample_row += html("td", "MONEYNESS", {})
-		sample_row += html("td", "PCT_PREMIUM", {})
-		sample_row += html("td", "", {"style" : "width: 1.25rem;"})
-		sample_row += html("td", "DELTA_SHARES", {})
-		sample_row += html("td", "DELTA_$", {})
-		sample_row += html("td", "VEGA_$", {})
-		sample_row += html("td", "THETA_$", {})
-		sample_row += html("td", "", {"style" : "width: 0.25rem;"})
-		sample_row = html("tr", sample_row, {"class" : "positionRow"})
-		self.sample_row = sample_row
+		option_row = html("td", "", {"style" : "width: 0.5rem;"})
+		option_row += html("td", html("a", "X", {"href" : ""}), {})
+		option_row += html("td", "OPTION_ID", {})
+		option_row += html("td", "QTY", {})
+		option_row += html("td", "", {"style" : "width: 1.25rem;"})
+		option_row += html("td", "COST_PER_UNIT", {})
+		option_row += html("td", "NET_PREMIUM", {})
+		option_row += html("td", "IV", {})
+		option_row += html("td", "MONEYNESS", {})
+		option_row += html("td", "PCT_PREMIUM", {})
+		option_row += html("td", "", {"style" : "width: 1.25rem;"})
+		option_row += html("td", "DELTA_SHARES", {})
+		option_row += html("td", "DELTA_$", {})
+		option_row += html("td", "VEGA_$", {})
+		option_row += html("td", "THETA_$", {})
+		option_row += html("td", "", {"style" : "width: 0.25rem;"})
+		option_row = html("tr", option_row, {"class" : "positionRow"})
 
 		empty_agg_row = html("td", "", {"style" : "width: 0.5rem;"})
 		empty_agg_row += html("td", "", {})
@@ -205,7 +203,6 @@ class Builder:
 		empty_agg_row += html("td", "", {})
 		empty_agg_row += html("td", "", {"style" : "width: 0.25rem;"})
 		empty_agg_row = html("tr", empty_agg_row, {"class" : "positionTotalRow"})
-		self.empty_agg_row = empty_agg_row
 
 		agg_row = html("td", "", {"style" : "width: 0.5rem;"})
 		agg_row += html("td", "", {})
@@ -224,4 +221,11 @@ class Builder:
 		agg_row += html("td", "TOTAL_THETA_$", {})
 		agg_row += html("td", "", {"style" : "width: 0.25rem;"})
 		agg_row = html("tr", agg_row, {"class" : "positionTotalRow"})
-		self.agg_row = agg_row
+
+		self.position_info = {
+			"empty_option_row" : empty_option_row,
+			"option_row" : option_row,
+			"agg_row" : agg_row,
+			"empty_agg_row" : empty_agg_row
+		}
+

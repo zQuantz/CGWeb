@@ -120,10 +120,10 @@
 							<tbody>
 
 								{% for i in range(4) %}
-									{{builder.empty_row | safe}}
+									{{builder.position_info['empty_option_row'] | safe}}
 								{% endfor %}
 
-								{{builder.empty_agg_row | safe}}
+								{{builder.position_info['empty_agg_row'] | safe}}
 
 							</tbody>
 
@@ -186,7 +186,7 @@
 	<!-- Lower Navbar End -->
 
 	<script type="text/javascript">
-		initGlobals({{builder.option_data|tojson|safe}});
+		initGlobals({{builder.option_data|tojson|safe}}, {{builder.position_info|tojson|safe}});
 	</script>
 
 </body>

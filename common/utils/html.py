@@ -1,3 +1,4 @@
+
 def html(e, txt, attributes = None):
 	
     properties = ""
@@ -6,5 +7,6 @@ def html(e, txt, attributes = None):
             "=".join([key, f"'{value}'"])
             for key, value in attributes.items()
         ])
+        properties = " " + properties
 
-    return f"""<{e} {properties}>{txt}</{e}>"""
+    return f"""<{e}{properties}>{txt}</{e}>"""
