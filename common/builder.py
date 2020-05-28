@@ -150,77 +150,66 @@ class Builder:
 
 	def generate_position_info_rows(self):
 
-		empty_option_row = html("td", "", {"style" : "width: 0.5rem;"})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {"style" : "width: 1.25rem;"})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {"style" : "width: 1.25rem;"})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {})
-		empty_option_row += html("td", "", {"style" : "width: 0.25rem;"})
-		empty_option_row = html("tr", empty_option_row, {"class" : "positionRow"})
+		N_ELEMENTS = 16
 
-		option_row = html("td", "", {"style" : "width: 0.5rem;"})
-		option_row += html("td", html("a", "X", {"href" : ""}), {})
-		option_row += html("td", "OPTION_ID", {})
-		option_row += html("td", "QTY", {})
-		option_row += html("td", "", {"style" : "width: 1.25rem;"})
-		option_row += html("td", "COST_PER_UNIT", {})
-		option_row += html("td", "NET_PREMIUM", {})
-		option_row += html("td", "IV", {})
-		option_row += html("td", "MONEYNESS", {})
-		option_row += html("td", "PCT_PREMIUM", {})
-		option_row += html("td", "", {"style" : "width: 1.25rem;"})
-		option_row += html("td", "DELTA_SHARES", {})
-		option_row += html("td", "DELTA_$", {})
-		option_row += html("td", "VEGA_$", {})
-		option_row += html("td", "THETA_$", {})
-		option_row += html("td", "", {"style" : "width: 0.25rem;"})
-		option_row = html("tr", option_row, {"class" : "positionRow"})
+		def generate_row(elements, row_attributes):
 
-		empty_agg_row = html("td", "", {"style" : "width: 0.5rem;"})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "Aggregates", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {"style" : "width: 1.25rem;"})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {"style" : "width: 1.25rem;"})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {})
-		empty_agg_row += html("td", "", {"style" : "width: 0.25rem;"})
-		empty_agg_row = html("tr", empty_agg_row, {"class" : "positionTotalRow"})
+			attributes = [{}]*N_ELEMENTS
+			attributes[0] = {"style" : "width: 0.5rem;"}
+			attributes[4] = {"style" : "width: 1.25rem;"}
+			attributes[10] = {"style" : "width: 1.25rem;"}
+			attributes[15] = {"style" : "width: 0.25rem;"}
 
-		agg_row = html("td", "", {"style" : "width: 0.5rem;"})
-		agg_row += html("td", "", {})
-		agg_row += html("td", "Aggregates", {})
-		agg_row += html("td", "", {})
-		agg_row += html("td", "", {"style" : "width: 1.25rem;"})
-		agg_row += html("td", "TOTAL_COST", {})
-		agg_row += html("td", "TOTAL_PREMIUM", {})
-		agg_row += html("td", "TOTAL_IV", {})
-		agg_row += html("td", "", {})
-		agg_row += html("td", "TOTAL_PCT_PREMIUM", {})
-		agg_row += html("td", "", {"style" : "width: 1.25rem;"})
-		agg_row += html("td", "TOTAL_DELTA_SHARES", {})
-		agg_row += html("td", "TOTAL_DELTA_$", {})
-		agg_row += html("td", "TOTAL_VEGA_$", {})
-		agg_row += html("td", "TOTAL_THETA_$", {})
-		agg_row += html("td", "", {"style" : "width: 0.25rem;"})
-		agg_row = html("tr", agg_row, {"class" : "positionTotalRow"})
+			row = ""
+			for element, attribute in zip(elements, attributes):
+				row += html("td", element, attribute)
+			return html("tr", row, row_attributes)
+
+		empty_option_row = generate_row([""]*N_ELEMENTS, {"class" : "positionRow"})
+
+		attributes = [""]*N_ELEMENTS
+		attributes[2] = "Aggregates"
+		empty_agg_row = generate_row(attributes, {"class" : "positionTotalRow"})
+
+		attributes = [
+			"",
+			html("a", "X", {"href" : ""}),
+			"OPTION_ID",
+			"QTY",
+			"",
+			"COST_PER_UNIT",
+			"NET_PREMIUM",
+			"IV",
+			"MONEYNESS",
+			"PCT_PREMIUM",
+			"",
+			"DELTA_SHARES",
+			"DELTA_$",
+			"VEGA_$",
+			"THETA_$",
+			""
+		]
+		option_row = generate_row(attributes, {"class" : "positionRow"})
+
+		attributes = [
+			"",
+			"",
+			"Aggregates",
+			"",
+			"",
+			"TOTAL_COST",
+			"TOTAL_PREMIUM",
+			"TOTAL_IV",
+			"",
+			"TOTAL_PCT_PREMIUM",
+			"",
+			"TOTAL_DELTA_SHARES",
+			"TOTAL_DELTA_$",
+			"TOTAL_VEGA_$",
+			"TOTAL_THETA_$",
+			""
+		]
+		agg_row = generate_row(attributes, {"class" : "positionTotalRow"})
 
 		self.position_info = {
 			"empty_option_row" : empty_option_row,
@@ -228,4 +217,3 @@ class Builder:
 			"agg_row" : agg_row,
 			"empty_agg_row" : empty_agg_row
 		}
-
