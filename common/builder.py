@@ -49,6 +49,9 @@ class Builder:
 			idx = wheel[wheel.strike_price <= self.stock_price]
 			idx = idx.index.values[-1]
 
+			call_ids.insert(idx, '')
+			put_ids.insert(idx, '')
+
 			wheel = pd.concat([
 				wheel.iloc[:idx],
 				line,
@@ -155,9 +158,9 @@ class Builder:
 		def generate_row(elements, row_attributes):
 
 			attributes = [{}]*N_ELEMENTS
-			attributes[0] = {"style" : "width: 0.5rem;"}
-			attributes[4] = {"style" : "width: 1.25rem;"}
-			attributes[10] = {"style" : "width: 1.25rem;"}
+			attributes[0] = {"style" : "width: 0.25rem;"}
+			attributes[4] = {"style" : "width: 0.75rem;"}
+			attributes[10] = {"style" : "width: 0.75rem;"}
 			attributes[15] = {"style" : "width: 0.25rem;"}
 
 			row = ""
@@ -165,9 +168,9 @@ class Builder:
 				row += html("td", element, attribute)
 			return html("tr", row, row_attributes)
 
-		empty_option_row = generate_row([""]*N_ELEMENTS, {"class" : "positionRow"})
-
 		attributes = [""]*N_ELEMENTS
+		empty_option_row = generate_row(attributes, {"class" : "positionRow"})
+
 		attributes[2] = "Aggregates"
 		empty_agg_row = generate_row(attributes, {"class" : "positionTotalRow"})
 
@@ -178,7 +181,7 @@ class Builder:
 			"QTY",
 			"",
 			"COST_PER_UNIT",
-			"NET_PREMIUM",
+			"PREMIUM",
 			"IV",
 			"MONEYNESS",
 			"PCT_PREMIUM",
