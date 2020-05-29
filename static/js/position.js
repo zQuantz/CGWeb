@@ -7,10 +7,7 @@ class Position {
 	}
 
 	setAggregates(){
-		this.totalCost = 0;
 		this.totalPremium = 0;
-		this.totalIV = 0;
-		this.totalPctPremium = 0;
 		this.totalDeltaShares = 0;
 		this.totalDeltaDollars = 0;
 		this.totalVegaDollars = 0;
@@ -31,32 +28,6 @@ class Option {
 		payoff *= this.quantity;
 		return payoff;
 	}
-}
-
-function addToPosition(direction, option_id){
-
-	let netQty = direction * vMultiplier;
-	if (option_id in position.options){
-
-		if (netQty + position.options[option_id].quantity == 0){
-			delete position.options[option_id];
-			position.size -= 1;
-		}
-		else
-			position.options[option_id].quantity += netQty;
-	
-	}
-	else {
-	
-		let option = options[option_id];
-		position.options[option_id] = new Option(option, netQty,
-							  					 direction > 0 ? option.ask : option.bid);
-		position.size += 1;
-
-	}
-
-	displayPositions();
-
 }
 
 function numberFormat(num, p, symbol){
@@ -87,13 +58,13 @@ function displayPositions(){
 		let newRow = position_info.option_row;
 
 		newRow = newRow.replace("OPTION_ID", key);
+		newRow = newRow.replace("OPTION_ID", key);
 
 		let qty = option.quantity;
 		qty = qty.toLocaleString();
 		newRow = newRow.replace("QTY", qty);
 
 		let cost = option.cost;
-		position.totalCost += cost;
 		cost = numberFormat(cost, 2, "$");
 		newRow = newRow.replace("COST_PER_UNIT", cost);
 
@@ -103,7 +74,6 @@ function displayPositions(){
 		newRow = newRow.replace("PREMIUM", premium);
 
 		let iv = option.option.implied_volatility * 100;
-		position.totalIV += iv;
 		iv = numberFormat(iv, 2, "%");		
 		newRow = newRow.replace("IV", iv);
 
@@ -111,8 +81,7 @@ function displayPositions(){
 		moneyness = numberFormat(moneyness, 2, "%");		
 		newRow = newRow.replace("MONEYNESS", moneyness);
 		
-		let pct_premium = 100 * 0.8949;
-		position.totalPctPremium += pct_premium;
+		let pct_premium = option.cost / stockPrice * 100;
 		pct_premium = numberFormat(pct_premium, 2, "%");		
 		newRow = newRow.replace("PCT_PREMIUM", pct_premium);
 
@@ -152,21 +121,9 @@ function displayPositions(){
 
 	let aggregateRow = position_info.agg_row;
 
-	let value = position.totalCost;
-	value = numberFormat(value, 2, "$");
-	aggregateRow = aggregateRow.replace("TOTAL_COST", value);
-
-	value = position.totalPremium;
+	let value = position.totalPremium;
 	value = numberFormat(value, 2, "$");
 	aggregateRow = aggregateRow.replace("TOTAL_PREMIUM", value);
-
-	value = position.totalIV;
-	value = numberFormat(value, 2, "%");
-	aggregateRow = aggregateRow.replace("TOTAL_IV", value);
-
-	value = position.totalPctPremium;
-	value = numberFormat(value, 2, "%");
-	aggregateRow = aggregateRow.replace("TOTAL_PCT_PREMIUM", value);
 
 	value = position.totalDeltaShares;
 	value = numberFormat(value, 0, "");
@@ -185,5 +142,39 @@ function displayPositions(){
 	aggregateRow = aggregateRow.replace("TOTAL_THETA_$", value);
 
 	table.append(aggregateRow);
+
+}
+
+function addToPosition(direction, option_id){
+
+	let netQty = direction * vMultiplier;
+	if (option_id in position.options){
+
+		if (netQty + position.options[option_id].quantity == 0){
+			delete position.options[option_id];
+			position.size -= 1;
+		}
+		else
+			position.options[option_id].quantity += netQty;
+	
+	}
+	else {
+	
+		let option = options[option_id];
+		position.options[option_id] = new Option(option, netQty,
+							  					 direction > 0 ? option.ask : option.bid);
+		position.size += 1;
+
+	}
+
+	displayPositions();
+
+}
+
+function removeFromPosition(option_id){
+
+	delete position.options[option_id];
+	position.size -= 1;
+	displayPositions();
 
 }
