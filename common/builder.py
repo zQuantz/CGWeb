@@ -204,7 +204,7 @@ class Builder:
 			"TOTAL_PREMIUM",
 			"",
 			"",
-			"",
+			"TOTAL_PCT_PREMIUM",
 			"",
 			"TOTAL_DELTA_SHARES",
 			"TOTAL_DELTA_$",

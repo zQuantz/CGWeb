@@ -8,6 +8,7 @@ class Position {
 
 	setAggregates(){
 		this.totalPremium = 0;
+		this.totalPctPremium = 0;
 		this.totalDeltaShares = 0;
 		this.totalDeltaDollars = 0;
 		this.totalVegaDollars = 0;
@@ -32,12 +33,17 @@ class Option {
 
 function numberFormat(num, p, symbol){
 	
+	let anum = Math.abs(num);
 	let f = Math.pow(10, p);
 	let m = "";
 
-	if (num >= 100000){
+	if (anum >= 1000000){
+		num /= 1000000;
+		m = "M"
+	}
+	else if (anum >= 1000){
 		num /= 1000;
-		m = "K"
+		m = "K"	
 	}
 
 	num = Math.round(num * f) / f;
@@ -82,6 +88,7 @@ function displayPositions(){
 		newRow = newRow.replace("MONEYNESS", moneyness);
 		
 		let pct_premium = option.cost / stockPrice * 100;
+		position.totalPctPremium += pct_premium * option.quantity;
 		pct_premium = numberFormat(pct_premium, 2, "%");		
 		newRow = newRow.replace("PCT_PREMIUM", pct_premium);
 
@@ -124,6 +131,10 @@ function displayPositions(){
 	let value = position.totalPremium;
 	value = numberFormat(value, 2, "$");
 	aggregateRow = aggregateRow.replace("TOTAL_PREMIUM", value);
+
+	value = position.totalPctPremium;
+	value = numberFormat(value, 2, "%");
+	aggregateRow = aggregateRow.replace("TOTAL_PCT_PREMIUM", value);
 
 	value = position.totalDeltaShares;
 	value = numberFormat(value, 0, "");
