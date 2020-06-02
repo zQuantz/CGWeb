@@ -9,6 +9,10 @@ class Builder:
 	def __init__(self, option_chain):
 
 		self.stock_price = 316.73
+		self.stock_info = {
+			"stock_price" : self.stock_price,
+			"price_increment" : max(0.01, round(self.stock_price * 0.01, 2))
+		}
 
 		self.option_chain = option_chain
 		self._option_chain = ""

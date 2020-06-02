@@ -4,6 +4,7 @@ class Position {
 		this.options = {};
 		this.size = 0;
 		this.setAggregates();
+		this.riskGraphData = [];
 	}
 
 	setAggregates(){
@@ -13,6 +14,29 @@ class Position {
 		this.totalDeltaDollars = 0;
 		this.totalVegaDollars = 0;
 		this.totalThetaDollars = 0;
+	}
+	calculateRiskGraphData(){
+
+		this.riskGraphData = [];
+
+		let bnum = Math.min(pRange, 100);
+		for(let i = bnum; i >= -pRange; i--){
+
+			console.log(i);
+			
+			let price = stockPrice - i * priceIncrement;
+			let payoff = 0;
+			for(const key in this.options){
+				payoff += this.options[key].getPayoff(price);
+			}
+
+			this.riskGraphData.push({
+				x: Math.round(price * 100) / 100,
+				y: Math.round(payoff * 100) / 100
+			})
+
+		}
+
 	}
 
 }
@@ -156,6 +180,14 @@ function displayPositions(){
 
 }
 
+function displayRiskGraph(){
+	position.calculateRiskGraphData();
+	riskGraph.data.datasets.forEach((dataset) => {
+        dataset.data = position.riskGraphData;
+    });
+    riskGraph.update();
+}
+
 function addToPosition(direction, option_id){
 
 	let netQty = direction * vMultiplier;
@@ -179,6 +211,7 @@ function addToPosition(direction, option_id){
 	}
 
 	displayPositions();
+	displayRiskGraph();
 
 }
 
@@ -187,5 +220,6 @@ function removeFromPosition(option_id){
 	delete position.options[option_id];
 	position.size -= 1;
 	displayPositions();
+	displayRiskGraph();
 
 }
