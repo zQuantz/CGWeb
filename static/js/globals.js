@@ -17,8 +17,8 @@ var multiplierVals = {
 	"current" : 1
 }
 var uChangeVals = {
-	"default" : 100,
-	"current" : 100
+	"default" : 1,
+	"current" : 1
 }
 
 function initGlobals(_options, _position_info, _stock_info){
