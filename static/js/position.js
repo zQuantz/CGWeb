@@ -18,14 +18,15 @@ class Position {
 	calculateRiskGraphData(){
 
 		this.riskGraphData = [];
+		if (this.size == 0)
+			return;
 
-		let bnum = Math.min(pRange, 100);
-		for(let i = bnum; i >= -pRange; i--){
-
-			console.log(i);
+		let bnum = Math.min(uChangeVals.current, 100);
+		for(let i = bnum * 10; i >= -uChangeVals.current * 10; i--){
 			
 			let price = stockPrice - i * priceIncrement;
 			let payoff = 0;
+			
 			for(const key in this.options){
 				payoff += this.options[key].getPayoff(price);
 			}
@@ -190,7 +191,7 @@ function displayRiskGraph(){
 
 function addToPosition(direction, option_id){
 
-	let netQty = direction * vMultiplier;
+	let netQty = direction * multiplierVals.current;
 	if (option_id in position.options){
 
 		if (netQty + position.options[option_id].quantity == 0){

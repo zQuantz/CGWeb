@@ -8,14 +8,24 @@ var stockPriceIdx = 11;
 var stockPrice = null;
 var priceIncrement = null;
 
-var dMoneyness = "0.4";
-var vMultiplier = 1;
-var pRange = 100;
+var moneynessVals = {
+	"default" : 0.4,
+	"current" : 0.4
+}
+var multiplierVals = {
+	"default" : 1,
+	"current" : 1
+}
+var uChangeVals = {
+	"default" : 100,
+	"current" : 100
+}
 
 function initGlobals(_options, _position_info, _stock_info){
 
 	var moneyness = document.getElementById("moneyness");
 	var multiplier = document.getElementById("multiplier");
+	var uChange = document.getElementById("uChange");
 	var bottomRow = document.getElementById("bottomRow");
 
 	position = new Position();
@@ -40,7 +50,7 @@ function initChart(){
 			datasets: [{
 				label: 'Payoff',
 				borderColor: 'rgba(35, 255, 23)',
-				backgroundColor: 'rgba(52, 58, 64, 1)',
+				backgroundColor: 'rgba(52, 58, 64, 0.15)',
 				data: []
 			}]
 		},
@@ -59,14 +69,22 @@ function initChart(){
 			tooltips: {
 				enabled:true,
 				displayColors:false,
-				bodyAlign:'center'
+				titleAlign:'center',
+				titleFontStyle:'bold',
+				bodyAlign:'center',
+				bodyFontStyle:'bold',
+				callbacks: {
+					title: function(tooltipItem, data) {
+                    	return "Price: "+tooltipItem[0].label;
+                	}
+				}
 			},
 
 			elements: {
 				
 				point: {
-					radius:2,
-					hitRadius:10,
+					radius:0,
+					hitRadius:20,
 					hoverRadius:2,
 					pointStyle:'circle'
 				},
@@ -79,9 +97,9 @@ function initChart(){
 					
 					type: 'linear',
 					position: 'bottom',
-					suggestedMin: 0,
+
 					scaleLabel: {
-						display: true,
+						display: false,
 						labelString: 'Price',
 						fontSize: 14,
 						padding: {
@@ -97,7 +115,7 @@ function initChart(){
 				yAxes: [{
 					
 					scaleLabel: {
-						display: true,
+						display: false,
 						labelString: 'Payoff',
 						fontSize: 14,
 						padding: {
