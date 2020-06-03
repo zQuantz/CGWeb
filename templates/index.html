@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/navbar.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/option_chain.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/position_info.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/modals.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 
 	<script type="text/javascript" src="/static/js/parameters.js"></script>
@@ -22,6 +23,8 @@
 
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+
+	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 </head>
 <body>
@@ -180,10 +183,12 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<input class="btn btn-outline-light builderNavButton builderChainParams" placeholder="Multiplier" id="multiplier" onchange="onChangeMultiplier()">
-			<input class="btn btn-outline-light builderNavButton builderChainParams" placeholder="Moneyness" id="moneyness" onchange="onChangeMoneyness()">
-			<input class="btn btn-outline-light builderNavButton builderChainParams" placeholder="U. Change" id="uChange" onchange="onChangeUChange()">
+			<input class="btn btn-outline-light builderNavButton" placeholder="Multiplier" id="multiplier" onchange="onChangeMultiplier()">
+			<input class="btn btn-outline-light builderNavButton" placeholder="Moneyness" id="moneyness" onchange="onChangeMoneyness()">
+			<input class="btn btn-outline-light builderNavButton" placeholder="U. Change" id="uChange" onchange="onChangeUChange()">
 		</div>
+
+		<button class="btn btn-outline-light builderNavButton" type="button" id="candlesButton" data-toggle="modal" data-target="#candlesModal">Candles</button>
 
 		<form class="form-inline" action="/builder">
 			<button type="button" class="btn btn-outline-light builderNavButton">Analyze</button>
@@ -191,6 +196,33 @@
 
 	</nav>
 	<!-- Lower Navbar End -->
+
+	<!-- Modal -->
+	<div class="modal fade" id="candlesModal" tabindex="-1" role="dialog" aria-labelledby="candlesModal" aria-hidden="true">
+
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+
+			<div class="modal-content candlesContent">
+
+				<div class="modal-body" id="candlesModalBody">
+
+					<!-- TradingView Widget BEGIN -->
+					<div class="tradingview-widget-container">
+
+						<div id="tradingviewDiv"></div>
+						<div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/" rel="noopener" target="_blank"><span class="blue-text">AAPL Chart</span></a> by TradingView</div>
+
+					</div>
+					<!-- TradingView Widget END -->
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	<!-- Modal End -->
 
 	<script type="text/javascript">
 		initGlobals({{builder.option_data|tojson|safe}}, {{builder.position_info|tojson|safe}},

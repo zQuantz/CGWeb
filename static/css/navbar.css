@@ -9,23 +9,20 @@
 }
 
 .builderNavButton {
+	margin-right: 1rem;
 	border-radius: 0;
 	height: 2.3rem;
 	width: 7rem;
 }
 
-.builderChainParams {
-	margin-right: 1rem;
-}
-
-.builderChainParams::placeholder {
+.builderNavButton::placeholder {
 	color: white;
 }
 
-.builderChainParams::hover {
+.builderNavButton::hover {
 	background-color: #ececec;
 }
 
-.builderChainParams:hover::placeholder {
+.builderNavButton:hover::placeholder {
 	color: black;
 }

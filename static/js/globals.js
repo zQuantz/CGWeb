@@ -36,6 +36,7 @@ function initGlobals(_options, _position_info, _stock_info){
 	priceIncrement = _stock_info['price_increment'];
 
 	initChart();
+	initCandles();
 
 }
 
@@ -132,4 +133,26 @@ function initChart(){
 		}
 
 	});
+}
+
+function initCandles() {
+
+	new TradingView.widget(
+		{
+			"height" : Math.round(0.81 * window.innerHeight),
+			"width" : Math.round(0.76 * window.innerWidth),
+			"symbol": "NASDAQ:AAPL",
+			"interval": "D",
+			"timezone": "Etc/UTC",
+			"theme": "dark",
+			"style": "1",
+			"locale": "en",
+			"toolbar_bg": "#f1f3f6",
+			"enable_publishing": false,
+			"allow_symbol_change": true,
+			"studies": [],
+			"container_id": "tradingviewDiv"
+		}
+	);
+
 }
