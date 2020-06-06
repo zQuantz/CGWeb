@@ -54,15 +54,15 @@
 
 		<form class="form-inline" action="/builder">
 			
-			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect">
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect" name="ticker">
 				{% if builder %}
 					{{builder._option_tickers | safe}}
 				{% endif %}
 			</select>
 
-			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Date.." id="tickerDateSelect"></select>
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Date.." id="tickerDateSelect" name="date"></select>
 
-			<button type="button" class="btn btn-outline-light builderNavButton">Fetch</button>
+			<button type="submit" class="btn btn-outline-light builderNavButton">Fetch</button>
 
 		</form>
 
@@ -156,8 +156,8 @@
 				
 				<!-- Option Chain -->
 				<div class="accordion" id="optionChainAccordion">
-					{% if builder %}
-						{{builder._option_chain | safe}}
+					{% if builder.ticker %}
+						{{builder.ticker._option_chain | safe}}
 					{% endif %}
 				</div>
 				<!-- Option Chain End-->
@@ -221,11 +221,18 @@
 	<!-- Modal End -->
 
 	<script type="text/javascript">
-		initGlobals({{builder.option_data|tojson|safe}},
-					{{builder.position_info|tojson|safe}},
-					{{builder.stock_info|tojson|safe}},
+
+		initGlobals({{builder.position_info|tojson|safe}},
 					{{builder.unique_dates|tojson|safe}},
-					{{builder.ticker_date_coords|tojson|safe}});
+					{{builder.ticker_dates|tojson|safe}});
+
+		{% if builder.ticker %}
+			initTicker({{builder.ticker.option_data|tojson|safe}},
+					   {{builder.ticker.stock_info|tojson|safe}},
+					   {{builder.ticker.ticker|tojson|safe}},
+					   {{builder.ticker.date|tojson|safe}})
+		{% endif %}
+
 	</script>
 
 </body>

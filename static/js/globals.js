@@ -23,26 +23,39 @@ var uChangeVals = {
 	"current" : 1
 }
 
-function initGlobals(_options, _position_info, _stock_info, _unique_dates, _ticker_dates){
+function initGlobals(_position_info, _unique_dates, _ticker_dates){
 
 	var uChange = document.getElementById("uChange");
 	var moneyness = document.getElementById("moneyness");
 	var bottomRow = document.getElementById("bottomRow");
 	var multiplier = document.getElementById("multiplier");
-
-	options = _options;
-	position = new Position();
 	
 	unique_dates = _unique_dates;
 	ticker_dates = _ticker_dates;
 	position_info = _position_info;
 
+	initChart();
+	registerEvents();
+
+}
+
+function initTicker(_options, _stock_info, ticker, date){
+
+	console.log(ticker, date);
+
+	options = _options;
+	position = new Position();
+
 	stockPrice = _stock_info['stock_price'];
 	priceIncrement = _stock_info['price_increment'];
 
-	initChart();
-	initCandles();
-	registerEvents()
+	initCandles(_stock_info.symbol);
+
+	let e = $("#tickerSelect");
+	e.selectpicker("val", ticker);
+
+	e = $("#tickerDateSelect");
+	e.selectpicker("val", date);
 
 }
 
@@ -149,13 +162,13 @@ function initChart(){
 	});
 }
 
-function initCandles() {
+function initCandles(symbol) {
 
 	new TradingView.widget(
 		{
 			"height" : Math.round(0.81 * window.innerHeight),
 			"width" : Math.round(0.76 * window.innerWidth),
-			"symbol": "NASDAQ:AAPL",
+			"symbol": symbol,
 			"interval": "D",
 			"timezone": "Etc/UTC",
 			"theme": "dark",
