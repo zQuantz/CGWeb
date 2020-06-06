@@ -2,10 +2,12 @@
 var options = null;
 var position = null;
 var riskGraph = null;
+var ticker_dates = null;
+var unique_dates = null;
 var position_info = null;
 
-var stockPriceIdx = 11;
 var stockPrice = null;
+var stockPriceIdx = 11;
 var priceIncrement = null;
 
 var moneynessVals = {
@@ -21,22 +23,34 @@ var uChangeVals = {
 	"current" : 1
 }
 
-function initGlobals(_options, _position_info, _stock_info){
+function initGlobals(_options, _position_info, _stock_info, _unique_dates, _ticker_dates){
 
-	var moneyness = document.getElementById("moneyness");
-	var multiplier = document.getElementById("multiplier");
 	var uChange = document.getElementById("uChange");
+	var moneyness = document.getElementById("moneyness");
 	var bottomRow = document.getElementById("bottomRow");
+	var multiplier = document.getElementById("multiplier");
 
-	position = new Position();
-	position_info = _position_info;
 	options = _options;
+	position = new Position();
+	
+	unique_dates = _unique_dates;
+	ticker_dates = _ticker_dates;
+	position_info = _position_info;
 
 	stockPrice = _stock_info['stock_price'];
 	priceIncrement = _stock_info['price_increment'];
 
 	initChart();
 	initCandles();
+	registerEvents()
+
+}
+
+function registerEvents(){
+
+	$("#tickerSelect").on('changed.bs.select', function(e) {
+		addTickerDates();
+	});
 
 }
 

@@ -5,11 +5,19 @@ from flask import Flask
 
 from common.builder import Builder
 import pandas as pd
+import json
 
 ###################################################################################################
 
 df = pd.read_csv("data.csv")
-builder_obj = Builder(df)
+
+with open("coords.txt", "r") as file:
+	date_coords = json.loads(file.read())
+
+with open("ticker_coords.txt", "r") as file:
+	ticker_coords = json.loads(file.read())
+
+builder_obj = Builder(df, date_coords, ticker_coords)
 
 ###################################################################################################
 

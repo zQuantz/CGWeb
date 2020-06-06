@@ -54,17 +54,13 @@
 
 		<form class="form-inline" action="/builder">
 			
-			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker..">
-				<option data-subtext="Apple Inc.">AAPL</option>
-				<option data-subtext="Microsoft Corporation">MSFT</option>
-				<option data-subtext="Tesla Inc.">TSLA</option>
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect">
+				{% if builder %}
+					{{builder._option_tickers | safe}}
+				{% endif %}
 			</select>
 
-			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Date..">
-				<option data-subtext="T-0 Days">2020-05-13</option>
-				<option data-subtext="T-1 Days">2020-05-12</option>
-				<option data-subtext="T-2 Days">2020-05-11</option>
-			</select>
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Date.." id="tickerDateSelect"></select>
 
 			<button type="button" class="btn btn-outline-light builderNavButton">Fetch</button>
 
@@ -225,8 +221,11 @@
 	<!-- Modal End -->
 
 	<script type="text/javascript">
-		initGlobals({{builder.option_data|tojson|safe}}, {{builder.position_info|tojson|safe}},
-					{{builder.stock_info|tojson|safe}});
+		initGlobals({{builder.option_data|tojson|safe}},
+					{{builder.position_info|tojson|safe}},
+					{{builder.stock_info|tojson|safe}},
+					{{builder.unique_dates|tojson|safe}},
+					{{builder.ticker_date_coords|tojson|safe}});
 	</script>
 
 </body>

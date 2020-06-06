@@ -84,3 +84,21 @@ function onWheelClickScroll(i, id){
 		bottomRow.scroll(0, i * header.offsetHeight);
 	})
 }
+
+function addTickerDates(){
+	
+	let ticker = document.getElementById("tickerSelect").value;
+	if(ticker == ""){
+		return;
+	}
+
+	let dateSelect = $("#tickerDateSelect");
+	dateSelect.empty();
+
+	ticker_dates[ticker].forEach(date => {
+		dateSelect.append(unique_dates[date]);
+	})
+
+	dateSelect.selectpicker("refresh");
+
+}

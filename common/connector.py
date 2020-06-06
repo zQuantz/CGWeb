@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import sqlalchemy as sql
 import pandas as pd
 import sys, os
+import json
 
 from const import CONFIG
 
@@ -28,7 +29,7 @@ class Connector():
 		if tries >= self.max_tries:
 			raise Exception("Too Many SQL Errors.")
 
-	def get_ticker_info(self):
+	def get_ticker_coords(self):
 
 		query = """
 			SELECT
@@ -49,7 +50,7 @@ class Connector():
 		data = data.set_index("ticker").T.to_dict()
 		return data
 
-	def get_option_info(self, days=60):
+	def get_ticker_date_coords(self, days=60):
 
 		dt = datetime.now() - timedelta(days=days)
 		query = f"""
@@ -62,6 +63,7 @@ class Connector():
 				date_current >= "{dt.strftime("%Y-%m-%d")}"
 			GROUP BY 
 				ticker, date_current
+			ORDER BY ticker ASC, date_current DESC
 		"""
 
 		data = self.read(query)
@@ -72,7 +74,7 @@ class Connector():
 		data = data.to_dict()
 		return data
 
-	def get_option_data(self, tickers, dates):
+	def get_data(self, tickers, dates, table):
 
 		if len(tickers) == 1:
 			ticker_str = f'ticker = "{tickers[0]}"'
@@ -90,7 +92,7 @@ class Connector():
 			SELECT
 				*
 			FROM
-				options
+				{table}
 			WHERE
 				{ticker_str}
 			AND
@@ -103,4 +105,9 @@ class Connector():
 
 if __name__ == '__main__':
 
-	data = Connector().get_option_data(("AAPL",), ("2020-04-28",))
+	# data = Connector().get_option_data(("AAPL",), ("2020-04-28",))
+	coords = Connector().get_data_coords()
+	ticker_coords = Connector().get_ticker_coords()
+
+	with open("ticker_coords.txt", "w") as file:
+		file.write(json.dumps(ticker_coords))
