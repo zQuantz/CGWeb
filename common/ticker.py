@@ -1,19 +1,24 @@
 from common.const import COLS, COLS_FMT, PARSER
 from common.utils.html import html
-from datetime import datetime
 from bs4 import BeautifulSoup
 import pandas as pd
-import numpy as np
 
 class Ticker():
 
-	def __init__(self, option_chain):
+	def __init__(self, ticker, date, option_chain, ohlc, ticker_info):
 
-		self.stock_price = 316.73
+		self.ticker = ticker
+		self.date = date
+
+		self.stock_price = ohlc.adj_close.values[0]
 		self.stock_info = {
 			"stock_price" : self.stock_price,
 			"price_increment" : max(0.01, round(self.stock_price * 0.001, 2)),
+			"symbol" : f"{ticker_info['exchange_code']}:{ticker}"
 		}
+
+		cols = ['date_current', 'expiration_date']
+		option_chain.loc[:, cols] = option_chain.loc[:, cols].astype(str)
 
 		self.option_chain = option_chain
 		self._option_chain = ""

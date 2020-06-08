@@ -4,7 +4,7 @@ import pandas as pd
 import sys, os
 import json
 
-from const import CONFIG
+from common.const import CONFIG
 
 ###################################################################################################
 
@@ -29,7 +29,7 @@ class Connector():
 		if tries >= self.max_tries:
 			raise Exception("Too Many SQL Errors.")
 
-	def get_ticker_coords(self):
+	def get_ticker_info(self):
 
 		query = """
 			SELECT
@@ -50,7 +50,7 @@ class Connector():
 		data = data.set_index("ticker").T.to_dict()
 		return data
 
-	def get_ticker_date_coords(self, days=60):
+	def get_ticker_dates(self, days=60):
 
 		dt = datetime.now() - timedelta(days=days)
 		query = f"""
@@ -102,12 +102,3 @@ class Connector():
 		return self.read(query)
 
 ###################################################################################################
-
-if __name__ == '__main__':
-
-	# data = Connector().get_option_data(("AAPL",), ("2020-04-28",))
-	coords = Connector().get_data_coords()
-	ticker_coords = Connector().get_ticker_coords()
-
-	with open("ticker_coords.txt", "w") as file:
-		file.write(json.dumps(ticker_coords))

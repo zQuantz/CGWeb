@@ -9,15 +9,9 @@ import json
 
 ###################################################################################################
 
-df = pd.read_csv("data.csv")
-
-with open("coords.txt", "r") as file:
-	date_coords = json.loads(file.read())
-
-with open("ticker_coords.txt", "r") as file:
-	ticker_coords = json.loads(file.read())
-
-builder_obj = Builder(df, date_coords, ticker_coords)
+print("Initializing Builder Object")
+builder_obj = Builder()
+print("Builder Object Completed")
 
 ###################################################################################################
 
@@ -40,12 +34,14 @@ def builder():
 	print("ticker", ticker)
 	print("date", date)
 
+	builder_obj.fetch_ticker(ticker, date)
+
 	return render_template("index.html", name=ticker, builder=builder_obj)
 
 if __name__ == '__main__':
 
 	try:
-		http_server = WSGIServer(('', 5000), app)
+		http_server = WSGIServer(('', 2608), app)
 		http_server.serve_forever()
 	except Exception as e:
 		print(e)

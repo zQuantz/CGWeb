@@ -1,11 +1,7 @@
-from common.const import COLS, COLS_FMT, PARSER
 from common.connector import Connector
 from common.utils.html import html
+from common.ticker import Ticker
 from datetime import datetime
-from bs4 import BeautifulSoup
-from ticker import Ticker
-import pandas as pd
-import numpy as np
 
 class Builder:
 
@@ -19,17 +15,25 @@ class Builder:
 		self.generate_data_coords()
 		self.generate_position_info_rows()
 
-	def initialize():
+	def initialize(self):
 
-		self.ticker_date_coords = self.connector.get_ticker_date_coords()
+		print("Collecting Ticker Dates")
+		self.ticker_dates = self.connector.get_ticker_dates()
+
+		print("Collecting Ticker Info")
 		self.ticker_info = self.connector.get_ticker_info()
 
 	def fetch_ticker(self, ticker, date):
 
+		if not ticker:
+			self.ticker = None
+			return
+
 		if ticker in self.tickers:
 
-			if date in self.tickers[ticker]: 
-				return self.tickers[ticker][date]
+			if date in self.tickers[ticker]:
+				self.ticker = self.tickers[ticker][date]
+				return
 
 		else:
 
@@ -38,7 +42,8 @@ class Builder:
 		option_chain = self.connector.get_data((ticker,),(date,), "options")
 		ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
 
-		self.tickers[ticker][date] = Ticker(option_chain, ohlc)
+		self.ticker = Ticker(ticker, date, option_chain, ohlc, self.ticker_info[ticker])
+		self.tickers[ticker][date] = self.ticker
 
 	def generate_position_info_rows(self):
 
@@ -114,7 +119,7 @@ class Builder:
 
 		dates = set([
 			item
-			for sublist in self.ticker_date_coords.values()
+			for sublist in self.ticker_dates.values()
 			for item in sublist
 		])
 		dates = {
@@ -129,7 +134,7 @@ class Builder:
 		self._option_tickers = ""
 		for ticker in self.ticker_info:
 
-			if ticker not in self.ticker_date_coords:
+			if ticker not in self.ticker_dates:
 				continue
 
 			self._option_tickers += html("option", ticker, {

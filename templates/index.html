@@ -54,15 +54,15 @@
 
 		<form class="form-inline" action="/builder">
 			
-			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect">
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect" name="ticker">
 				{% if builder %}
 					{{builder._option_tickers | safe}}
 				{% endif %}
 			</select>
 
-			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Date.." id="tickerDateSelect"></select>
+			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Date.." id="tickerDateSelect" name="date"></select>
 
-			<button type="button" class="btn btn-outline-light builderNavButton">Fetch</button>
+			<button type="submit" class="btn btn-outline-light builderNavButton">Fetch</button>
 
 		</form>
 
@@ -75,7 +75,7 @@
 		<div class="row" id="topRow">
 			
 			<!-- Position Info Column -->
-			<div class="col-lg-6 positionInfoCol">
+			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 positionInfoCol">
 
 				<!-- Position Card -->
 				<div class="card bg-dark" style="margin-top: 7rem;">
@@ -140,9 +140,9 @@
 			<!-- Position Info Column End -->
 
 			<!-- Position  -->
-			<div class="col-lg-6">
+			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
 				
-				<canvas id="riskGraph" width="6" height="2"></canvas>
+				<canvas id="riskGraph" width="6" height="2" style="position: absolute; bottom: -0.6rem;"></canvas>
 
 			</div>
 
@@ -152,12 +152,12 @@
 		<div class="row" id="bottomRow">
 
 			<!-- Lower Row Col -->
-			<div class="col-lg-12">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
 				
 				<!-- Option Chain -->
 				<div class="accordion" id="optionChainAccordion">
-					{% if builder %}
-						{{builder._option_chain | safe}}
+					{% if builder.ticker %}
+						{{builder.ticker._option_chain | safe}}
 					{% endif %}
 				</div>
 				<!-- Option Chain End-->
@@ -220,11 +220,18 @@
 	<!-- Modal End -->
 
 	<script type="text/javascript">
-		initGlobals({{builder.option_data|tojson|safe}},
-					{{builder.position_info|tojson|safe}},
-					{{builder.stock_info|tojson|safe}},
+
+		initGlobals({{builder.position_info|tojson|safe}},
 					{{builder.unique_dates|tojson|safe}},
-					{{builder.ticker_date_coords|tojson|safe}});
+					{{builder.ticker_dates|tojson|safe}});
+
+		{% if builder.ticker %}
+			initTicker({{builder.ticker.option_data|tojson|safe}},
+					   {{builder.ticker.stock_info|tojson|safe}},
+					   {{builder.ticker.ticker|tojson|safe}},
+					   {{builder.ticker.date|tojson|safe}})
+		{% endif %}
+
 	</script>
 
 </body>
