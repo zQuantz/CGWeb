@@ -1,0 +1,11 @@
+.stockViewTab {
+	line-height: 0.5;
+	color: white;
+}
+
+.stockViewBody {
+	border: 0.095rem solid var(--dark);
+	background-color: #ececec;
+	max-height: 6rem;
+	padding: 0rem;
+}

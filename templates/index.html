@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/navbar.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/option_chain.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/position_info.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/stock_info.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/modals.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 
@@ -75,10 +76,47 @@
 		<div class="row" id="topRow">
 			
 			<!-- Position Info Column -->
-			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 positionInfoCol">
+			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 infoCol">
+
+				<!-- Stock Card -->
+				<div class="card bg-dark" style="margin-bottom: 3rem; margin-top: 1rem">
+				
+					<div class="card-body stockViewBody">
+
+						<table class="table table-hover infoTable">
+							
+							<thead>
+								<tr>
+									<th style="width: 0.75rem"></th>
+									<th scope="col">Company Name</th>
+									<th scope="col">Industry</th>
+									<th scope="col">Sector</th>
+									<th scope="col">Daily Change</th>
+									<th scope="col">Rel. Volume</th>
+									<th scope="col">Div. Yield</th>
+									<th scope="col">52W Pos.</th>
+									<th scope="col">% Held by Inst.</th>
+									<th scope="col">Short Ratio</th>
+								</tr>
+							</thead>
+
+							<tbody>
+
+								{% if builder.ticker %}
+									{{builder.ticker._stock_info_row | safe}}
+								{% endif %}
+
+							</tbody>
+
+						</table>
+
+					</div>
+
+				</div>
+				<!-- Position Card Body End -->
 
 				<!-- Position Card -->
-				<div class="card bg-dark" style="margin-top: 7rem;">
+				<div class="card bg-dark">
 				
 					<div class="card-body viewBody">
 

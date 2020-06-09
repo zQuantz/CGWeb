@@ -26,12 +26,14 @@ class Builder:
 	def fetch_ticker(self, ticker, date):
 
 		if not ticker:
+
 			self.ticker = None
 			return
 
 		if ticker in self.tickers:
 
 			if date in self.tickers[ticker]:
+				
 				self.ticker = self.tickers[ticker][date]
 				return
 
@@ -41,8 +43,9 @@ class Builder:
 
 		option_chain = self.connector.get_data((ticker,),(date,), "options")
 		ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
+		key_stats = self.connector.get_data((ticker,),(date,), "key_stats")
 
-		self.ticker = Ticker(ticker, date, option_chain, ohlc, self.ticker_info[ticker])
+		self.ticker = Ticker(ticker, date, option_chain, ohlc, key_stats, self.ticker_info[ticker])
 		self.tickers[ticker][date] = self.ticker
 
 	def generate_position_info_rows(self):

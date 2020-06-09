@@ -5,10 +5,13 @@ import pandas as pd
 
 class Ticker():
 
-	def __init__(self, ticker, date, option_chain, ohlc, ticker_info):
+	def __init__(self, ticker, date, option_chain, ohlc, key_stats, ticker_info):
 
-		self.ticker = ticker
+		self.ohlc = ohlc
 		self.date = date
+		self.ks = key_stats
+		self.ticker = ticker
+		self.ticker_info = ticker_info
 
 		self.stock_price = ohlc.adj_close.values[0]
 		self.stock_info = {
@@ -27,6 +30,7 @@ class Ticker():
 		self.option_data = self.option_data.T.to_dict()
 
 		self.generate_option_chain()
+		self.generate_stock_info()
 
 	def generate_option_chain(self):
 
@@ -56,7 +60,7 @@ class Ticker():
 			line = pd.DataFrame([line], columns = wheel.columns)
 
 			idx = wheel[wheel.strike_price <= self.stock_price]
-			idx = idx.index.values[-1]
+			idx = idx.index.values[-1] + 1
 
 			call_ids.insert(idx, '')
 			put_ids.insert(idx, '')
@@ -159,3 +163,82 @@ class Ticker():
 			aria_expanded = "false"
 
 			self._option_chain += html("div", card_header+card_body, {"class" : "card bg-dark"})
+
+	def generate_stock_info(self):
+
+		tds = ""
+		tds += html("td", "", {})
+		tds += html("td", self.ticker_info['full_name'], {})
+		tds += html("td", self.ticker_info['industry'], {})
+		tds += html("td", self.ticker_info['sector'], {})
+
+		dchange = self.ohlc.adj_close - self.ohlc.open
+		dchange = dchange.values[0]
+		pchange = dchange / self.ohlc.open.values[0]
+		tds += html("td", f"{round(dchange, 2)}$ - ({round(pchange * 100, 2)}%)", {})
+
+		###########################################################################################
+		
+		try:
+			
+			relvol = self.ks[
+				(self.ks.feature == "Avg Vol") & (self.ks.modifier == "3 month")
+			]
+			relvol = self.ohlc.stock_volume.values[0] / float(relvol.value.values[0])
+			relvol = f"{round(relvol, 2)}"
+
+		except Exception as e:
+			
+			print("RelVol", e); relvol = "-"
+
+		tds += html("td", relvol, {})
+
+		###########################################################################################
+
+		div_yield = self.ohlc.dividend_yield
+		div_yield = div_yield.values[0] * 100
+		tds += html("td", f"{round(div_yield, 2)}%", {})
+
+		try:
+			
+			whigh = self.ks[self.ks.feature == "52 Week High"]
+			wlow = self.ks[self.ks.feature == "52 Week Low"]
+
+			whigh = float(whigh.value.values[0])
+			wlow = float(wlow.value.values[0])
+
+			pos = (self.stock_price - wlow) / (whigh - wlow)
+			pos = f"{round(100 * pos, 2)}%"
+
+		except Exception as e:
+
+			pos = "-"
+
+		tds += html("td", pos, {})
+
+		###########################################################################################
+
+		try:
+
+			pct_held = self.ks[self.ks.feature == "% Held by Institutions"]
+			pct_held = float(pct_held.value.values[0]) * 100	
+			pct_held = f"{round(pct_held, 2)}%"	
+
+		except Exception as e:
+
+			pct_held = "-"
+
+		tds += html("td", pct_held, {})
+
+		try:
+
+			short_ratio = self.ks[self.ks.feature == "Short Ratio"]
+			short_ratio = short_ratio.value.values[0]
+
+		except Exception as e:
+
+			short_ratio = "-"
+
+		tds += html("td", short_ratio, {})
+
+		self._stock_info_row = html("tr", tds, {})

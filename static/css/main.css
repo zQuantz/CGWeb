@@ -27,3 +27,7 @@ body {
 .table {
 	margin-bottom: 0rem
 }
+
+.infoCol {
+	padding-right: 0;
+}
