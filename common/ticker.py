@@ -175,7 +175,7 @@ class Ticker():
 		dchange = self.ohlc.adj_close - self.ohlc.open
 		dchange = dchange.values[0]
 		pchange = dchange / self.ohlc.open.values[0]
-		tds += html("td", f"{round(dchange, 2)}$ - ({round(pchange * 100, 2)}%)", {})
+		tds += html("td", f"{round(dchange, 2)}$ ({round(pchange * 100, 2)}%)", {})
 
 		###########################################################################################
 		

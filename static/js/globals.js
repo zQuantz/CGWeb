@@ -41,8 +41,6 @@ function initGlobals(_position_info, _unique_dates, _ticker_dates){
 
 function initTicker(_options, _stock_info, ticker, date){
 
-	console.log(ticker, date);
-
 	options = _options;
 	position = new Position();
 

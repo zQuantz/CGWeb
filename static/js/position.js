@@ -78,7 +78,7 @@ function numberFormat(num, p, symbol){
 
 function displayPositions(){
 
-	let table = $(".infoTable tbody")
+	let table = $("#positionInfoTable tbody")
 	table.empty()
 
 	position.setAggregates();
