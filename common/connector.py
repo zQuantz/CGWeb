@@ -29,6 +29,21 @@ class Connector():
 		if tries >= self.max_tries:
 			raise Exception("Too Many SQL Errors.")
 
+	def get_table_length(self, table):
+
+		query = f"""
+			SELECT
+				TABLE_ROWS
+			FROM
+				information_schema.tables
+			WHERE
+				TABLE_SCHEMA = "{CONFIG['db']}"
+			AND
+				TABLE_NAME = "{table}"
+		"""
+		data = self.read(query)
+		return data.TABLE_ROWS[0]
+
 	def get_ticker_info(self):
 
 		query = """
@@ -50,17 +65,26 @@ class Connector():
 		data = data.set_index("ticker").T.to_dict()
 		return data
 
-	def get_ticker_dates(self, days=60):
+	def get_ticker_dates(self, isUpdate=False, limit=0):
 
-		dt = datetime.now() - timedelta(days=days)
+		table = "options"
+		if isUpdate:
+			table = f"""
+				(SELECT
+					ticker,
+					date_current
+				FROM
+					options
+				LIMIT
+					{limit}) as t1
+			"""
+
 		query = f"""
 			SELECT
 				ticker,
 				date_current
 			FROM
-				options
-			WHERE
-				date_current >= "{dt.strftime("%Y-%m-%d")}"
+				{table}
 			GROUP BY 
 				ticker, date_current
 			ORDER BY ticker ASC, date_current DESC

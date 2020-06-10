@@ -15,8 +15,6 @@ class Builder:
 		self.generate_data_coords()
 		self.generate_position_info_rows()
 
-		self.last_updated = datetime.now()
-
 	def initialize(self):
 
 		print("Collecting Ticker Dates")
@@ -25,25 +23,43 @@ class Builder:
 		print("Collecting Ticker Info")
 		self.ticker_info = self.connector.get_ticker_info()
 
+		print("Calculating Options Table Length")
+		self.options_table_length = self.connector.get_table_length("options")
+
+		print("Calculating Options Table Length")
+		self.instruments_table_length = self.connector.get_table_length("instruments")
+
 	def update(self):
 
-		now = datetime.now()
+		updated = False
 
-		print(now.weekday(), now.weekday() < 5)
-		print(now.weekday(), now.hour, now.weekday() == 6 and now.hour < 3)
-		print((now - self.last_updated).seconds, (now - self.last_updated).seconds / 60, 
-			  (now - self.last_updated).seconds / 60 > 15)
+		options_table_length = self.connector.get_table_length("options")
+		if options_table_length > self.options_table_length:
+		
+			limit = options_table_length - self.options_table_length
+			ticker_dates = self.connector.get_ticker_dates(isUpdate=True, limit=limit)
+			
+			for ticker in ticker_dates:
+			
+				if ticker in self.ticker_dates:
+					self.ticker_dates[ticker] = ticker_dates[ticker] + self.ticker_dates[ticker]
+				else:
+					self.ticker_dates[ticker] = ticker_dates[ticker]
 
-		if (now.weekday() < 5 or (now.weekday() == 6 and now.hour < 3)):
+			self.options_table_length = options_table_length
+			updated = True
 
-			if (now - self.last_updated).seconds / 60 > 15:
+		instruments_table_length = self.connector.get_table_length("instruments")
+		if instruments_table_length != self.instruments_table_length:
 
-				self.initialize()
-				self.generate_data_coords()
-				self.last_updated = now
-				return True
+			self.ticker_info = self.connector.get_ticker_info()
 
-		return False
+			self.instruments_table_length = instruments_table_length
+			updated = True
+
+		if updated: self.generate_data_coords()
+
+		return updated
 
 	def fetch_ticker(self, ticker, date):
 
