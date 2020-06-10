@@ -63,6 +63,35 @@ function registerEvents(){
 		addTickerDates();
 	});
 
+	setInterval(function(){
+		ajax({
+			url: "/update",
+			type: "POST",
+			success: function(response){
+
+				response = JSON.parse(response);
+
+				if (!response.status){
+					return;
+				}
+
+				unique_dates = response.unique_dates;
+				ticker_dates = response.ticker_dates;
+
+				let select = $("#tickerSelect");
+				select.empty();
+				select.append(response._ticker_options);
+				select.selectpicker("refresh");
+
+				console.log("Here");
+
+			},
+			error: function(error){
+				console.log(error);
+			}
+		})
+	}, 10000)
+
 }
 
 function initChart(){

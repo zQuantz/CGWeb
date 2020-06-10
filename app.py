@@ -38,6 +38,19 @@ def builder():
 
 	return render_template("index.html", name=ticker, builder=builder_obj)
 
+@app.route("/update", methods=["POST"])
+def update():
+
+	print("Update")
+
+	status = builder_obj.update()
+	return json.dumps({
+		"status" : status,
+		"unique_dates" : builder_obj.unique_dates,
+		"ticker_dates" : builder_obj.ticker_dates,
+		"option_tickers" : builder_obj._ticker_options
+	})
+
 if __name__ == '__main__':
 
 	try:

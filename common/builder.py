@@ -15,6 +15,8 @@ class Builder:
 		self.generate_data_coords()
 		self.generate_position_info_rows()
 
+		self.last_updated = datetime.now()
+
 	def initialize(self):
 
 		print("Collecting Ticker Dates")
@@ -22,6 +24,26 @@ class Builder:
 
 		print("Collecting Ticker Info")
 		self.ticker_info = self.connector.get_ticker_info()
+
+	def update(self):
+
+		now = datetime.now()
+
+		print(now.weekday(), now.weekday() < 5)
+		print(now.weekday(), now.hour, now.weekday() == 6 and now.hour < 3)
+		print((now - self.last_updated).seconds, (now - self.last_updated).seconds / 60, 
+			  (now - self.last_updated).seconds / 60 > 15)
+
+		if (now.weekday() < 5 or (now.weekday() == 6 and now.hour < 3)):
+
+			if (now - self.last_updated).seconds / 60 > 15:
+
+				self.initialize()
+				self.generate_data_coords()
+				self.last_updated = now
+				return True
+
+		return False
 
 	def fetch_ticker(self, ticker, date):
 
@@ -134,12 +156,12 @@ class Builder:
 			for date in dates
 		}
 
-		self._option_tickers = ""
+		self._ticker_options = ""
 		for ticker in self.ticker_info:
 
 			if ticker not in self.ticker_dates:
 				continue
 
-			self._option_tickers += html("option", ticker, {
+			self._ticker_options += html("option", ticker, {
 				"data-subtext" : self.ticker_info[ticker]['full_name']
 			})
