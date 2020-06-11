@@ -189,7 +189,7 @@ class Ticker():
 
 		except Exception as e:
 			
-			print("RelVol", e); relvol = "-"
+			relvol = "-"
 
 		tds += html("td", relvol, {})
 

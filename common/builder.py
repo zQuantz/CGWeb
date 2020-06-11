@@ -26,7 +26,7 @@ class Builder:
 		print("Calculating Options Table Length")
 		self.options_table_length = self.connector.get_table_length("options")
 
-		print("Calculating Options Table Length")
+		print("Calculating Instruments Table Length")
 		self.instruments_table_length = self.connector.get_table_length("instruments")
 
 	def update(self):
@@ -37,14 +37,14 @@ class Builder:
 		if options_table_length > self.options_table_length:
 		
 			limit = options_table_length - self.options_table_length
-			ticker_dates = self.connector.get_ticker_dates(isUpdate=True, limit=limit)
+			ticker_dates = self.connector.get_ticker_dates(isUpdate=True)
 			
 			for ticker in ticker_dates:
-			
-				if ticker in self.ticker_dates:
-					self.ticker_dates[ticker] = ticker_dates[ticker] + self.ticker_dates[ticker]
-				else:
+
+				if ticker not in self.ticker_dates:
 					self.ticker_dates[ticker] = ticker_dates[ticker]
+				elif ticker_dates[ticker][0] not in self.ticker_dates[ticker]:
+					self.ticker_dates[ticker] = ticker_dates[ticker] + self.ticker_dates[ticker]
 
 			self.options_table_length = options_table_length
 			updated = True

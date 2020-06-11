@@ -10,6 +10,7 @@ from common.const import CONFIG
 
 class Connector():
 
+	HOUR_OFFSET = 22
 	engine = sql.create_engine(CONFIG['db_address'])
 	max_tries = 3
 
@@ -65,26 +66,21 @@ class Connector():
 		data = data.set_index("ticker").T.to_dict()
 		return data
 
-	def get_ticker_dates(self, isUpdate=False, limit=0):
+	def get_ticker_dates(self, isUpdate=False):
 
-		table = "options"
+		where = ""
 		if isUpdate:
-			table = f"""
-				(SELECT
-					ticker,
-					date_current
-				FROM
-					options
-				LIMIT
-					{limit}) as t1
-			"""
+			now = datetime.now() - timedelta(hours=self.HOUR_OFFSET)
+			now = now.strftime("%Y-%m-%d")
+			where = f'WHERE date_current = "{now}"'
 
 		query = f"""
 			SELECT
 				ticker,
 				date_current
 			FROM
-				{table}
+				options
+			{where}
 			GROUP BY 
 				ticker, date_current
 			ORDER BY ticker ASC, date_current DESC

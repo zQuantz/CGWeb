@@ -49,7 +49,7 @@ def update():
 			"status" : status,
 			"unique_dates" : builder_obj.unique_dates,
 			"ticker_dates" : builder_obj.ticker_dates,
-			"option_tickers" : builder_obj._ticker_options
+			"ticker_options" : builder_obj._ticker_options
 		})
 
 	else:

@@ -80,17 +80,15 @@ function registerEvents(){
 
 				let select = $("#tickerSelect");
 				select.empty();
-				select.append(response._ticker_options);
+				select.append(response.ticker_options);
 				select.selectpicker("refresh");
-
-				console.log("Here");
 
 			},
 			error: function(error){
 				console.log(error);
 			}
 		})
-	}, 10000)
+	}, 120000)
 
 }
 
