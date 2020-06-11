@@ -55,6 +55,8 @@ function initTicker(_options, _stock_info, ticker, date){
 	e = $("#tickerDateSelect");
 	e.selectpicker("val", date);
 
+	document.title = `${ticker} - ${stockPrice}$`
+
 }
 
 function registerEvents(){
@@ -192,7 +194,7 @@ function initCandles(symbol) {
 	new TradingView.widget(
 		{
 			"height" : Math.round(0.81 * window.innerHeight),
-			"width" : Math.round(0.76 * window.innerWidth),
+			"width" : Math.round(0.70 * window.innerWidth),
 			"symbol": symbol,
 			"interval": "D",
 			"timezone": "Etc/UTC",

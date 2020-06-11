@@ -43,13 +43,14 @@ class Position {
 }
 
 class Option {
-	constructor(option, quantity, cost){
+	constructor(option, quantity, cost, type){
 		this.option = option;
 		this.cost = cost;
 		this.quantity = quantity;
+		this.type = type;
 	}
 	getPayoff(price){
-		let payoff = price - this.option.strike_price;
+		let payoff = this.type * (price - this.option.strike_price);
 		payoff = Math.max(payoff, 0) - this.cost;
 		payoff *= this.quantity;
 		return payoff;
@@ -206,13 +207,14 @@ function addToPosition(direction, option_id){
 	
 		let option = options[option_id];
 		position.options[option_id] = new Option(option, netQty,
-							  					 direction > 0 ? option.ask : option.bid);
+							  					 direction > 0 ? option.ask : option.bid,
+							  					 option.option_type == "C" ? 1 : -1);
 		position.size += 1;
 
 	}
 
 	displayPositions();
-	displayRiskGraph();
+	onChangeUChange();
 
 }
 
@@ -221,6 +223,6 @@ function removeFromPosition(option_id){
 	delete position.options[option_id];
 	position.size -= 1;
 	displayPositions();
-	displayRiskGraph();
+	onChangeUChange();
 
 }
