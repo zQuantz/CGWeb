@@ -19,7 +19,6 @@ body {
 #bottomRow {
 	height: 31rem;
 	margin-top: 1.5rem;
-	overflow-y: scroll;
 	margin-bottom: 0rem;
 	scroll-behavior: smooth;
 }

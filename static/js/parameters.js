@@ -82,7 +82,10 @@ function onWheelClickScroll(i, id){
 	$('#optionChainAccordion').on('shown.bs.collapse', function() {
 		let header = document.getElementById(id);
 		bottomRow.scroll(0, i * header.offsetHeight);
+		bottomRow.style.overflowY = "hidden";
 	})
+
+	bottomRow.style.overflowY = "scroll";
 }
 
 function addTickerDates(){

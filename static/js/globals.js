@@ -13,15 +13,15 @@ var priceIncrement = null;
 var moneynessVals = {
 	"default" : 0.4,
 	"current" : 0.4
-}
+};
 var multiplierVals = {
 	"default" : 1,
 	"current" : 1
-}
+};
 var uChangeVals = {
-	"default" : 1,
-	"current" : 1
-}
+	"default" : 0.3,
+	"current" : 0.3
+};
 
 function initGlobals(_position_info, _unique_dates, _ticker_dates){
 
@@ -193,8 +193,8 @@ function initCandles(symbol) {
 
 	new TradingView.widget(
 		{
-			"height" : Math.round(0.81 * window.innerHeight),
-			"width" : Math.round(0.70 * window.innerWidth),
+			"height" : Math.round(0.78 * window.innerHeight),
+			"width" : Math.round(0.7297197076180661 * window.innerWidth),
 			"symbol": symbol,
 			"interval": "D",
 			"timezone": "Etc/UTC",
