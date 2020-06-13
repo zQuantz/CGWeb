@@ -14,6 +14,7 @@ class Builder:
 		self.initialize()
 		self.generate_data_coords()
 		self.generate_position_info_rows()
+		self.generate_position_summary_rows()
 
 	def initialize(self):
 
@@ -113,11 +114,11 @@ class Builder:
 			"",
 			html("a", "X", {"onclick" : 'removeFromPosition("OPTION_ID")', "href" : "#"}),
 			"OPTION_ID",
-			"QTY",
+			"QUANTITY",
 			"",
 			"COST_PER_UNIT",
 			"PREMIUM",
-			"IV",
+			"I.V.",
 			"MONEYNESS",
 			"PCT_PREMIUM",
 			"",
@@ -154,6 +155,34 @@ class Builder:
 			"option_row" : option_row,
 			"agg_row" : agg_row,
 			"empty_agg_row" : empty_agg_row
+		}
+
+	def generate_position_summary_rows(self):
+
+		total_th = html("th", "Total Premium", {"scope" : "row", "colspan" : "4"})
+
+		tds = ""
+		tds += total_th
+		tds += html("td", "", {})
+		empty_agg_row = html("tr", tds, {})
+
+		tds = ""
+		tds += total_th
+		tds += html("td", "TOTAL_PREMIUM", {})
+		agg_row = html("tr", tds, {})
+
+		tds = ""
+		tds += html("th", "NUM", {"scope" : "row"})
+		tds += html("th", "OPTION_ID", {})
+		tds += html("th", "QUANTITY", {})
+		tds += html("th", "PREMIUM", {})
+		tds += html("th", "NET_PREMIUM", {})
+		summary_row = html("tr", tds, {})
+
+		self.position_summary = {
+			"agg_row" : agg_row,
+			"empty_agg_row" : empty_agg_row,
+			"summary_row" : summary_row
 		}
 
 	def generate_data_coords(self):

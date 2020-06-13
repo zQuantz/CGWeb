@@ -5,6 +5,7 @@ var riskGraph = null;
 var ticker_dates = null;
 var unique_dates = null;
 var position_info = null;
+var position_summary = null;
 
 var stockPrice = null;
 var stockPriceIdx = 11;
@@ -23,7 +24,7 @@ var uChangeVals = {
 	"current" : 0.3
 };
 
-function initGlobals(_position_info, _unique_dates, _ticker_dates){
+function initGlobals(_position_info, _unique_dates, _ticker_dates, _position_summary){
 
 	var uChange = document.getElementById("uChange");
 	var moneyness = document.getElementById("moneyness");
@@ -33,6 +34,7 @@ function initGlobals(_position_info, _unique_dates, _ticker_dates){
 	unique_dates = _unique_dates;
 	ticker_dates = _ticker_dates;
 	position_info = _position_info;
+	position_summary = _position_summary;
 
 	initChart();
 	registerEvents();

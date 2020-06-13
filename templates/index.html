@@ -34,6 +34,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/option_chain.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/position_info.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/stock_info.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/execution.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/modals.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 
@@ -281,7 +282,7 @@
 							
 							<div class="input-group mb-3" style="margin-bottom: 0rem !important">
 								<div class="input-group-prepend">
-									<span style="width: 6.25rem;" class="input-group-text" id="inputGroup-sizing-default">Password</span>
+									<span class="input-group-text executionInputLabel" id="inputGroup-sizing-default">Password</span>
 								</div>
 								<input type="password" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
 							</div>
@@ -291,7 +292,7 @@
 
 					</div>
 
-					<button style="padding: 0.25rem" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 
@@ -304,7 +305,7 @@
 						<div class="row">
 							
 							<h5>Position Summary</h5>
-							<table class="table table-hover table-sm">
+							<table class="table table-hover table-sm" id="executionSummaryTable">
 								
 								<thead>
 									
@@ -359,7 +360,7 @@
 							<div class="input-group mb-3">
 
 								<div class="input-group-prepend">
-									<label style="width: 6.25rem;" class="input-group-text" for="executeDirectionSelect">Direction</label>
+									<label class="input-group-text executionInputLabel" for="executeDirectionSelect">Direction</label>
 								</div>
 
 								<select class="custom-select" id="executeDirectionSelect">
@@ -377,7 +378,7 @@
 							
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<label style="width: 6.25rem;" class="input-group-text" for="executeStrategySelect">Strategy</label>
+									<label class="input-group-text executionInputLabel" for="executeStrategySelect">Strategy</label>
 								</div>
 								<select class="custom-select" id="executeStrategySelect">
 									<option selected>Choose...</option>
@@ -409,8 +410,12 @@
 				</div>
 
 				<div class="modal-footer executeModalFooter" style="padding: 0.25rem">
+
+					<span class="badge badge-secondary mr-auto">Pending</span>
+
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary">Execute</button>
+				
 				</div>
 
 			</div>
@@ -450,7 +455,8 @@
 
 		initGlobals({{builder.position_info|tojson|safe}},
 			{{builder.unique_dates|tojson|safe}},
-			{{builder.ticker_dates|tojson|safe}});
+			{{builder.ticker_dates|tojson|safe}}),
+			{{builder.position_summary|tojson|safe}};
 
 		{% if builder.ticker %}
 		initTicker({{builder.ticker.option_data|tojson|safe}},

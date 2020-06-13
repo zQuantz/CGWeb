@@ -79,35 +79,45 @@ function numberFormat(num, p, symbol){
 
 function displayPositions(){
 
-	let table = $("#positionInfoTable tbody")
-	table.empty()
+	let table = $("#positionInfoTable tbody");
+	let summaryTable = $("#executionSummaryTable tbody");
+	let idx = 1;
+
+	table.empty();
+	summaryTable.empty();
 
 	position.setAggregates();
 
 	for(key in position.options){
 		
 		let option = position.options[key];
+
 		let newRow = position_info.option_row;
+		let summaryRow = position_summary.summary_row;
 
 		newRow = newRow.replace("OPTION_ID", key);
 		newRow = newRow.replace("OPTION_ID", key);
+		summaryRow = summaryRow.replace("OPTION_ID", key)
 
 		let qty = option.quantity;
 		qty = qty.toLocaleString();
-		newRow = newRow.replace("QTY", qty);
+		newRow = newRow.replace("QUANTITY", qty);
+		summaryRow = summaryRow.replace("QUANTITY", qty);
 
 		let cost = option.cost;
 		cost = numberFormat(cost, 2, "$");
 		newRow = newRow.replace("COST_PER_UNIT", cost);
+		summaryRow = summaryRow.replace("PREMIUM", cost);
 
 		let premium = option.quantity * option.cost * 100;
 		position.totalPremium += premium;
 		premium = numberFormat(premium, 2, "$");
 		newRow = newRow.replace("PREMIUM", premium);
+		summaryRow = summaryRow.replace("NET_PREMIUM", premium);
 
 		let iv = option.option.implied_volatility * 100;
 		iv = numberFormat(iv, 2, "%");		
-		newRow = newRow.replace("IV", iv);
+		newRow = newRow.replace("I.V.", iv);
 
 		let moneyness = 100 * option.option.strike_price / stockPrice;
 		moneyness = numberFormat(moneyness, 2, "%");		
@@ -141,6 +151,7 @@ function displayPositions(){
 		newRow = newRow.replace("THETA_$", thetaDollars);
 
 		table.append(newRow);
+		summaryTable.append(summaryRow);
 
 	}
 
@@ -149,14 +160,17 @@ function displayPositions(){
 
 	if (position.size == 0){
 		table.append(position_info.empty_agg_row);
+		summaryTable.append(position_summary.empty_agg_row);
 		return;
 	}
 
 	let aggregateRow = position_info.agg_row;
+	let aggregateSummaryRow = position_summary.agg_row;
 
 	let value = position.totalPremium;
 	value = numberFormat(value, 2, "$");
 	aggregateRow = aggregateRow.replace("TOTAL_PREMIUM", value);
+	aggregateSummaryRow = aggregateSummaryRow.replace("TOTAL_PREMIUM", value);
 
 	value = position.totalPctPremium;
 	value = numberFormat(value, 2, "%");
@@ -179,6 +193,7 @@ function displayPositions(){
 	aggregateRow = aggregateRow.replace("TOTAL_THETA_$", value);
 
 	table.append(aggregateRow);
+	summaryTable.append(aggregateSummaryRow);
 
 }
 
