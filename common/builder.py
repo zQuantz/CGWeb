@@ -173,10 +173,10 @@ class Builder:
 
 		tds = ""
 		tds += html("th", "NUM", {"scope" : "row"})
-		tds += html("th", "OPTION_ID", {})
-		tds += html("th", "QUANTITY", {})
-		tds += html("th", "PREMIUM", {})
-		tds += html("th", "NET_PREMIUM", {})
+		tds += html("td", "OPTION_ID", {})
+		tds += html("td", "QUANTITY", {})
+		tds += html("td", "PREMIUM", {})
+		tds += html("td", "NET_PREMIUM", {})
 		summary_row = html("tr", tds, {})
 
 		self.position_summary = {

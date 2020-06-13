@@ -6,3 +6,12 @@
 	background-color: #131721;
 	height: 50rem;
 }
+
+.executionInputLabel {
+	width: 6.25em;
+}
+
+.executionContainer {
+	padding-left: 1rem !important;
+	padding-right: 1rem !important;
+}
