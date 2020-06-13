@@ -94,6 +94,7 @@ function displayPositions(){
 
 		let newRow = position_info.option_row;
 		let summaryRow = position_summary.summary_row;
+		summaryRow = summaryRow.replace("NUM", idx);
 
 		newRow = newRow.replace("OPTION_ID", key);
 		newRow = newRow.replace("OPTION_ID", key);
@@ -152,6 +153,8 @@ function displayPositions(){
 
 		table.append(newRow);
 		summaryTable.append(summaryRow);
+
+		idx+=1;
 
 	}
 

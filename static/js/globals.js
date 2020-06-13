@@ -36,6 +36,8 @@ function initGlobals(_position_info, _unique_dates, _ticker_dates, _position_sum
 	position_info = _position_info;
 	position_summary = _position_summary;
 
+	console.log(_position_summary);
+
 	initChart();
 	registerEvents();
 
