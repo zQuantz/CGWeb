@@ -179,5 +179,5 @@ class Builder:
 				continue
 
 			self._ticker_options += html("option", ticker, {
-				"data-subtext" : self.ticker_info[ticker]['full_name']
-			})
+					"data-subtext" : self.ticker_info[ticker]['full_name']
+				})
