@@ -244,3 +244,8 @@ function removeFromPosition(option_id){
 	onChangeUChange();
 
 }
+
+function executePosition(){
+
+
+}

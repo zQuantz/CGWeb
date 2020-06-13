@@ -264,16 +264,19 @@
 
 							<h5>Credentials</h5>
 							<div class="input-group mb-3">
+
 								<div class="input-group-prepend">
 									<label class="input-group-text" for="executeUsernameSelect">Username</label>
 								</div>
+
 								<select class="custom-select" id="executeUsernameSelect">
 									<option selected>Choose...</option>
-									<option value="1">Joe</option>
-									<option value="2">Lucas</option>
-									<option value="3">Pucci</option>
-									<option value="4">Zach</option>
+									<option value="Joe">Joe</option>
+									<option value="Lucas">Lucas</option>
+									<option value="Pucci">Pucci</option>
+									<option value="Zach">Zach</option>
 								</select>
+
 							</div>
 
 						</div>
@@ -282,9 +285,9 @@
 							
 							<div class="input-group mb-3" style="margin-bottom: 0rem !important">
 								<div class="input-group-prepend">
-									<span class="input-group-text executionInputLabel" id="inputGroup-sizing-default">Password</span>
+									<span class="input-group-text executionInputLabel" id="executePassword">Password</span>
 								</div>
-								<input type="password" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+								<input type="password" class="form-control" aria-label="Default" aria-describedby="executePassword" id="executePasswordInput">
 							</div>
 
 						</div>
@@ -338,9 +341,9 @@
 
 								<select class="custom-select" id="executeDirectionSelect">
 									<option selected>Choose...</option>
-									<option value="1">Long</option>
-									<option value="2">Short</option>
-									<option value="3">None</option>									
+									<option value="Long">Long</option>
+									<option value="Short">Short</option>
+									<option value="None">None</option>									
 								</select>
 
 							</div>
@@ -350,22 +353,25 @@
 						<div class="row">
 							
 							<div class="input-group mb-3">
+
 								<div class="input-group-prepend">
 									<label class="input-group-text executionInputLabel" for="executeStrategySelect">Strategy</label>
 								</div>
+
 								<select class="custom-select" id="executeStrategySelect">
 									<option selected>Choose...</option>
-									<option value="1">Call</option>
-									<option value="2">Put</option>
-									<option value="3">Call Spread</option>
-									<option value="4">Put Spread</option>
-									<option value="5">Straddle</option>
-									<option value="6">Strangle</option>
-									<option value="7">Iron Condor</option>
-									<option value="8">Iron Butterfly</option>
-									<option value="9">Custom</option>
-									<option value="10">None</option>
+									<option value="Call">Call</option>
+									<option value="Put">Put</option>
+									<option value="Call Spread">Call Spread</option>
+									<option value="Put Spread">Put Spread</option>
+									<option value="Straddle">Straddle</option>
+									<option value="Strangle">Strangle</option>
+									<option value="Iron Condor">Iron Condor</option>
+									<option value="Iron Butterfly">Iron Butterfly</option>
+									<option value="Custom">Custom</option>
+									<option value="None">None</option>
 								</select>
+
 							</div>
 
 						</div>
@@ -387,7 +393,7 @@
 					<span class="badge badge-secondary mr-auto">Pending</span>
 
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary">Execute</button>
+					<button type="button" class="btn btn-primary" onclick="executePosition()">Execute</button>
 				
 				</div>
 
