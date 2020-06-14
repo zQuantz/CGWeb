@@ -105,3 +105,29 @@ function addTickerDates(){
 	dateSelect.selectpicker("refresh");
 
 }
+
+function resetExecuteModal(){
+
+	$("#executeUsernameSelect").val("Joe").change();
+	$("#executePasswordInput").val("").change();
+
+	$("#executeDirectionSelect").val("None").change();
+	$("#executeStrategySelect").val("None").change();
+
+	$("#executionTradeNotes").val("").change();
+
+}
+
+function resetExecuteModalBadge(){
+
+	let classes = [
+	"badge-success",
+	"badge-danger",
+	"badge-secondary"
+	];
+	modalStatusBadge.classList.remove(...classes);
+
+	modalStatusBadge.classList.add("badge-secondary");
+	modalStatusBadge.innerText = "Pending";
+	
+}

@@ -30,13 +30,14 @@ function initGlobals(_position_info, _unique_dates, _ticker_dates, _position_sum
 	var moneyness = document.getElementById("moneyness");
 	var bottomRow = document.getElementById("bottomRow");
 	var multiplier = document.getElementById("multiplier");
+
+	var modalExecuteButton = document.getElementById("modalExecuteButton");
+	var modalStatusBadge = document.getElementById("modalStatusBadge");
 	
 	unique_dates = _unique_dates;
 	ticker_dates = _ticker_dates;
 	position_info = _position_info;
 	position_summary = _position_summary;
-
-	console.log(_position_summary);
 
 	initChart();
 	registerEvents();
@@ -96,6 +97,18 @@ function registerEvents(){
 		})
 	}, 120000)
 
+	$(document).on("click", "#modalExecuteButton:enabled", function(){
+		executePosition();
+	})
+
+	$(document).on("click", "#modalCancelButton", function(){
+		resetExecuteModalBadge()
+	})
+
+	$('#executeModal').on('hidden.bs.modal', function (e) {
+		resetExecuteModalBadge()
+	})
+
 }
 
 function initChart(){
@@ -134,8 +147,8 @@ function initChart(){
 				bodyFontStyle:'bold',
 				callbacks: {
 					title: function(tooltipItem, data) {
-                    	return "Price: "+tooltipItem[0].label;
-                	}
+						return "Price: "+tooltipItem[0].label;
+					}
 				}
 			},
 

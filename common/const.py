@@ -40,6 +40,14 @@ COLS_FMT += COLS_FMT[::-1][1:]
 IDXC, IDXP = 5, 17
 PARSER = "lxml"
 
+TAS_COLS = [
+	'username',
+	'execution_time',
+	'position_id',
+	'option_id',
+	'quantity'
+]
+
 ###################################################################################################
 
 with open(f"{DIR}/config.json", "r") as file:

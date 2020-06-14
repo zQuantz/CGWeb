@@ -13,6 +13,7 @@ class Connector():
 	HOUR_OFFSET = 22
 	engine = sql.create_engine(CONFIG['db_address'])
 	max_tries = 3
+	salt = CONFIG['salt']
 
 	def read(self, query):
 
@@ -29,6 +30,35 @@ class Connector():
 
 		if tries >= self.max_tries:
 			raise Exception("Too Many SQL Errors.")
+
+	def write(self, table, df):
+
+		tries = 0
+		while tries < self.max_tries:
+			try:
+				conn = self.engine.connect()
+				df.to_sql(table, conn, if_exists='append', index=False, chunksize=10_000)
+				conn.close()
+				break
+			except Exception as e:
+				print(e)
+			tries += 1
+
+		if tries >= self.max_tries:
+			raise Exception("Too Many SQL Errors.")
+
+	def get_password(self, username):
+
+		query = f"""
+			SELECT
+				password
+			FROM
+				users
+			WHERE
+				username = "{username}"
+		"""
+		data = self.read(query)
+		return data.password[0]
 
 	def get_table_length(self, table):
 

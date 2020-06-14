@@ -45,8 +45,8 @@ class Position {
 class Option {
 	constructor(option, quantity, cost, type){
 		this.option = option;
-		this.cost = cost;
 		this.quantity = quantity;
+		this.cost = cost;
 		this.type = type;
 	}
 	getPayoff(price){
@@ -164,11 +164,13 @@ function displayPositions(){
 	if (position.size == 0){
 		table.append(position_info.empty_agg_row);
 		summaryTable.append(position_summary.empty_agg_row);
+		modalExecuteButton.disabled = true;
 		return;
 	}
 
 	let aggregateRow = position_info.agg_row;
 	let aggregateSummaryRow = position_summary.agg_row;
+	modalExecuteButton.disabled = false;
 
 	let value = position.totalPremium;
 	value = numberFormat(value, 2, "$");
@@ -203,9 +205,9 @@ function displayPositions(){
 function displayRiskGraph(){
 	position.calculateRiskGraphData();
 	riskGraph.data.datasets.forEach((dataset) => {
-        dataset.data = position.riskGraphData;
-    });
-    riskGraph.update();
+		dataset.data = position.riskGraphData;
+	});
+	riskGraph.update();
 }
 
 function addToPosition(direction, option_id){
@@ -219,14 +221,14 @@ function addToPosition(direction, option_id){
 		}
 		else
 			position.options[option_id].quantity += netQty;
-	
+
 	}
 	else {
-	
+
 		let option = options[option_id];
 		position.options[option_id] = new Option(option, netQty,
-							  					 direction > 0 ? option.ask : option.bid,
-							  					 option.option_type == "C" ? 1 : -1);
+			direction > 0 ? option.ask : option.bid,
+			option.option_type == "C" ? 1 : -1);
 		position.size += 1;
 
 	}
@@ -247,5 +249,65 @@ function removeFromPosition(option_id){
 
 function executePosition(){
 
+	let username = $("#executeUsernameSelect").val();
+	let password = $("#executePasswordInput").val();
+
+	let direction = $("#executeDirectionSelect").val();
+	let strategy = $("#executeStrategySelect").val();
+
+	let notes = $("#executionTradeNotes").val();
+
+	let positionDetails = [];
+	for(const key in position.options){
+		positionDetails.push(key);
+		positionDetails.push(position.options[key].quantity);
+	}
+
+	ajax({
+		url: "/execute",
+		type: "POST",
+		data: JSON.stringify({
+			username: username,
+			password: password,
+			direction: direction,
+			strategy: strategy,
+			notes: notes,
+			position_details: positionDetails
+		}),
+		beforeSend: function() {},
+        complete: function () {},
+        success: function(response){
+
+        	response = JSON.parse(response);
+
+        	let classes = [
+        		"badge-success",
+        		"badge-danger",
+        		"badge-secondary"
+        	];
+        	modalStatusBadge.classList.remove(...classes);
+
+        	if (response.event == "bad_password"){
+
+        		modalStatusBadge.classList.add("badge-danger");
+        		modalStatusBadge.innerText = response.message;
+        		return;
+
+        	}
+
+        	modalStatusBadge.classList.add("badge-success");
+        	modalStatusBadge.innerText = response.message;
+
+        	position = new Position();
+        	displayPositions()
+        	onChangeUChange();
+
+        	resetExecuteModal();
+
+        },
+        error: function(error){
+        	console.log("Damn!", error);
+        }
+    });
 
 }

@@ -270,8 +270,7 @@
 								</div>
 
 								<select class="custom-select" id="executeUsernameSelect">
-									<option selected>Choose...</option>
-									<option value="Joe">Joe</option>
+									<option value="Joe" selected>Joe</option>
 									<option value="Lucas">Lucas</option>
 									<option value="Pucci">Pucci</option>
 									<option value="Zach">Zach</option>
@@ -287,7 +286,7 @@
 								<div class="input-group-prepend">
 									<span class="input-group-text executionInputLabel" id="executePassword">Password</span>
 								</div>
-								<input type="password" class="form-control" aria-label="Default" aria-describedby="executePassword" id="executePasswordInput">
+								<input type="password" class="form-control" aria-label="Password" aria-describedby="executePassword" id="executePasswordInput">
 							</div>
 
 						</div>
@@ -332,7 +331,7 @@
 
 						<div class="row">
 
-							<h5>Tags</h5>
+							<h5 class="executionTextHeader">Tags</h5>
 							<div class="input-group mb-3">
 
 								<div class="input-group-prepend">
@@ -340,10 +339,9 @@
 								</div>
 
 								<select class="custom-select" id="executeDirectionSelect">
-									<option selected>Choose...</option>
+									<option value="None" selected>None</option>									
 									<option value="Long">Long</option>
 									<option value="Short">Short</option>
-									<option value="None">None</option>									
 								</select>
 
 							</div>
@@ -359,7 +357,7 @@
 								</div>
 
 								<select class="custom-select" id="executeStrategySelect">
-									<option selected>Choose...</option>
+									<option value="None" selected>None</option>
 									<option value="Call">Call</option>
 									<option value="Put">Put</option>
 									<option value="Call Spread">Call Spread</option>
@@ -369,7 +367,6 @@
 									<option value="Iron Condor">Iron Condor</option>
 									<option value="Iron Butterfly">Iron Butterfly</option>
 									<option value="Custom">Custom</option>
-									<option value="None">None</option>
 								</select>
 
 							</div>
@@ -378,8 +375,8 @@
 						
 						<div class="row">
 							
-							<h5>Notes</h5>
-							<textarea rows="5" cols="100" id="tradeNotes" name="tradeNotes"></textarea>
+							<h5 class="executionTextHeader">Notes</h5>
+							<textarea rows="5" cols="100" id="executionTradeNotes"></textarea>
 
 						</div>
 
@@ -390,10 +387,10 @@
 
 				<div class="modal-footer executeModalFooter" style="padding: 0.25rem">
 
-					<span class="badge badge-secondary mr-auto">Pending</span>
+					<span id="modalStatusBadge" class="badge badge-secondary mr-auto">Pending</span>
 
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" onclick="executePosition()">Execute</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalCancelButton">Cancel</button>
+					<button disabled type="button" class="btn btn-primary" id="modalExecuteButton">Execute</button>
 				
 				</div>
 
