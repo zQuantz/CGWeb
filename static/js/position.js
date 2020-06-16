@@ -255,13 +255,8 @@ function executePosition(){
 	let direction = $("#executeDirectionSelect").val();
 	let strategy = $("#executeStrategySelect").val();
 
+	let sentiment = $("#executeSentimentSelect").val();
 	let notes = $("#executionTradeNotes").val();
-
-	let positionDetails = [];
-	for(const key in position.options){
-		positionDetails.push(key);
-		positionDetails.push(position.options[key].quantity);
-	}
 
 	ajax({
 		url: "/execute",
@@ -271,8 +266,11 @@ function executePosition(){
 			password: password,
 			direction: direction,
 			strategy: strategy,
+			sentiment: sentiment,
 			notes: notes,
-			position_details: positionDetails
+			position: position,
+			filenames: imageFileNames,
+			images: b64Images
 		}),
 		beforeSend: function() {},
         complete: function () {},

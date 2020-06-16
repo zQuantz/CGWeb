@@ -1,4 +1,7 @@
 
+var b64Images = null;
+var imageFileNames = null;
+
 var options = null;
 var position = null;
 var riskGraph = null;
@@ -38,6 +41,9 @@ function initGlobals(_position_info, _unique_dates, _ticker_dates, _position_sum
 	ticker_dates = _ticker_dates;
 	position_info = _position_info;
 	position_summary = _position_summary;
+
+	b64Images = "";
+	imageFileNames = "";
 
 	initChart();
 	registerEvents();
@@ -102,11 +108,12 @@ function registerEvents(){
 	})
 
 	$(document).on("click", "#modalCancelButton", function(){
-		resetExecuteModalBadge()
+		resetExecuteModal();
+		resetExecuteModalBadge();
 	})
 
 	$('#executeModal').on('hidden.bs.modal', function (e) {
-		resetExecuteModalBadge()
+		resetExecuteModalBadge();
 	})
 
 }

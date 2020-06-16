@@ -114,20 +114,66 @@ function resetExecuteModal(){
 	$("#executeDirectionSelect").val("None").change();
 	$("#executeStrategySelect").val("None").change();
 
+	$("#executeSentimentSelect").val("None").change();
 	$("#executionTradeNotes").val("").change();
+
+	$("#executeImageInput").val("").change();
+	$("#executeImageLabel").val("").change();
+
+	b64Images = "";
+	imageFileNames = "";
+
+	document.getElementById("executeImageLabel").textContent = "";
 
 }
 
 function resetExecuteModalBadge(){
 
 	let classes = [
-	"badge-success",
-	"badge-danger",
-	"badge-secondary"
+		"badge-success",
+		"badge-danger",
+		"badge-secondary"
 	];
 	modalStatusBadge.classList.remove(...classes);
 
 	modalStatusBadge.classList.add("badge-secondary");
 	modalStatusBadge.innerText = "Pending";
 	
+}
+
+function readFileAsync(file) {
+  return new Promise((resolve, reject) => {
+    let fileReader = new FileReader();
+
+    fileReader.onload = function(fileLoadedEvent) {
+		resolve(fileLoadedEvent.target.result);
+	};
+
+    fileReader.onerror = reject;
+    fileReader.readAsDataURL(file);
+
+  })
+}
+
+async function encodeImagesAsB64() {
+
+	let files = document.getElementById("executeImageInput").files;
+	let label = "";
+
+	for(let i = 0; i < files.length; i++){
+
+		imageFileNames += files[i].name;
+		label += files[i].name;
+		b64Images += await readFileAsync(files[i]);
+
+		if(i < files.length - 1){
+			label += ",";
+			imageFileNames += "/////";
+			b64Images += "_____";
+		}
+
+	}
+
+	document.getElementById("executeImageLabel").textContent = label;
+
 }

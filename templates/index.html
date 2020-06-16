@@ -331,7 +331,7 @@
 
 						<div class="row">
 
-							<h5 class="executionTextHeader">Tags</h5>
+							<h5 class="executionTextHeader" style="padding-top: 1rem">Tags</h5>
 							<div class="input-group mb-3">
 
 								<div class="input-group-prepend">
@@ -372,11 +372,47 @@
 							</div>
 
 						</div>
+
+						<div class="row">
+							
+							<div class="input-group mb-3">
+
+								<div class="input-group-prepend">
+									<label class="input-group-text executionInputLabel" for="executeSentimentSelect">Sentiment</label>
+								</div>
+
+								<select class="custom-select" id="executeSentimentSelect">
+									<option value="None" selected>None</option>
+									<option value="Bullish">Bullish</option>
+									<option value="Bearish">Bearish</option>
+									<option value="Neutral">Neutral</option>
+								</select>
+
+							</div>
+
+						</div>
 						
 						<div class="row">
 							
 							<h5 class="executionTextHeader">Notes</h5>
 							<textarea rows="5" cols="100" id="executionTradeNotes"></textarea>
+
+						</div>
+
+						<div class="row" style="padding-top: 1rem; padding-bottom: 0rem">						
+
+							<div class="input-group mb-3">
+
+								<div class="input-group-prepend">
+									<span class="input-group-text">Upload</span>
+								</div>
+
+								<div class="custom-file">
+									<input type="file" class="custom-file-input" id="executeImageInput" onchange="encodeImagesAsB64()" accept="image/*" multiple>
+									<label style="overflow-y: hidden;"class="custom-file-label" for="executeImageInput" id="executeImageLabel">Choose Images</label>
+								</div>
+
+							</div>
 
 						</div>
 
@@ -391,7 +427,7 @@
 
 					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalCancelButton">Cancel</button>
 					<button disabled type="button" class="btn btn-primary" id="modalExecuteButton">Execute</button>
-				
+
 				</div>
 
 			</div>
