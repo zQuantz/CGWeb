@@ -13,7 +13,6 @@ class Connector():
 	HOUR_OFFSET = 22
 	engine = sql.create_engine(CONFIG['db_address'])
 	max_tries = 3
-	salt = CONFIG['salt']
 
 	def read(self, query):
 

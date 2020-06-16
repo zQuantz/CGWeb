@@ -40,13 +40,35 @@ COLS_FMT += COLS_FMT[::-1][1:]
 IDXC, IDXP = 5, 17
 PARSER = "lxml"
 
+###################################################################################################
+
 TAS_COLS = [
 	'username',
 	'execution_time',
+	'ticker',
 	'position_id',
 	'option_id',
-	'quantity'
+	'quantity',
+	'option_type',
+	'bid',
+	'option_price',
+	'ask',
+	'delta',
+	'gamma',
+	'theta',
+	'vega',
+	'rho',
+	'volume',
+	'open_interest',
+	'implied_volatility',
+	'strike_price',
+	'expiration_date',
+	'time_to_expiry',
+	'stock_price'
 ]
+
+PT_COLS = TAS_COLS[:4]
+PT_COLS += ['direction', 'strategy', 'sentiment', 'notes', 'image_filenames', 'images']
 
 ###################################################################################################
 

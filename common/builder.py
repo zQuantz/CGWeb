@@ -1,7 +1,11 @@
+from common.const import CONFIG, TAS_COLS, PT_COLS
 from common.connector import Connector
 from common.utils.html import html
 from common.ticker import Ticker
 from datetime import datetime
+from hashlib import md5
+import pandas as pd
+import numpy as np
 
 class Builder:
 
@@ -210,3 +214,82 @@ class Builder:
 			self._ticker_options += html("option", ticker, {
 					"data-subtext" : self.ticker_info[ticker]['full_name']
 				})
+
+
+	def execute(self, data):
+
+		password = CONFIG['salt'].format(PASSWORD=data['password'])
+		password = md5(password.encode()).hexdigest()
+
+		if password != self.connector.get_password(data['username']):
+			return {
+				"event" : "bad_password",
+				"message" : f"Wrong password for user {data['username']}. Try Again."
+			}
+
+		###############################################################################################
+
+		options = data['options']
+		keys = list(options.keys())
+		qtys = [options[key]['quantity'] for key in keys]
+
+		idc = np.argsort(keys)
+		position_id = f"{keys[idc[0]]},{qtys[idc[0]]}"
+		for idx in idc[1:]:
+			position_id += f",{keys[idx]},{qtys[idx]}"
+		position_id = md5(position_id.encode()).hexdigest()
+
+		###############################################################################################
+
+		items = [
+			[
+				data['username'],
+				datetime.now(),
+				self.ticker.ticker,
+				position_id,
+				key,
+				qty,
+				options[key]['option']['option_type'],
+				options[key]['option']['bid'],
+				options[key]['option']['option_price'],
+				options[key]['option']['ask'],
+				options[key]['option']['delta'],
+				options[key]['option']['gamma'],
+				options[key]['option']['theta'],
+				options[key]['option']['vega'],
+				options[key]['option']['rho'],
+				options[key]['option']['volume'],
+				options[key]['option']['open_interest'],
+				options[key]['option']['implied_volatility'],
+				options[key]['option']['strike_price'],
+				options[key]['option']['expiration_date'],
+				options[key]['option']['time_to_expiry'],
+				self.ticker.stock_price
+			]
+			for key, qty in zip(keys, qtys)
+		]
+
+		df = pd.DataFrame(items, columns = TAS_COLS)
+		self.connector.write("timeandsales", df)
+
+		###############################################################################################
+
+		items = [
+			items[0][:4] + [
+				data['direction'],
+				data['strategy'],
+				data['sentiment'],
+				data['notes'],
+				data['filenames'],
+				data['images']
+			]
+		]
+		df = pd.DataFrame(items, columns = PT_COLS)
+		self.connector.write("position_tags", df)
+
+		###############################################################################################
+
+		return {
+			"event" : "success",
+			"message" : "Position Added!"
+		}

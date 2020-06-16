@@ -2,6 +2,7 @@
 var b64Images = null;
 var imageFileNames = null;
 
+var ticker = null;
 var options = null;
 var position = null;
 var riskGraph = null;

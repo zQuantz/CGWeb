@@ -268,7 +268,7 @@ function executePosition(){
 			strategy: strategy,
 			sentiment: sentiment,
 			notes: notes,
-			position: position,
+			options: position.options,
 			filenames: imageFileNames,
 			images: b64Images
 		}),
