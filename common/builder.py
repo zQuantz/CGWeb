@@ -1,7 +1,9 @@
 from common.const import CONFIG, TAS_COLS, PT_COLS
+from common.live_ticker import LiveTicker
 from common.connector import Connector
 from common.utils.html import html
 from common.ticker import Ticker
+
 from datetime import datetime
 from hashlib import md5
 import pandas as pd
@@ -28,18 +30,18 @@ class Builder:
 		print("Collecting Ticker Info")
 		self.ticker_info = self.connector.get_ticker_info()
 
-		print("Calculating Options Table Length")
-		self.options_table_length = self.connector.get_table_length("options")
+		print("Collecting Interest Rates")
+		self.rates = self.connector.get_rates()
 
-		print("Calculating Instruments Table Length")
-		self.instruments_table_length = self.connector.get_table_length("instruments")
+		print("Collecting Table Lengths")
+		self.lengths = self.connector.get_table_lengths()
 
 	def update(self):
 
 		updated = False
-
-		options_table_length = self.connector.get_table_length("options")
-		if options_table_length > self.options_table_length:
+		lengths = self.connector.get_table_lengths()
+		
+		if lengths['options'] != self.lengths['options']:
 		
 			limit = options_table_length - self.options_table_length
 			ticker_dates = self.connector.get_ticker_dates(isUpdate=True)
@@ -51,16 +53,20 @@ class Builder:
 				elif ticker_dates[ticker][0] not in self.ticker_dates[ticker]:
 					self.ticker_dates[ticker] = ticker_dates[ticker] + self.ticker_dates[ticker]
 
-			self.options_table_length = options_table_length
+			self.lengths['options'] = lengths['options']
 			updated = True
 
-		instruments_table_length = self.connector.get_table_length("instruments")
-		if instruments_table_length != self.instruments_table_length:
+		if lengths['instruments'] != self.lengths['instruments']:
 
 			self.ticker_info = self.connector.get_ticker_info()
-
-			self.instruments_table_length = instruments_table_length
+			self.lengths['instruments'] = lengths['instruments']
 			updated = True
+
+		if lengths['rates'] != self.lengths['rates']:
+
+			self.rates = self.connector.get_rates()
+			self.lengths['rates'] = lengths['rate']
+			updates = True
 
 		if updated: self.generate_data_coords()
 
@@ -84,12 +90,24 @@ class Builder:
 
 			self.tickers[ticker] = {}
 
-		option_chain = self.connector.get_data((ticker,),(date,), "options")
-		ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
-		key_stats = self.connector.get_data((ticker,),(date,), "key_stats")
+		if date == "LIVE":
 
-		self.ticker = Ticker(ticker, date, option_chain, ohlc, key_stats, self.ticker_info[ticker])
-		self.tickers[ticker][date] = self.ticker
+			data = LiveTicker(ticker, self.rates)
+			self.ticker = Ticker(ticker,
+								 date,
+								 data.options,
+								 data.ohlc,
+								 data.key_stats,
+								 self.ticker_info[ticker])
+
+		else:
+
+			option_chain = self.connector.get_data((ticker,),(date,), "options")
+			ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
+			key_stats = self.connector.get_data((ticker,),(date,), "key_stats")
+
+			self.ticker = Ticker(ticker, date, option_chain, ohlc, key_stats, self.ticker_info[ticker])
+			self.tickers[ticker][date] = self.ticker
 
 	def generate_position_info_rows(self):
 
@@ -204,6 +222,7 @@ class Builder:
 			date : html("option", date, {"data-subtext" : f"T-{dates[date]} Days"})
 			for date in dates
 		}
+		self.unique_dates['LIVE'] = html("option", "LIVE", {"data-subtext" : f"T-0 Seconds"})
 
 		self._ticker_options = ""
 		for ticker in self.ticker_info:
@@ -214,7 +233,6 @@ class Builder:
 			self._ticker_options += html("option", ticker, {
 					"data-subtext" : self.ticker_info[ticker]['full_name']
 				})
-
 
 	def execute(self, data):
 

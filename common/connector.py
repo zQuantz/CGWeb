@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import sqlalchemy as sql
 import pandas as pd
+import numpy as np
 import sys, os
 import json
 
@@ -59,20 +60,22 @@ class Connector():
 		data = self.read(query)
 		return data.password[0]
 
-	def get_table_length(self, table):
+	def get_table_lengths(self):
 
 		query = f"""
 			SELECT
+				TABLE_NAME,
 				TABLE_ROWS
 			FROM
 				information_schema.tables
 			WHERE
 				TABLE_SCHEMA = "{CONFIG['db']}"
 			AND
-				TABLE_NAME = "{table}"
+				TABLE_NAME in ("instruments", "rates", "options")
 		"""
-		data = self.read(query)
-		return data.TABLE_ROWS[0]
+		data = self.read(query).set_index("TABLE_NAME")
+		data = data.to_dict()
+		return data['TABLE_ROWS']
 
 	def get_ticker_info(self):
 
@@ -123,6 +126,24 @@ class Connector():
 		data = data.to_dict()
 		return data
 
+	def get_rates(self):
+
+		date = datetime.now() - timedelta(days=7)
+		date = date.strftime("%Y-%m-%d")
+
+		query = f"""
+			SELECT
+				*
+			FROM
+				rates
+			WHERE
+				date_current >= "{date}"
+		"""
+		data = self.read(query)
+		rates = list(data.iloc[-1, 1:].values / 100)
+		rates = np.array([0] + rates)
+		return rates
+
 	def get_data(self, tickers, dates, table):
 
 		if len(tickers) == 1:
@@ -145,7 +166,7 @@ class Connector():
 			WHERE
 				{ticker_str}
 			AND
-				{date_str} 
+				{date_str}
 		"""
 
 		return self.read(query)

@@ -98,6 +98,7 @@ function addTickerDates(){
 	let dateSelect = $("#tickerDateSelect");
 	dateSelect.empty();
 
+	dateSelect.append(unique_dates['LIVE']);
 	ticker_dates[ticker].forEach(date => {
 		dateSelect.append(unique_dates[date]);
 	})
