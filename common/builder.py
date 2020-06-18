@@ -43,9 +43,7 @@ class Builder:
 		
 		if lengths['options'] != self.lengths['options']:
 		
-			limit = options_table_length - self.options_table_length
-			ticker_dates = self.connector.get_ticker_dates(isUpdate=True)
-			
+			ticker_dates = self.connector.get_ticker_dates(isUpdate=True)			
 			for ticker in ticker_dates:
 
 				if ticker not in self.ticker_dates:
