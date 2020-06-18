@@ -60,7 +60,11 @@ class Ticker():
 			line = pd.DataFrame([line], columns = wheel.columns)
 
 			idx = wheel[wheel.strike_price <= self.stock_price]
-			idx = idx.index.values[-1] + 1
+			
+			try:
+				idx = idx.index.values[-1] + 1
+			except:
+				idx = len(wheel)
 
 			call_ids.insert(idx, '')
 			put_ids.insert(idx, '')
