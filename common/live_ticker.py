@@ -50,8 +50,8 @@ class LiveTicker():
 			self.get_key_stats()
 			print(f"{ticker},Key Stats,Success,")
 		except Exception as e:
+			self.key_stats = pd.DataFrame(columns = ["feature", "modifier", "value"])
 			print(f"{ticker},Key Stats,Failure,{e}")
-			raise Exception("Options")
 		self.sleep()
 
 		try:
@@ -60,12 +60,12 @@ class LiveTicker():
 			print(f"{ticker},Options,Success,")	
 		except Exception as e:
 			print(f"{ticker},Options,Failure,{e}")
-			raise Exception("Options")			
+			raise Exception("Options")
 		self.sleep()
 
 	def sleep(self):
 
-		time.sleep(0)
+		time.sleep(0.25)
 
 	def fmt(self, str_, metric=''):
 

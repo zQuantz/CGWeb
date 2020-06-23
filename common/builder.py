@@ -63,7 +63,7 @@ class Builder:
 		if lengths['rates'] != self.lengths['rates']:
 
 			self.rates = self.connector.get_rates()
-			self.lengths['rates'] = lengths['rate']
+			self.lengths['rates'] = lengths['rates']
 			updates = True
 
 		if updated: self.generate_data_coords()
