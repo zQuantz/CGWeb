@@ -1,3 +1,4 @@
+from common.calculator import calculate_greeks
 from gevent.pywsgi import WSGIServer
 from flask import render_template
 from flask import request
@@ -11,6 +12,11 @@ import json
 print("Initializing Builder Object")
 builder_obj = Builder()
 print("Builder Object Completed")
+
+input_values = {
+	key : ""
+	for key in ["S", "K", "IV", "t", "r", "q", "type"]
+}
 
 ###################################################################################################
 
@@ -65,6 +71,16 @@ def execute():
 
 	data = json.loads(request.get_data())
 	return json.dumps(builder_obj.execute(data))
+
+@app.route("/calculators")
+def calculator():
+
+	greeks = None
+	if request.args.get("S"):
+		greeks = calculate_greeks(request.args)
+		input_values.update(dict(request.args))
+
+	return render_template("calculators.html", greeks = greeks, input_values = input_values)
 
 if __name__ == '__main__':
 

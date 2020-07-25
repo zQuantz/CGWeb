@@ -1,0 +1,30 @@
+.variableLabel {
+	text-align: right;
+	padding-right: 0rem;
+}
+
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
+}
+
+.dataframe {
+	border: 1.5px solid rgba(0, 0, 0, 1);
+}
+
+.dataframe td, .dataframe th {
+	text-align: center;
+}
+
+.dataframe thead th {
+	background-color: var(--dark);
+	font-weight: lighter;
+	position: sticky;
+	color: white;
+	border: 0;
+	top: 0;
+}
