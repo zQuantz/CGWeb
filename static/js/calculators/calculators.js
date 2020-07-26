@@ -28,9 +28,9 @@ var colors = [
 
 function init(greeks){
 
-	option_dropdown = document.getElementById("optionSelect");
-	xvar_dropdown = document.getElementById("xSelect");
-	yvar_dropdown = document.getElementById("ySelect");
+	option_dropdown = $("#optionSelect");
+	xvar_dropdown = $("#xSelect");
+	yvar_dropdown = $("#ySelect");
 
 	n_increments = greeks['n_increments'];
 	n_options = greeks['n_options'];
@@ -39,9 +39,9 @@ function init(greeks){
 
 	initChart();
 
-	option_dropdown.addEventListener("change", updateChart);
-	xvar_dropdown.addEventListener("change", updateChart);
-	yvar_dropdown.addEventListener("change", updateChart);
+	option_dropdown.change(updateChart);
+	xvar_dropdown.change(updateChart);
+	yvar_dropdown.change(updateChart);
 
 	updateChart();
 
@@ -135,9 +135,9 @@ function initChart(){
 
 function updateChart(){
 
-	let oids = $("#optionSelect").val();
-	let xvar = xvar_dropdown.value;
-	let yvar = yvar_dropdown.value;
+	let oids = option_dropdown.val();
+	let xvar = xvar_dropdown.val();
+	let yvar = yvar_dropdown.val();
 
 	sensitivityChart.data.datasets = [];
 

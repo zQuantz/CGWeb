@@ -28,3 +28,13 @@
 	border: 0;
 	top: 0;
 }
+
+.chartParam + button {
+	width: 10rem !important;
+	border-radius: 0px;
+}
+
+.dropdown.bootstrap-select.chartParam {
+	margin-left: 0.5rem;
+	margin-right: -4rem;
+}
