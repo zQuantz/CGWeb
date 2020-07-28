@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Scenarios</title>
+
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		var ajax = $.ajax;
+	</script>
+
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<!-- Bootstrap End -->
+
+	<!-- Chart.js -->
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+	<!-- Chart.js End -->
+
+	<!-- Bootstrap Select -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+	<!-- Bootstrap Select End -->
+
+	<!-- Custom -->
+	<link rel="stylesheet" type="text/css" href="/static/css/scenarios/scenarios.css">
+	<script type="text/javascript" src="/static/js/scenarios/scenarios.js"></script>
+	<!-- Custom End -->
+
+</head>
+<body>
+
+	<!-- Navbar -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		
+		<a class="navbar-brand" href="#">CG</a>
+
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" href="/builder">Builder</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Surface</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Monitor</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="/calculators">Calculators</a>
+				</li>
+			</ul>
+		</div>
+
+		<form class="form-inline" action="#">
+			
+			<ul class="navbar-nav">
+				
+				<li class="nav-item">
+					<a class="nav-link" href="/calculators">Pricing & Greeks</a>
+				</li>
+
+				<li class="nav-item active" style="border-right: 1px solid rgba(255, 255, 255, 0.5); margin-right: 0.5rem">
+					<a class="nav-link" href="/scenarios">Scenario Analysis</a>
+				</li>				
+
+			</ul>
+
+			<form class="form-inline" action="/scenarios">
+
+				<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect" name="ticker" multiple>
+					<option>AAPL</option>
+					<option>MSFT</option>
+					<option>TSLA</option>
+				</select>
+
+				<button type="submit" class="btn btn-outline-light builderNavButton">Fetch IDs</button>
+
+			</form>
+
+		</form>
+
+	</nav>
+	<!-- Navbar End -->
+
+	<!-- Main Container -->
+	<div class="container-fluid" style="width: 95%; margin-top: 1rem;">
+
+		<!-- Top Row -->
+		<div class="row">
+			
+			<!-- Scenario Accordion -->
+			<div class="accordion" id="scenarioAccordion" style="width: 100%">
+
+				<div class="card bg-dark" style="border-radius: 0px;">
+
+					<div class="card-header" id="scenarioAccordionHeader">
+
+						<h2 class="mb-0 accordionTab">
+							<button class="btn btn-link chainButton" type="button" data-toggle="collapse" data-target="#scenarioAccordionCard" aria-expanded="true" aria-controls="scenarioAccordionCard">
+								Scenario Builder
+							</button>
+						</h2>
+
+					</div>
+
+					<div id="scenarioAccordionCard" class="collapse show" aria-labelledby="scenarioBuilderHeader" data-parent="#scenarioAccordion">
+
+						<!-- Scenario Accordion Card Body -->
+						<div class="card-body accordionCardBody">
+
+							<div class="container-fluid">
+								
+								<div class="row" style="margin-top: 0.75rem">
+									
+									<div class="col-lg-6" style="border-right: 1px solid rgba(0, 0, 0, 0.5); height: 23rem">
+										
+									</div>
+
+									<div class="col-lg-6">
+										
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+						<!-- Scenario Accordion Card Body End -->
+
+					</div>
+
+				</div>
+
+			</div>
+			<!-- Scenario Accordion End -->
+
+		</div>
+		<!-- Top Row End -->
+
+	</div>
+	<!-- Main Container End -->
+
+	</body>
+	</html>

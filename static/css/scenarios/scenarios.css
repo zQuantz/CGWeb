@@ -1,0 +1,51 @@
+.tickerPicker {
+	line-height: 1.25;
+	width: 10rem !important;
+}
+
+.tickerPicker button {
+	border-color: var(--dark);
+	border-radius: 0;
+}
+
+.builderNavButton {
+	margin-right: 1rem;
+	border-radius: 0;
+	height: 2.3rem;
+	width: 7rem;
+}
+
+.builderNavButton::placeholder {
+	color: white;
+}
+
+.builderNavButton::hover {
+	background-color: #ececec;
+}
+
+.builderNavButton:hover::placeholder {
+	color: black;
+}
+
+.chainButton {
+	color: rgb(255, 255, 255);
+	font-size: 0.875rem;
+	padding: 0.1rem;
+	line-height: 0;
+}
+
+.chainButton:hover {
+	color: rgb(255, 255, 255);
+}
+
+.accordionTab {
+	line-height: 0.5;
+}
+
+.accordionCardBody {
+	border: 0.095rem solid var(--dark);
+	overflow-y: auto;
+	background-color: white;
+	height: 25rem; 
+	padding: 0rem;
+}

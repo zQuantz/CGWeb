@@ -82,6 +82,10 @@ def calculator():
 
 	return render_template("calculators.html", greeks = greeks, input_values = input_values)
 
+@app.route("/scenarios")
+def scenarios():
+	return render_template("scenarios.html")
+
 if __name__ == '__main__':
 
 	try:
