@@ -8,60 +8,36 @@
 	border-radius: 0;
 }
 
-.builderNavButton {
+.pageTabButton {
+	border-right: 1px solid rgba(255, 255, 255, 0.5);
+	margin-right: 0.5rem
+}
+
+.navButton {
 	margin-right: 1rem;
 	border-radius: 0;
 	height: 2.3rem;
 	width: 7rem;
 }
 
-.builderNavButton::placeholder {
+.navButton::placeholder {
 	color: white;
 }
 
-.builderNavButton::hover {
+.navButton::hover {
 	background-color: #ececec;
 }
 
-.builderNavButton:hover::placeholder {
+.navButton:hover::placeholder {
 	color: black;
 }
 
-.chainButton {
-	color: rgb(255, 255, 255);
-	font-size: 0.875rem;
-	padding: 0.1rem;
-	line-height: 0;
-}
-
-.chainButton:hover {
-	color: rgb(255, 255, 255);
-}
-
-.accordionTab {
-	line-height: 0.5;
-}
-
-.accordionCardBody {
-	border: 0.095rem solid var(--dark);
-	overflow-y: auto;
-	background-color: white;
-	height: 25rem; 
-	padding: 0rem;
-}
-
-#optionSelect + button {
-	background: white;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	border-radius: 0px;
-}
-
-.actionEntry {
-	border: 1px solid black;
-    height: 10rem;
-    overflow-y: scroll;
+.positionBuilder {
+	border-right: 1px solid rgba(0, 0, 0, 0.5);
+	height: 23.5rem
 }
 
 .squared {
 	border-radius: 0px;
 }
+

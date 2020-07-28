@@ -29,6 +29,7 @@
 
 	<!-- Custom -->
 	<link rel="stylesheet" type="text/css" href="/static/css/scenarios/scenarios.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/scenarios/position.css">
 	<script type="text/javascript" src="/static/js/scenarios/scenarios.js"></script>
 	<!-- Custom End -->
 
@@ -69,7 +70,7 @@
 					<a class="nav-link" href="/calculators">Pricing & Greeks</a>
 				</li>
 
-				<li class="nav-item active" style="border-right: 1px solid rgba(255, 255, 255, 0.5); margin-right: 0.5rem">
+				<li class="nav-item active pageTabButton">
 					<a class="nav-link" href="/scenarios">Scenario Analysis</a>
 				</li>				
 
@@ -83,7 +84,7 @@
 					<option>TSLA</option>
 				</select>
 
-				<button type="submit" class="btn btn-outline-light builderNavButton">Fetch IDs</button>
+				<button type="submit" class="btn btn-outline-light navButton">Fetch IDs</button>
 
 			</form>
 
@@ -106,7 +107,7 @@
 					<div class="card-header" id="scenarioAccordionHeader">
 
 						<h2 class="mb-0 accordionTab">
-							<button class="btn btn-link chainButton" type="button" data-toggle="collapse" data-target="#scenarioAccordionCard" aria-expanded="true" aria-controls="scenarioAccordionCard">
+							<button class="btn btn-link accordionButton" type="button" data-toggle="collapse" data-target="#scenarioAccordionCard" aria-expanded="true" aria-controls="scenarioAccordionCard">
 								Scenario Builder
 							</button>
 						</h2>
@@ -122,7 +123,7 @@
 								
 								<div class="row" style="margin-top: 0.75rem">
 									
-									<div class="col-lg-6" style="border-right: 1px solid rgba(0, 0, 0, 0.5); height: 23.5rem">
+									<div class="col-lg-6 positionBuilder">
 
 										<div class="form-group row">
 											<label for="startDateInput" class="col-2 col-form-label">Start Date</label>
@@ -160,6 +161,21 @@
 
 												<div class="actionEntry" id="actionEntryDiv">
 													
+													<table class="table table-sm table-hover" style="text-align: center;">
+														
+														<thead class="thead-dark">
+															<tr>
+																<th></th>
+																<th>Option</th>
+																<th>Quantity</th>
+															</tr>
+														</thead>
+														
+														<tbody id="actionEntryTbody">
+														</tbody>
+
+													</table>
+
 												</div>
 
 											</div>
@@ -203,6 +219,10 @@
 
 	</div>
 	<!-- Main Container End -->
+
+	<script type="text/javascript">
+		init({{tr|tojson|safe}});
+	</script>
 
 </body>
 </html>

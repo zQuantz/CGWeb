@@ -1,0 +1,40 @@
+.accordionButton {
+	color: rgb(255, 255, 255);
+	font-size: 0.875rem;
+	padding: 0.1rem;
+	line-height: 0;
+}
+
+.accordionButton:hover {
+	color: rgb(255, 255, 255);
+}
+
+.accordionTab {
+	line-height: 0.5;
+}
+
+.accordionCardBody {
+	border: 0.095rem solid var(--dark);
+	background-color: white;
+	height: 25rem; 
+	padding: 0rem;
+}
+
+#optionSelect + button {
+	background: white;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 0px;
+}
+
+.actionEntry {
+	border: 1px solid black;
+    height: 10rem;
+    overflow-y: scroll;
+}
+
+.quantityInput {
+	text-align: center;
+	border-radius: 0px;
+	line-height: 0.5rem;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
