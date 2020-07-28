@@ -49,3 +49,19 @@
 	height: 25rem; 
 	padding: 0rem;
 }
+
+#optionSelect + button {
+	background: white;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 0px;
+}
+
+.actionEntry {
+	border: 1px solid black;
+    height: 10rem;
+    overflow-y: scroll;
+}
+
+.squared {
+	border-radius: 0px;
+}

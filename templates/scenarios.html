@@ -122,8 +122,62 @@
 								
 								<div class="row" style="margin-top: 0.75rem">
 									
-									<div class="col-lg-6" style="border-right: 1px solid rgba(0, 0, 0, 0.5); height: 23rem">
-										
+									<div class="col-lg-6" style="border-right: 1px solid rgba(0, 0, 0, 0.5); height: 23.5rem">
+
+										<div class="form-group row">
+											<label for="startDateInput" class="col-2 col-form-label">Start Date</label>
+											<div class="col-10">
+												<input class="form-control squared" type="date" id="startDateInput" min="2019-12-01" max="2020-07-30">
+											</div>
+										</div>
+
+										<div class="form-group row">
+											<label for="endDateInput" class="col-2 col-form-label">End Date</label>
+											<div class="col-10">
+												<input class="form-control squared" type="date" id="endDateInput" min="2019-12-01" max="2020-07-30">
+											</div>
+										</div>
+
+										<div class="form-group row">
+
+											<label for="optionSelect" class="col-2 col-form-label">Options</label>
+											<div class="col-10">
+												<select class="selectpicker form-control" data-live-search="true" title="Options.." id="optionSelect" name="ticker" multiple>
+													<option>AAPL 2020-09-21 C325.0</option>
+													<option>AAPL 2020-09-21 P250.0</option>
+													<option>MSFT 2020-09-21 C165.0</option>
+													<option>MSFT 2020-09-21 C175.0</option>
+													<option>MSFT 2020-09-21 C155.0</option>
+												</select>
+											</div>
+
+										</div>
+
+										<div class="form-group row">
+
+											<label for="actionEntryDiv" class="col-2 col-form-label">Actions</label>
+											<div class="col-10">
+
+												<div class="actionEntry" id="actionEntryDiv">
+													
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="form-group row">
+
+											<label class="col-2 col-form-label"></label>
+											<div class="col-10">
+
+												<button type="submit" class="btn btn-dark calcualteButton squared" style="float: right;">Add Position</button>
+												<button type="submit" class="btn btn-secondary calcualteButton squared" style="float: right; margin-right: 1rem;">Reset</button>
+
+											</div>
+
+										</div>
+
 									</div>
 
 									<div class="col-lg-6">
@@ -150,5 +204,5 @@
 	</div>
 	<!-- Main Container End -->
 
-	</body>
-	</html>
+</body>
+</html>
