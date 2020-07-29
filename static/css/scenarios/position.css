@@ -16,7 +16,6 @@
 .accordionCardBody {
 	border: 0.095rem solid var(--dark);
 	background-color: white;
-	height: 25rem; 
 	padding: 0rem;
 }
 
@@ -37,4 +36,11 @@
 	border-radius: 0px;
 	line-height: 0.5rem;
 	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.positionsRow {
+	padding: 0.5rem;
+	margin-right: 0.25rem;
+	margin-left: 0.25rem;
+	border: 1px solid rgba(0, 0, 0, 0.5);
 }

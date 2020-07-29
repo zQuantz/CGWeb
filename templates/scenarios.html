@@ -107,7 +107,7 @@
 					<div class="card-header" id="scenarioAccordionHeader">
 
 						<h2 class="mb-0 accordionTab">
-							<button class="btn btn-link accordionButton" type="button" data-toggle="collapse" data-target="#scenarioAccordionCard" aria-expanded="true" aria-controls="scenarioAccordionCard">
+							<button class="btn btn-link accordionButton" type="button" data-toggle="collapse" data-target="#scenarioAccordionCard" aria-expanded="true" aria-controls="scenarioAccordionCard" style="margin-left: -0.25rem;">
 								Scenario Builder
 							</button>
 						</h2>
@@ -117,88 +117,142 @@
 					<div id="scenarioAccordionCard" class="collapse show" aria-labelledby="scenarioBuilderHeader" data-parent="#scenarioAccordion">
 
 						<!-- Scenario Accordion Card Body -->
-						<div class="card-body accordionCardBody">
+						<div class="card-body accordionCardBody" style="height: 25rem;">
 
 							<div class="container-fluid">
 								
 								<div class="row" style="margin-top: 0.75rem">
 									
+									<!-- Position Builder Col -->
 									<div class="col-lg-6 positionBuilder">
 
-										<div class="form-group row">
-											<label for="startDateInput" class="col-2 col-form-label">Start Date</label>
-											<div class="col-10">
-												<input class="form-control squared" type="date" id="startDateInput" min="2019-12-01" max="2020-07-30">
-											</div>
-										</div>
+										<form action="javascript:addPosition()">
 
-										<div class="form-group row">
-											<label for="endDateInput" class="col-2 col-form-label">End Date</label>
-											<div class="col-10">
-												<input class="form-control squared" type="date" id="endDateInput" min="2019-12-01" max="2020-07-30">
-											</div>
-										</div>
-
-										<div class="form-group row">
-
-											<label for="optionSelect" class="col-2 col-form-label">Options</label>
-											<div class="col-10">
-												<select class="selectpicker form-control" data-live-search="true" title="Options.." id="optionSelect" name="ticker" multiple>
-													<option>AAPL 2020-09-21 C325.0</option>
-													<option>AAPL 2020-09-21 P250.0</option>
-													<option>MSFT 2020-09-21 C165.0</option>
-													<option>MSFT 2020-09-21 C175.0</option>
-													<option>MSFT 2020-09-21 C155.0</option>
-												</select>
+											<div class="form-group row">
+												<label for="startDateInput" class="col-2 col-form-label">Start Date</label>
+												<div class="col-10">
+													<input class="form-control squared" type="date" id="startDateInput" min="2019-12-01" max="2020-07-30" required>
+												</div>
 											</div>
 
-										</div>
+											<div class="form-group row">
+												<label for="endDateInput" class="col-2 col-form-label">End Date</label>
+												<div class="col-10">
+													<input class="form-control squared" type="date" id="endDateInput" min="2019-12-01" max="2020-07-30" required>
+												</div>
+											</div>
 
-										<div class="form-group row">
+											<div class="form-group row">
 
-											<label for="actionEntryDiv" class="col-2 col-form-label">Actions</label>
-											<div class="col-10">
+												<label for="optionSelect" class="col-2 col-form-label">Options</label>
+												<div class="col-10">
+													<select class="selectpicker form-control" data-live-search="true" title="Options.." id="optionSelect" name="ticker" multiple required="required">
+														<option>AAPL 2020-09-21 C325.0</option>
+														<option>AAPL 2020-09-21 P250.0</option>
+														<option>MSFT 2020-09-21 C165.0</option>
+														<option>MSFT 2020-09-21 C175.0</option>
+														<option>MSFT 2020-09-21 C155.0</option>
+													</select>
+												</div>
 
-												<div class="actionEntry" id="actionEntryDiv">
-													
-													<table class="table table-sm table-hover" style="text-align: center;">
+											</div>
+
+											<div class="form-group row">
+
+												<label for="actionEntryDiv" class="col-2 col-form-label">Actions</label>
+												<div class="col-10">
+
+													<div class="actionEntry" id="actionEntryDiv">
 														
-														<thead class="thead-dark">
-															<tr>
-																<th></th>
-																<th>Option</th>
-																<th>Quantity</th>
-															</tr>
-														</thead>
-														
-														<tbody id="actionEntryTbody">
-														</tbody>
+														<table class="table table-sm table-hover" style="text-align: center;">
+															
+															<thead class="thead-dark">
+																<tr>
+																	<th></th>
+																	<th>Option</th>
+																	<th>Quantity</th>
+																</tr>
+															</thead>
+															
+															<tbody id="actionEntryTbody"></tbody>
 
-													</table>
+														</table>
+
+													</div>
 
 												</div>
 
 											</div>
 
-										</div>
+											<div class="form-group row">
 
-										<div class="form-group row">
+												<label class="col-2 col-form-label"></label>
+												<div class="col-10">
 
-											<label class="col-2 col-form-label"></label>
-											<div class="col-10">
+													<button type="submit" class="btn btn-dark calcualteButton squared" style="float: right;">Add Position</button>
+													<button type="button" class="btn btn-secondary calcualteButton squared" onclick="resetPosition()" style="float: right; margin-right: 1rem;">Reset</button>
 
-												<button type="submit" class="btn btn-dark calcualteButton squared" style="float: right;">Add Position</button>
-												<button type="submit" class="btn btn-secondary calcualteButton squared" style="float: right; margin-right: 1rem;">Reset</button>
+												</div>
 
 											</div>
 
-										</div>
+										</form>
 
 									</div>
+									<!-- Position Builder Col End -->
 
+									<!-- Positions Diplay Col -->
 									<div class="col-lg-6">
-										
+
+										<!-- Scenario Accordion -->
+										<div class="accordion" id="positionAccordion" style="width: 100%">
+
+											<div class="card bg-dark" style="border-radius: 0px;">
+
+												<div class="card-header" id="positionAccordionHeader">
+													
+													<h2 class="mb-0 accordionTab">
+														<button class="btn btn-link accordionButton" type="button" data-toggle="collapse" data-target="#positionCard" aria-expanded="false" aria-controls="positionCard" style="margin-left: -0.25rem">
+															Position #1. Dates: 2020/06/01 - 2020/07/01. Tickers: MSFT, TSLA, IAN
+														</button>
+														<button class="btn btn-link accordionButton" style="float: right; margin-top: 0.475rem; color: red; font-size: 1.05rem; margin-right: -0.25rem;">X</button>
+													</h2>
+												
+												</div>
+
+												<div id="positionCard" class="collapse" aria-labelledby="positionAccordionHeader" data-parent="#positionAccordion">
+
+													<!-- Scenario Accordion Card Body -->
+													<div class="card-body accordionCardBody">
+														
+														<table class="table table-sm">
+															<thead>
+																<tr>
+																	<th>Option</th>
+																	<th>Quantity</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>MSFT 2020-09-21 C155.0</td>
+																	<td>-1</td>
+																</tr>
+																<tr>
+																	<td>MSFT 2020-09-21 C155.0</td>
+																	<td>1</td>
+																</tr>
+															</tbody>
+															
+														</table>
+
+													</div>
+
+												</div>
+
+											</div>
+
 									</div>
+									<!-- Positions Diplay Col End -->
 
 								</div>
 

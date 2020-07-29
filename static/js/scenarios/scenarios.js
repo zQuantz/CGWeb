@@ -1,18 +1,33 @@
 var actionEntryTbody = null;
+var startDateInput = null;
 var optionSelect = null;
+var endDateInput = null;
 var tr = null;
 
+var positions = [];
 var position = {};
+
+var minDate = "2019-12-01";
 
 function init(tr_){
 
-	console.log(tr);
-
 	actionEntryTbody = $("#actionEntryTbody");
+
 	optionSelect = $("#optionSelect");
+	optionSelect.change(editPosition);
+
 	tr = tr_;
 
-	optionSelect.change(editPosition);
+	startDateInput = $("#startDateInput");
+	endDateInput = $("#endDateInput");
+
+	let date = new Date().toISOString().split("T")[0]
+	startDateInput.attr("max", date);
+	startDateInput.attr("max", date);
+
+	startDateInput.change(function() {
+		endDateInput.attr("min", startDateInput.val())
+	});
 
 }
 
@@ -29,9 +44,11 @@ function removePosition(e){
 }
 
 function editQuantity(e) {
+
 	let id = e.parentElement.parentElement.id;
 	position[id] = e.value;
 	editPosition();
+
 }
 
 function editPosition(){
@@ -59,5 +76,31 @@ function editPosition(){
 	})
 
 	position = newPosition;
+
+}
+
+function resetPosition() {
+
+	position = {};
+	
+	optionSelect.selectpicker("val", []);
+	optionSelect.selectpicker("refresh");
+
+	startDateInput.val("");
+	endDateInput.val("");
+	endDateInput.attr("min", minDate);
+
+	editPosition();
+
+}
+
+function addPosition() {
+
+	positions.push({
+		position: position,
+		startDate: startDateInput.val(),
+		endDate: endDateInput.val()
+	})
+	resetPosition();
 
 }
