@@ -189,8 +189,8 @@
 												<label class="col-2 col-form-label"></label>
 												<div class="col-10">
 
-													<button type="submit" class="btn btn-dark calcualteButton squared" style="float: right;">Add Position</button>
-													<button type="button" class="btn btn-secondary calcualteButton squared" onclick="resetPosition()" style="float: right; margin-right: 1rem;">Reset</button>
+													<button type="submit" class="btn btn-dark squared" style="float: right;">Add Position</button>
+													<button type="button" class="btn btn-secondary squared" onclick="resetPosition()" style="float: right; margin-right: 1rem;">Reset</button>
 
 												</div>
 
@@ -204,52 +204,25 @@
 									<!-- Positions Diplay Col -->
 									<div class="col-lg-6">
 
-										<!-- Scenario Accordion -->
-										<div class="accordion" id="positionAccordion" style="width: 100%">
+										<div class="row" id="positionsDisplay" style="overflow-y: scroll; height: 20rem;">
 
-											<div class="card bg-dark" style="border-radius: 0px;">
-
-												<div class="card-header" id="positionAccordionHeader">
-													
-													<h2 class="mb-0 accordionTab">
-														<button class="btn btn-link accordionButton" type="button" data-toggle="collapse" data-target="#positionCard" aria-expanded="false" aria-controls="positionCard" style="margin-left: -0.25rem">
-															Position #1. Dates: 2020/06/01 - 2020/07/01. Tickers: MSFT, TSLA, IAN
-														</button>
-														<button class="btn btn-link accordionButton" style="float: right; margin-top: 0.475rem; color: red; font-size: 1.05rem; margin-right: -0.25rem;">X</button>
-													</h2>
+											<div class="accordion" id="positionAccordion" style="width: 100%;">
 												
-												</div>
+											</div>
+											
+										</div>
 
-												<div id="positionCard" class="collapse" aria-labelledby="positionAccordionHeader" data-parent="#positionAccordion">
+										<div class="row" style="margin-top: 1rem;">
 
-													<!-- Scenario Accordion Card Body -->
-													<div class="card-body accordionCardBody">
-														
-														<table class="table table-sm">
-															<thead>
-																<tr>
-																	<th>Option</th>
-																	<th>Quantity</th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td>MSFT 2020-09-21 C155.0</td>
-																	<td>-1</td>
-																</tr>
-																<tr>
-																	<td>MSFT 2020-09-21 C155.0</td>
-																	<td>1</td>
-																</tr>
-															</tbody>
-															
-														</table>
+											<label class="col-2 col-form-label"></label>
+											<div class="col-10">
 
-													</div>
-
-												</div>
+												<button type="submit" class="btn btn-dark squared" style="float: right;" onclick="analyzePositions()">Analyze</button>
+												<button type="button" class="btn btn-secondary squared" onclick="removeAllPositions()" style="float: right; margin-right: 1rem;">Remove All</button>
 
 											</div>
+
+										</div>
 
 									</div>
 									<!-- Positions Diplay Col End -->
@@ -257,26 +230,24 @@
 								</div>
 
 							</div>
+							<!-- Scenario Accordion Card Body End -->
 
 						</div>
-						<!-- Scenario Accordion Card Body End -->
 
 					</div>
 
 				</div>
+				<!-- Scenario Accordion End -->
 
 			</div>
-			<!-- Scenario Accordion End -->
+			<!-- Top Row End -->
 
 		</div>
-		<!-- Top Row End -->
+		<!-- Main Container End -->
 
-	</div>
-	<!-- Main Container End -->
+		<script type="text/javascript">
+			init({{scenarios_htmls|tojson|safe}});
+		</script>
 
-	<script type="text/javascript">
-		init({{tr|tojson|safe}});
-	</script>
-
-</body>
-</html>
+	</body>
+	</html>

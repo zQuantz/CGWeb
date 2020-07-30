@@ -1,5 +1,5 @@
 from common.calculator import calculate_greeks
-from common.scenarios import tr
+from common.scenarios import scenarios_htmls
 
 from gevent.pywsgi import WSGIServer
 from flask import render_template
@@ -86,7 +86,7 @@ def calculator():
 
 @app.route("/scenarios")
 def scenarios():
-	return render_template("scenarios.html", tr=tr)
+	return render_template("scenarios.html", scenarios_htmls = scenarios_htmls)
 
 if __name__ == '__main__':
 

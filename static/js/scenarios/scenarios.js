@@ -1,22 +1,31 @@
+var positionAccordion = null;
 var actionEntryTbody = null;
 var startDateInput = null;
 var optionSelect = null;
 var endDateInput = null;
-var tr = null;
+
+var accordion_tr = null;
+var accordion = null;
+var option_tr = null;
 
 var positions = [];
 var position = {};
+var tickers = {};
+var strikes = {};
 
 var minDate = "2019-12-01";
 
-function init(tr_){
+function init(scenarios_htmls){
 
 	actionEntryTbody = $("#actionEntryTbody");
+	positionAccordion = $("#positionAccordion");
 
 	optionSelect = $("#optionSelect");
 	optionSelect.change(editPosition);
 
-	tr = tr_;
+	accordion_tr = scenarios_htmls['accordion_tr'];
+	accordion = scenarios_htmls['accordion'];
+	option_tr = scenarios_htmls['option_tr'];
 
 	startDateInput = $("#startDateInput");
 	endDateInput = $("#endDateInput");
@@ -31,7 +40,7 @@ function init(tr_){
 
 }
 
-function removePosition(e){
+function removeOption(e){
 
 	let id = e.parentElement.parentElement.id;
 	delete position[id];
@@ -54,6 +63,8 @@ function editQuantity(e) {
 function editPosition(){
 
 	let newPosition = {};
+	let newTickers = {};
+	let newStrikes = {};
 
 	actionEntryTbody.empty();
 
@@ -62,7 +73,7 @@ function editPosition(){
 
 		newPosition[option] = 0;
 
-		let ntr = tr.replace("OPTION_ID", option);
+		let ntr = option_tr.replace("OPTION_ID", option);
 		ntr = ntr.replace("OPTION_ID", option);
 
 		actionEntryTbody.append(ntr);
@@ -73,15 +84,21 @@ function editPosition(){
 
 		$("#actionEntryTbody input:last").val(newPosition[option]);
 
+		newTickers[option.split(" ")[0]] = 0;
+		newStrikes[option.split(" ")[2].substring(1)] = 0;
+
 	})
 
 	position = newPosition;
+	tickers = newTickers;
+	strikes = newStrikes;
 
 }
 
 function resetPosition() {
 
 	position = {};
+	tickers = {};
 	
 	optionSelect.selectpicker("val", []);
 	optionSelect.selectpicker("refresh");
@@ -99,8 +116,56 @@ function addPosition() {
 	positions.push({
 		position: position,
 		startDate: startDateInput.val(),
-		endDate: endDateInput.val()
+		endDate: endDateInput.val(),
+		tickers: Object.keys(tickers),
+		strikes: Object.keys(strikes)
 	})
-	resetPosition();
 
+	editPositions();
+
+}
+
+function editPositions() {
+
+	positionAccordion.empty();
+	positions.forEach( (pos, ctr) => {
+
+		let label = `Dates: ${pos.startDate.replace("-", "/").replace("-", "/")} - `
+		label += `${pos.endDate.replace("-", "/").replace("-", "/")}. `
+		label += `Tickers: ${pos.tickers.sort().join(",")}. `
+		label += `Strikes: ${pos.strikes.sort().join(",")}.`
+
+		let acc = accordion.replace("CARD_HEADER_LABEL", label);
+		for(let i = 0; i < 8; i++)
+			acc = acc.replace("POSNUM", ctr);
+
+		positionAccordion.append(acc);
+
+		let table = $("#positionAccordion tbody:last");
+		Object.entries(pos.position).forEach( entry => {
+			acc_tr = accordion_tr.replace("OPTION_ID", entry[0]);
+			acc_tr = acc_tr.replace("QUANTITY", entry[1]);
+			table.append(acc_tr);
+		})
+
+	})
+
+}
+
+function removePosition(ctr){
+
+	positions.splice(ctr, 1);
+	editPositions();
+
+}
+
+function removeAllPositions(){
+	
+	positions = [];
+	editPositions();
+
+}
+
+function analyzePositions(){
+	console.log(positions);
 }

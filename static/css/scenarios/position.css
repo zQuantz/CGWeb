@@ -44,3 +44,11 @@
 	margin-left: 0.25rem;
 	border: 1px solid rgba(0, 0, 0, 0.5);
 }
+
+.cancelPositionButton { 
+	margin-right: -0.25rem;
+	margin-top: 0.475rem;
+	font-size: 1.05rem;
+	float: right;
+	color: red;
+}
