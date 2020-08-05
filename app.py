@@ -6,13 +6,16 @@ from flask import render_template
 from flask import request
 from flask import Flask
 
+from common.connector import Connector
 from common.builder import Builder
+
 import json
 
 ###################################################################################################
 
 print("Initializing Builder Object")
-builder_obj = Builder()
+connector = Connector()
+builder_obj = Builder(connector)
 print("Builder Object Completed")
 
 input_values = {
@@ -43,20 +46,20 @@ def builder():
 
 	builder_obj.fetch_ticker(ticker, date)
 
-	return render_template("index.html", name=ticker, builder=builder_obj)
+	return render_template("index.html", name=ticker, builder=builder_obj, connector=connector)
 
 @app.route("/update", methods=["POST"])
 def update():
 
-	status = builder_obj.update()
+	status = connector.update()
 
 	if status:
 
 		item = json.dumps({
 			"status" : status,
-			"unique_dates" : builder_obj.unique_dates,
-			"ticker_dates" : builder_obj.ticker_dates,
-			"ticker_options" : builder_obj._ticker_options
+			"ticker_dates" : connector.ticker_dates,
+			"unique_dates" : connector.unique_dates,
+			"ticker_options" : connector._ticker_options
 		})
 
 	else:

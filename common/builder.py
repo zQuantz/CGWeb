@@ -11,64 +11,13 @@ import numpy as np
 
 class Builder:
 
-	def __init__(self):
+	def __init__(self, connector):
 
-		self.connector = Connector()
-
+		self.connector = connector
 		self.tickers = {}
 
-		self.initialize()
-		self.generate_data_coords()
 		self.generate_position_info_rows()
 		self.generate_position_summary_rows()
-
-	def initialize(self):
-
-		print("Collecting Ticker Dates")
-		self.ticker_dates = self.connector.get_ticker_dates()
-
-		print("Collecting Ticker Info")
-		self.ticker_info = self.connector.get_ticker_info()
-
-		print("Collecting Interest Rates")
-		self.rates = self.connector.get_rates()
-
-		print("Collecting Table Lengths")
-		self.lengths = self.connector.get_table_lengths()
-
-	def update(self):
-
-		updated = False
-		lengths = self.connector.get_table_lengths()
-		
-		if lengths['options'] != self.lengths['options']:
-		
-			ticker_dates = self.connector.get_ticker_dates(isUpdate=True)		
-			for ticker in ticker_dates:
-
-				if ticker not in self.ticker_dates:
-					self.ticker_dates[ticker] = ticker_dates[ticker]
-				elif ticker_dates[ticker][0] not in self.ticker_dates[ticker]:
-					self.ticker_dates[ticker] = ticker_dates[ticker] + self.ticker_dates[ticker]
-
-			self.lengths['options'] = lengths['options']
-			updated = True
-
-		if lengths['instruments'] != self.lengths['instruments']:
-
-			self.ticker_info = self.connector.get_ticker_info()
-			self.lengths['instruments'] = lengths['instruments']
-			updated = True
-
-		if lengths['rates'] != self.lengths['rates']:
-
-			self.rates = self.connector.get_rates()
-			self.lengths['rates'] = lengths['rates']
-			updates = True
-
-		if updated: self.generate_data_coords()
-
-		return updated
 
 	def fetch_ticker(self, ticker, date):
 
@@ -90,13 +39,13 @@ class Builder:
 
 		if date == "LIVE":
 
-			data = LiveTicker(ticker, self.rates)
+			data = LiveTicker(ticker, self.connector.rates)
 			self.ticker = Ticker(ticker,
 								 date,
 								 data.options,
 								 data.ohlc,
 								 data.key_stats,
-								 self.ticker_info[ticker])
+								 self.connector.ticker_info[ticker])
 
 		else:
 
@@ -104,7 +53,7 @@ class Builder:
 			ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
 			key_stats = self.connector.get_data((ticker,),(date,), "key_stats")
 
-			self.ticker = Ticker(ticker, date, option_chain, ohlc, key_stats, self.ticker_info[ticker])
+			self.ticker = Ticker(ticker, date, option_chain, ohlc, key_stats, self.connector.ticker_info[ticker])
 			self.tickers[ticker][date] = self.ticker
 
 	def generate_position_info_rows(self):
@@ -204,33 +153,6 @@ class Builder:
 			"empty_agg_row" : empty_agg_row,
 			"summary_row" : summary_row
 		}
-
-	def generate_data_coords(self):
-
-		dates = set([
-			item
-			for sublist in self.ticker_dates.values()
-			for item in sublist
-		])
-		dates = {
-			date : (datetime.now() - datetime.strptime(date, "%Y-%m-%d")).days
-			for date in dates
-		}
-		self.unique_dates = {
-			date : html("option", date, {"data-subtext" : f"T-{dates[date]} Days"})
-			for date in dates
-		}
-		self.unique_dates['LIVE'] = html("option", "LIVE", {"data-subtext" : f"T-0 Seconds"})
-
-		self._ticker_options = ""
-		for ticker in self.ticker_info:
-
-			if ticker not in self.ticker_dates:
-				continue
-
-			self._ticker_options += html("option", ticker, {
-					"data-subtext" : self.ticker_info[ticker]['full_name']
-				})
 
 	def execute(self, data):
 

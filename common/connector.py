@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from common.utils.html import html
 import sqlalchemy as sql
 import pandas as pd
 import numpy as np
@@ -14,6 +15,85 @@ class Connector():
 	HOUR_OFFSET = 22
 	engine = sql.create_engine(CONFIG['db_address'])
 	max_tries = 3
+
+	def __init__(self):
+
+		print("Collecting Ticker Dates")
+		self.ticker_dates = self.get_ticker_dates()
+
+		print("Collecting Ticker Info")
+		self.ticker_info = self.get_ticker_info()
+
+		print("Collecting Interest Rates")
+		self.rates = self.get_rates()
+
+		print("Collecting Table Lengths")
+		self.lengths = self.get_table_lengths()
+
+		print("Generating Data Coordinates")
+		self.generate_data_coords()
+
+	def update(self):
+
+		updated = False
+		lengths = self.get_table_lengths()
+		
+		if lengths['options'] != self.lengths['options']:
+		
+			ticker_dates = self.get_ticker_dates(isUpdate=True)		
+			for ticker in ticker_dates:
+
+				if ticker not in self.ticker_dates:
+					self.ticker_dates[ticker] = ticker_dates[ticker]
+				elif ticker_dates[ticker][0] not in self.ticker_dates[ticker]:
+					self.ticker_dates[ticker] = ticker_dates[ticker] + self.ticker_dates[ticker]
+
+			self.lengths['options'] = lengths['options']
+			updated = True
+
+		if lengths['instruments'] != self.lengths['instruments']:
+
+			self.ticker_info = self.get_ticker_info()
+			self.lengths['instruments'] = lengths['instruments']
+			updated = True
+
+		if lengths['rates'] != self.lengths['rates']:
+
+			self.rates = self.get_rates()
+			self.lengths['rates'] = lengths['rates']
+			updates = True
+
+		if updated:
+			self.generate_data_coords()
+
+		return updated
+
+	def generate_data_coords(self):
+
+		dates = set([
+			item
+			for sublist in self.ticker_dates.values()
+			for item in sublist
+		])
+		dates = {
+			date : (datetime.now() - datetime.strptime(date, "%Y-%m-%d")).days
+			for date in dates
+		}
+		self.unique_dates = {
+			date : html("option", date, {"data-subtext" : f"T-{dates[date]} Days"})
+			for date in dates
+		}
+		self.unique_dates['LIVE'] = html("option", "LIVE", {"data-subtext" : f"T-0 Seconds"})
+
+		self._ticker_options = ""
+		for ticker in self.ticker_info:
+
+			if ticker not in self.ticker_dates:
+				continue
+
+			self._ticker_options += html("option", ticker, {
+					"data-subtext" : self.ticker_info[ticker]['full_name']
+				})
 
 	def read(self, query):
 
@@ -171,4 +251,28 @@ class Connector():
 
 		return self.read(query)
 
+	def get_option_ids(self, tickers):
+
+		if len(tickers) == 1:
+			ticker_str = f'ticker = "{tickers[0]}"'
+		else:
+			tickers = tuple(tickers)
+			ticker_str = f'ticker in {tickers}'
+
+		query = f"""
+			SELECT
+				DISTINCT(option_id)
+			FROM
+				options
+			WHERE
+				{ticker_str}
+			ORDER BY date_current, strike_price
+		"""
+
+		return self.read(query)
+
 ###################################################################################################
+
+if __name__ == '__main__':
+
+	print(Connector().get_option_ids(("TSLA", "AAPL")))

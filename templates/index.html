@@ -76,7 +76,7 @@
 			
 			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect" name="ticker">
 				{% if builder %}
-				{{builder._ticker_options | safe}}
+				{{connector._ticker_options | safe}}
 				{% endif %}
 			</select>
 
@@ -470,8 +470,8 @@
 	<script type="text/javascript">
 
 		initGlobals({{builder.position_info|tojson|safe}},
-			{{builder.unique_dates|tojson|safe}},
-			{{builder.ticker_dates|tojson|safe}},
+			{{connector.unique_dates|tojson|safe}},
+			{{connector.ticker_dates|tojson|safe}},
 			{{builder.position_summary|tojson|safe}});
 
 		{% if builder.ticker %}
