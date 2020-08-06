@@ -1,5 +1,4 @@
 from common.calculator import calculate_greeks
-from common.scenarios import scenarios_htmls
 
 from gevent.pywsgi import WSGIServer
 from flask import render_template
@@ -7,6 +6,7 @@ from flask import request
 from flask import Flask
 
 from common.connector import Connector
+from common.scenarios import Scenarios
 from common.builder import Builder
 
 import json
@@ -16,6 +16,7 @@ import json
 print("Initializing Builder Object")
 connector = Connector()
 builder_obj = Builder(connector)
+scenarios_obj = Scenarios(connector)
 print("Builder Object Completed")
 
 input_values = {
@@ -89,7 +90,9 @@ def calculator():
 
 @app.route("/scenarios")
 def scenarios():
-	return render_template("scenarios.html", scenarios_htmls = scenarios_htmls)
+
+	scenarios_obj.generate_option_ids(request.args.getlist("tickers"))
+	return render_template("scenarios.html", scenarios = scenarios_obj, connector = connector)
 
 if __name__ == '__main__':
 
