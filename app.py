@@ -15,7 +15,7 @@ import json
 
 print("Initializing Builder Object")
 connector = Connector()
-builder_obj = Builder(connector)
+# builder_obj = Builder(connector)
 scenarios_obj = Scenarios(connector)
 print("Builder Object Completed")
 
@@ -92,7 +92,14 @@ def calculator():
 def scenarios():
 
 	scenarios_obj.generate_option_ids(request.args.getlist("tickers"))
-	return render_template("scenarios.html", scenarios = scenarios_obj, connector = connector)
+	return render_template("scenarios.html", scenarios = scenarios_obj, connector = None)
+
+@app.route("/scenarios/analyze", methods=["POST"])
+def analyze_scenarios():
+
+	data = json.loads(request.get_data())
+	scenarios_obj.generate_scenarios(data)
+	return render_template("scenarios.html", scenarios = scenarios_obj, connector = None)
 
 if __name__ == '__main__':
 

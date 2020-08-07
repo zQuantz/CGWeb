@@ -19,19 +19,19 @@ class Connector():
 	def __init__(self):
 
 		print("Collecting Ticker Dates")
-		self.ticker_dates = self.get_ticker_dates()
+		# self.ticker_dates = self.get_ticker_dates()
 
-		print("Collecting Ticker Info")
-		self.ticker_info = self.get_ticker_info()
+		# print("Collecting Ticker Info")
+		# self.ticker_info = self.get_ticker_info()
 
-		print("Collecting Interest Rates")
-		self.rates = self.get_rates()
+		# print("Collecting Interest Rates")
+		# self.rates = self.get_rates()
 
-		print("Collecting Table Lengths")
-		self.lengths = self.get_table_lengths()
+		# print("Collecting Table Lengths")
+		# self.lengths = self.get_table_lengths()
 
-		print("Generating Data Coordinates")
-		self.generate_data_coords()
+		# print("Generating Data Coordinates")
+		# self.generate_data_coords()
 
 	def update(self):
 
@@ -126,6 +126,36 @@ class Connector():
 
 		if tries >= self.max_tries:
 			raise Exception("Too Many SQL Errors.")
+
+	def get_scenarios(self, clauses):
+
+		query = f"""
+		    SELECT
+		        t1.*,
+		        ratemap.rate
+		    FROM
+		        (
+		        SELECT
+		            options.*,
+		            ohlc.adj_close as stock_price,
+		            ohlc.dividend_yield
+		        FROM
+		            options
+		        JOIN
+		            ohlc
+		        ON
+		            options.date_current = ohlc.date_current
+		        AND options.ticker = ohlc.ticker
+		        WHERE
+		            {clauses}
+		        ) as t1
+		    JOIN
+		        ratemap
+		    ON
+		        ratemap.date_current = t1.date_current
+		    AND ROUND(t1.time_to_expiry * 365, 0) = ratemap.time_to_expiry
+		"""
+		return self.read(query)
 
 	def get_password(self, username):
 

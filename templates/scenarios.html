@@ -249,6 +249,10 @@
 			</div>
 			<!-- Top Row End -->
 
+			{% if scenarios._position_rows %}
+				{{scenarios._position_rows | safe}}
+			{% endif %}
+
 		</div>
 		<!-- Main Container End -->
 

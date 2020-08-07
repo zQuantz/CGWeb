@@ -167,5 +167,37 @@ function removeAllPositions(){
 }
 
 function analyzePositions(){
-	console.log(positions);
+
+	let positions = [
+
+		{
+			startDate:  "2020-08-01",
+			endDate: "2020-08-04",
+			position: {
+				"AAPL 2020-08-21 P400.0": "1",
+				"AAPL 2020-08-21 C400.0": "-2"
+			},
+			strikes:["400.0"],
+			tickers:["AAPL"]
+		},
+		{
+			startDate:  "2020-08-01",
+			endDate: "2020-08-04",
+			position: {
+				"AAPL 2020-08-21 P410.0": "-1",
+				"AAPL 2020-08-21 C420.0": "-2"
+			},
+			strikes:["410.0","420.0"],
+			tickers:["AAPL"]
+		},
+
+	]
+
+	if (positions.length == 0)
+		return;
+
+	var request = new XMLHttpRequest();
+	request.open("POST", "/scenarios/analyze");
+	request.send(JSON.stringify(positions));
+
 }
