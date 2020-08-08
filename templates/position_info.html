@@ -42,126 +42,192 @@
 					<thead>
 						<tr style="text-align: unset;">
 							<th></th>
-							<th>TSLA 2020-09-18 C1490.0</th>
-							<th>TSLA 2020-09-18 P1500.0</th>
+							<th>TSLA 2020-09-18 C1460.0</th>
+							<th>TSLA 2020-09-18 P1550.0</th>
 							<th>Net</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<th>Execution Date</th>
-							<td>2020-07-09</td>
-							<td>2020-07-09</td>
+							<td>2020-07-10</td>
+							<td>2020-07-10</td>
+							<td></td>
+						</tr>
+						<tr>
+							<th>Stock Price</th>
+							<td>1544.65</td>
+							<td>1544.65</td>
 							<td></td>
 						</tr>
 						<tr>
 							<th>Quantity</th>
-							<td>1</td>
 							<td>-2</td>
+							<td>1</td>
 							<td></td>
 						</tr>
 						<tr>
 							<th>Option Price</th>
-							<td>162.25$</td>
-							<td>281.36$</td>
+							<td>302.8$</td>
+							<td>267.0$</td>
 							<td></td>
 						</tr>
 						<tr>
 							<th>IV</th>
-							<td>87.01%</td>
-							<td>86.42%</td>
+							<td>98.0%</td>
+							<td>97.52%</td>
 							<td></td>
 						</tr>
 						<tr>
 							<th>Days to Expiry</th>
-							<td>74</td>
-							<td>74</td>
+							<td>72</td>
+							<td>72</td>
 							<td></td>
 						</tr>
 						<tr>
 							<th>Volume</th>
-							<td>14</td>
-							<td>121</td>
+							<td>318</td>
+							<td>11</td>
 							<td></td>
 						</tr>
 						<tr>
 							<th>Open Interest</th>
-							<td>7</td>
+							<td>82</td>
 							<td>5</td>
 							<td></td>
 						</tr>
 						<tr>
 							<th>Delta</th>
-							<td>0.510694</td>
-							<td>-0.497158</td>
-							<td>1.50501</td>
+							<td>0.638113</td>
+							<td>-0.414763</td>
+							<td></td>
 						</tr>
 						<tr>
 							<th>Gamma</th>
-							<td>0.000731</td>
-							<td>0.000736</td>
-							<td>-0.000741</td>
+							<td>0.000548</td>
+							<td>0.000573</td>
+							<td>-1.69099</td>
 						</tr>
 						<tr>
 							<th>Theta</th>
-							<td>-1.47526</td>
-							<td>-1.45998</td>
-							<td>1.4447</td>
+							<td>-1.76953</td>
+							<td>-1.77271</td>
+							<td>-0.000523</td>
 						</tr>
 						<tr>
 							<th>Vega</th>
-							<td>2.50143</td>
-							<td>2.50227</td>
-							<td>-2.50311</td>
+							<td>2.57871</td>
+							<td>2.682</td>
+							<td>1.76635</td>
 						</tr>
 						<tr>
 							<th>Cost</th>
-							<td>162.25$</td>
-							<td>-562.72$</td>
-							<td>-400.47$</td>
+							<td>-605.6$</td>
+							<td>267.0$</td>
+							<td>-2.475417$</td>
+						</tr>
+						<tr>
+							<th>Last Option Price</th>
+							<td>346.0$</td>
+							<td>223.1$</td>
+							<td>-338.6$</td>
+						</tr>
+						<tr>
+							<th>Profit/Loss</th>
+							<td>-86.4$</td>
+							<td>-43.9$</td>
+							<td>-130.3$</td>
 						</tr>
 					</tbody>
 				</table>
 
 			</div>
 
-			<div class="col-lg-3 positionSegment">
-				
-			</div>
-
-			<div class="col-lg-4 positionSegment" style="margin-right: none;">
+			<div class="col-lg-7 positionSegment" style="margin-right: none;">
 				
 				<div class="row">
 					
 					<div class="col-lg-12" style="padding-left: 0.25rem;">
-						<canvas id="PnLChart" width="3" height="2" style="padding-top: 1rem"></canvas>
+						<canvas id="PnLChart" width="9" height="4" style="padding-top: 1rem"></canvas>
 					</div>
 
 				</div>
 
-				<div class="row">
+				<div class="row" style="margin-left: 1rem">
 
-					<div class="col-lg-12">
+					<div class="form-group row">
+						<label for="startDateInput" class="col-4 col-form-label">Instrument</label>
+						<div class="col-8">
+							<select class="selectpicker" id="variableSelect">
 
-						<select class="selectpicker" id="variableSelect">
+								<option value="7">Position</option>
+								<option value="8">AAPL 2020-08-19 C400.0</option>
+								<option value="8">AAPL 2020-08-19 C410.0</option>
 
-							<option value="" selected disabled>Variable</option>
-							<option value="7">Delta</option>
-							<option value="8">Gamma</option>
-							<option value="9">Theta</option>
-							<option value="10">Vega</option>
-							<option value="11">Rho</option>
-							<option value="12">Vanna</option>
-							<option value="13">Vomma</option>
-							<option value="14">Charm</option>
-							<option value="15">Veta</option>
-							<option value="16">Speed</option>
-							<option value="17">Zomma</option>
-							<option value="18">Color</option>
-							<option value="19">Ultima</option>
+							</select>
+						</div>
+					</div>
 
-						</select>
+					<div class="form-group row" style="margin-left: 2rem; border-left: 1px solid rgba(0, 0, 0, 0.25)">
+						<label for="startDateInput" class="col-4 col-form-label">Representation</label>
+						<div class="col-8">
+							<select class="selectpicker" id="variableSelect">
 
+								<option value="7">Daily Change</option>
+								<option value="8">Cummulative Change</option>
+
+							</select>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row" style="margin-left: 1rem">
+
+					<div class="form-group row">
+						<label for="startDateInput" class="col-4 col-form-label">L Variable(s)</label>
+						<div class="col-8">
+							<select class="selectpicker" id="variableSelect">
+
+								<option value="7">Delta</option>
+								<option value="8">Gamma</option>
+								<option value="9">Theta</option>
+								<option value="10">Vega</option>
+								<option value="11">Rho</option>
+								<option value="12">Vanna</option>
+								<option value="13">Vomma</option>
+								<option value="14">Charm</option>
+								<option value="15">Veta</option>
+								<option value="16">Speed</option>
+								<option value="17">Zomma</option>
+								<option value="18">Color</option>
+								<option value="19">Ultima</option>
+
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row" style="margin-left: 1.175rem; border-left: 1px solid rgba(0, 0, 0, 0.25)">
+						<label for="startDateInput" class="col-4 col-form-label">R Variable(s)</label>
+						<div class="col-8">
+							<select class="selectpicker" id="variableSelect">
+
+								<option value="7">Delta</option>
+								<option value="8">Gamma</option>
+								<option value="9">Theta</option>
+								<option value="10">Vega</option>
+								<option value="11">Rho</option>
+								<option value="12">Vanna</option>
+								<option value="13">Vomma</option>
+								<option value="14">Charm</option>
+								<option value="15">Veta</option>
+								<option value="16">Speed</option>
+								<option value="17">Zomma</option>
+								<option value="18">Color</option>
+								<option value="19">Ultima</option>
+
+							</select>
+						</div>
 					</div>
 
 				</div>

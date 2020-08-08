@@ -362,6 +362,8 @@ class Scenarios:
 			pdetails['quantity'] = pdetails.option_id.map(oid_dir_map)
 			pdetails['cost'] = pdetails.option_price * pdetails.quantity
 
+			###############################################################################################
+
 			net = [""] * len(display_cols)
 
 			if single_ticker:
@@ -373,11 +375,12 @@ class Scenarios:
 				
 			net[-1] = pdetails.pnl.sum().round(2)
 
-			transpose_cols = pdetails.option_id.values
+			###############################################################################################
 			
 			c = ["pnl", "implied_volatility", "stock_price", "last_price"]
 			pdetails.loc[:, c] = pdetails.loc[:, c].round(2)
 			
+			transpose_cols = pdetails.option_id.values
 			pdetails = pdetails[ordered_cols]
 			pdetails.columns = display_cols
 			
