@@ -14,6 +14,7 @@ cum_cols = ["cum_"+col for col in attr_cols]
 
 ordered_cols = [
 	"date_current",
+	"stock_price",
 	"quantity",
 	"option_price",
 	"implied_volatility",
@@ -24,10 +25,13 @@ ordered_cols = [
 	"gamma",
 	"theta",
 	"vega",
-	"cost"
+	"cost",
+	"last_price",
+	"pnl"
 ]
 display_cols = [
 	"Execution Date",
+	"Stock Price",
 	"Quantity",
 	"Option Price",
 	"IV",
@@ -38,7 +42,9 @@ display_cols = [
 	"Gamma",
 	"Theta",
 	"Vega",
-	"Cost"
+	"Cost",
+	"Last Option Price",
+	"Profit/Loss"
 ]
 
 greek_cols = [
@@ -292,6 +298,8 @@ class Scenarios:
 			attributions = {}
 			
 			oids, dates, dirs = position
+			oid_dir_map = {oid : dir_ for oid, dir_ in zip(oids, dirs)}
+
 			position = options[options.option_id.isin(oids)]
 			position = position[position.date_current >= datetime.strptime(dates[0], "%Y-%m-%d").date()]
 			position = position[position.date_current <= datetime.strptime(dates[1], "%Y-%m-%d").date()]
@@ -305,7 +313,7 @@ class Scenarios:
 				for i in range(len(oids))
 			], axis=0)
 			position = position.sort_values(["date_current", "option_id"])
-			position['direction'] = position.option_id.map({oid : dir_ for oid, dir_ in zip(oids, dirs)})
+			position['direction'] = position.option_id.map(oid_dir_map)
 			
 			ccum_cols = cum_cols + ['cum_attr']
 			position.loc[:, ccum_cols] = position.loc[:, ccum_cols].multiply(position.direction, axis=0)
@@ -333,14 +341,25 @@ class Scenarios:
 			
 			###############################################################################################
 			
-			pdetails = options.iloc[:len(oids)].reset_index(drop=True)
+			x = position.date_current.value_counts()
+			x = x[x == len(oids)]
+			pdetails = position[position.date_current.isin(x.index)]
+			
+			pdetails_end = pdetails.iloc[-len(oids):].reset_index(drop=True)
+			pdetails = pdetails.iloc[:len(oids)].reset_index(drop=True)
+			
+			pdetails['last_price'] = pdetails_end.option_price
+
+			pdetails['pnl'] = pdetails_end.option_price - pdetails.option_price 
+			pdetails['pnl'] = pdetails.pnl * pdetails.direction
+			
 			single_ticker = pdetails.ticker.nunique() == 1
 			pdetails = pdetails.drop(["ticker", "option_type", "strike_price", "bid", "ask"], axis=1)
 
 			pdetails['implied_volatility'] = pdetails.implied_volatility * 100
 			pdetails['time_to_expiry'] = np.round(pdetails.time_to_expiry * 365)
 
-			pdetails['quantity'] = dirs
+			pdetails['quantity'] = pdetails.option_id.map(oid_dir_map)
 			pdetails['cost'] = pdetails.option_price * pdetails.quantity
 
 			net = [""] * len(display_cols)
@@ -348,23 +367,33 @@ class Scenarios:
 			if single_ticker:
 				x = pdetails[['delta', 'gamma', 'theta', 'vega', 'option_price']]
 				x = x.multiply(pdetails.quantity, axis=0).sum().round(6)
-				net[-5:] = x.values.tolist()
+				net[-6:-1] = x.values.tolist()
 			else:
-				net[-1] = (pdetails.option_price * pdetails.quantity).sum()
+				net[-2] = (pdetails.option_price * pdetails.quantity).sum()
+				
+			net[-1] = pdetails.pnl.sum().round(2)
 
 			transpose_cols = pdetails.option_id.values
-
+			
+			c = ["pnl", "implied_volatility", "stock_price", "last_price"]
+			pdetails.loc[:, c] = pdetails.loc[:, c].round(2)
+			
 			pdetails = pdetails[ordered_cols]
 			pdetails.columns = display_cols
-
+			
 			pdetails = pdetails.T
 			pdetails.columns = transpose_cols
-
+			
+			###############################################################################################
+			
 			pdetails.loc["IV", :] = pdetails.loc["IV", :].astype(str) + "%"
 			pdetails.loc["Option Price", :] = pdetails.loc["Option Price", :].astype(str) + "$"
+			pdetails.loc["Stock Price", :] = pdetails.loc["Stock Price", :].astype(str) + "$"
 
 			pdetails['Net'] = net
+			pdetails.loc["Last Option Price", :] = pdetails.loc["Last Option Price", :].astype(str) + "$"
 			pdetails.loc["Cost", :] = pdetails.loc["Cost", :].astype(str) + "$"
+			pdetails.loc["Profit/Loss", :] = pdetails.loc["Profit/Loss", :].astype(str) + "$"
 
 			###############################################################################################
 
@@ -374,9 +403,8 @@ class Scenarios:
 			s3r1 = html("div", s3r1, {"class" : "col-lg-12", "style" : "padding-left: 0.25rem"})
 			s3r1 = html("div", s3r1, {"class" : "row"})
 
-			s3r2 = html("option", "Variable", {"value" : "", "selected" : "selected", "disabled" : "disabled"})
-			
-			chart_options = ["Delta", "Gamma", "Theta", "Vega", "Rho", "Vanna"]
+			s3r2 = ""
+			chart_options = ["Net", "Delta", "Gamma", "Theta", "Vega", "Rho", "Vanna"]
 			chart_options += ["Veta", "Speed", "Zomma", "Color", "Ultima", "Charm"]
 			for option in chart_options:
 				s3r2 += html("option", option, {"value" : option.lower()}) 
@@ -394,7 +422,7 @@ class Scenarios:
 			###############################################################################################
 
 			s1 = html("h3", f"Scenario #{idx}") + html("br", "") + html("h6", "Position Details")
-			s1 += pdetails.to_html(classes="table table-sm table-hover smallTable", border=None)
+			s1 += pdetails.to_html(classes="table table-sm table-hover smallTable", border=0, justify="unset")
 			s1 = html("div", s1, {"class" : "col-lg-5 positionSegment"})
 
 			###############################################################################################

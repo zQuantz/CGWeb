@@ -1,3 +1,4 @@
+var positionAttributions = null;
 var positionAccordion = null;
 var actionEntryTbody = null;
 var startDateInput = null;
@@ -8,6 +9,7 @@ var accordion_tr = null;
 var accordion = null;
 var option_tr = null;
 
+var scenarioCharts = [];
 var positions = [];
 var position = {};
 var tickers = {};
@@ -171,7 +173,7 @@ function analyzePositions(){
 	let positions = [
 
 		{
-			startDate:  "2020-08-01",
+			startDate:  "2020-07-20",
 			endDate: "2020-08-04",
 			position: {
 				"AAPL 2020-08-21 P400.0": "1",
@@ -181,7 +183,7 @@ function analyzePositions(){
 			tickers:["AAPL"]
 		},
 		{
-			startDate:  "2020-08-01",
+			startDate:  "2020-07-20",
 			endDate: "2020-08-04",
 			position: {
 				"AAPL 2020-08-21 P410.0": "-1",
@@ -197,7 +199,147 @@ function analyzePositions(){
 		return;
 
 	var request = new XMLHttpRequest();
-	request.open("POST", "/scenarios/analyze");
+	request.onreadystatechange = function() {
+
+		if(this.readyState == 4 && this.status == 200){
+			
+			let data = JSON.parse(this.responseText);
+			positionAttributions = data.position_attributions;
+			$("#mainContainer").append(data.position_rows);
+
+			for(let i = 1; i <= positionAttributions.length; i++){
+
+				var ctx = document.getElementById(`PnLChart${i}`).getContext('2d');
+				scenarioCharts.push(
+					new Chart(ctx, {
+
+						type: 'line',
+						data: {
+							datasets: []
+						},
+						options: {
+							
+							title: {
+								display:true,
+								text:"P&L Chart",
+								position:"top"
+							},
+
+							legend: {
+								display:true
+							},
+
+							tooltips: {
+								enabled:false,
+								mode: "y",
+								bodyFontStyle: 'bold',
+								callbacks: {}
+							},
+
+							elements: {
+								
+								point: {
+									enabled:false,
+									radius:0,
+									hitRadius:10,
+									hoverRadius:0,
+									pointStyle:'circle'
+								},
+
+							},
+
+							scales: {
+
+								xAxes: [{
+									
+									type: 'linear',
+									position: 'bottom',
+
+									scaleLabel: {
+										display: true,
+										labelString: '',
+										fontStyle: "bold",
+										fontSize: 14,
+										padding: {
+											bottom: 0,
+											top: -5
+										}
+									},
+
+									gridLines: {}
+
+								}],
+
+								yAxes: [{
+									
+									scaleLabel: {
+										display: true,
+										labelString: '',
+										fontStyle: "bold",
+										fontSize: 14,
+										padding: {
+											bottom: -5,
+											top: 5
+										}
+									},
+
+									gridLines: {}
+
+								}]
+
+							}
+						}
+					})
+				)
+			}
+
+			$(".selectpicker").selectpicker("refresh");
+			for(let i = 1; i <= positionAttributions.length; i++){
+
+				$(`#variableSelect${i}`).change( function() {
+
+					let id = this.id;
+					let idx = Number(id.replace("variableSelect", "")) - 1;
+					
+					let chart = scenarioCharts[idx];
+					chart.data.datasets = [];
+
+					let variables = $(`#${id}`).val();
+					let attributions = positionAttributions[idx]['position'];
+
+					variables.forEach( variable => {
+
+						let data = [];
+						attributions[variable].forEach( (value, ctr) => {
+							
+							data.push({
+								y: value,
+								x: ctr
+							})
+
+						})
+
+						chart.data.datasets.push({
+							label: variable.substring(0, 1).toUpperCase() + variable.substring(1),
+							data: data,
+							borderColor: 'rgba(255,0,0)',
+							backgroundColor: 'rgba(52, 58, 64, 0.15)',
+							cubicInterpolationMode: "monotone",
+							lineTension: 0
+						})
+
+					})
+
+					chart.update();
+
+				})
+
+			}
+
+		}
+	}
+
+	request.open("POST", "/scenarios");
 	request.send(JSON.stringify(positions));
 
 }

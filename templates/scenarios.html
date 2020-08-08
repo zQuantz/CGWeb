@@ -98,7 +98,7 @@
 	<!-- Navbar End -->
 
 	<!-- Main Container -->
-	<div class="container-fluid" style="width: 95%; margin-top: 1rem;">
+	<div id="mainContainer" class="container-fluid" style="width: 95%; margin-top: 1rem;">
 
 		<!-- Top Row -->
 		<div class="row">
@@ -247,18 +247,21 @@
 				<!-- Scenario Accordion End -->
 
 			</div>
-			<!-- Top Row End -->
-
-			{% if scenarios._position_rows %}
-				{{scenarios._position_rows | safe}}
-			{% endif %}
 
 		</div>
-		<!-- Main Container End -->
+		<!-- Top Row End -->
 
-		<script type="text/javascript">
-			init({{scenarios.templates|tojson|safe}});
-		</script>
 
-	</body>
-	</html>
+		{% if scenarios._position_rows %}
+			{{scenarios._position_rows | safe}}
+		{% endif %}
+
+	</div>
+	<!-- Main Container End -->
+
+	<script type="text/javascript">
+		init({{scenarios.templates|tojson|safe}});
+	</script>
+
+</body>
+</html>

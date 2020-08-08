@@ -88,17 +88,19 @@ def calculator():
 
 	return render_template("calculators.html", greeks = greeks, input_values = input_values)
 
-@app.route("/scenarios")
+@app.route("/scenarios", methods=["GET", "POST"])
 def scenarios():
 
-	scenarios_obj.generate_option_ids(request.args.getlist("tickers"))
-	return render_template("scenarios.html", scenarios = scenarios_obj, connector = None)
+	if request.method == "POST":
+		data = json.loads(request.get_data())
+		scenarios_obj.generate_scenarios(data)
+		return json.dumps({
+			"position_rows" : scenarios_obj._position_rows,
+			"position_attributions" : scenarios_obj.position_attributions
+		})
+	else:
+		scenarios_obj.generate_option_ids(request.args.getlist("tickers"))
 
-@app.route("/scenarios/analyze", methods=["POST"])
-def analyze_scenarios():
-
-	data = json.loads(request.get_data())
-	scenarios_obj.generate_scenarios(data)
 	return render_template("scenarios.html", scenarios = scenarios_obj, connector = None)
 
 if __name__ == '__main__':
