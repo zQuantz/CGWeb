@@ -14,36 +14,43 @@ cum_cols = ["cum_"+col for col in attr_cols]
 
 ordered_cols = [
 	"date_current",
-	"stock_price",
-	"quantity",
-	"option_price",
-	"implied_volatility",
 	"time_to_expiry",
 	"volume",
 	"open_interest",
+	"stock_price",
+	"option_price",
+	"implied_volatility",
+	"quantity",
+	"cost",
 	"delta",
 	"gamma",
 	"theta",
 	"vega",
-	"cost",
+	"last_stock",
 	"last_price",
+	"last_vol",
+	"last_cost",
 	"pnl"
 ]
+
 display_cols = [
 	"Execution Date",
-	"Stock Price",
-	"Quantity",
-	"Option Price",
-	"IV",
 	"Days to Expiry",
 	"Volume",
 	"Open Interest",
+	"Stock Price",
+	"Option Price",
+	"IV",
+	"Quantity",
+	"Cost",
 	"Delta",
 	"Gamma",
 	"Theta",
 	"Vega",
-	"Cost",
+	"Last Stock Price",
 	"Last Option Price",
+	"Last IV",
+	"Last Cost",
 	"Profit/Loss"
 ]
 
@@ -313,10 +320,10 @@ class Scenarios:
 				for i in range(len(oids))
 			], axis=0)
 			position = position.sort_values(["date_current", "option_id"])
-			position['direction'] = position.option_id.map(oid_dir_map)
+			position['quantity'] = position.option_id.map(oid_dir_map)
 			
 			ccum_cols = cum_cols + ['cum_attr']
-			position.loc[:, ccum_cols] = position.loc[:, ccum_cols].multiply(position.direction, axis=0)
+			position.loc[:, ccum_cols] = position.loc[:, ccum_cols].multiply(position.quantity, axis=0)
 			position_pnl = position.groupby('date_current').sum().loc[:, ccum_cols][1:]
 			
 			position_pnl = position_pnl.to_dict('list')
@@ -350,43 +357,56 @@ class Scenarios:
 			pdetails_end = pdetails.iloc[-len(oids):].reset_index(drop=True)
 			pdetails = pdetails.iloc[:len(oids)].reset_index(drop=True)
 			
-			pdetails['last_price'] = pdetails_end.option_price
-
-			pdetails['pnl'] = pdetails_end.option_price - pdetails.option_price 
-			pdetails['pnl'] = pdetails.pnl * pdetails.direction
-			
 			single_ticker = pdetails.ticker.nunique() == 1
 			pdetails = pdetails.drop(["ticker", "option_type", "strike_price", "bid", "ask"], axis=1)
 
-			pdetails['implied_volatility'] = pdetails.implied_volatility * 100
-			pdetails['time_to_expiry'] = np.round(pdetails.time_to_expiry * 365)
-
-			pdetails['quantity'] = pdetails.option_id.map(oid_dir_map)
+			pdetails['implied_volatility'] = (pdetails.implied_volatility * 100).round(2)
+			pdetails['time_to_expiry'] = (pdetails.time_to_expiry * 365).round(0)
 			pdetails['cost'] = pdetails.option_price * pdetails.quantity
+
+			pdetails['last_stock'] = pdetails_end.stock_price
+			pdetails['last_price'] = pdetails_end.option_price
+			pdetails['last_vol'] = (pdetails_end.implied_volatility * 100).round(2)
+			pdetails['last_cost'] = pdetails_end.option_price * pdetails_end.quantity
+
+			pdetails['pnl'] = pdetails_end.option_price - pdetails.option_price 
+			pdetails['pnl'] = (pdetails.pnl * pdetails.quantity).round(2)
 
 			###############################################################################################
 
 			net = [""] * len(display_cols)
+			x = pdetails.iloc[:, 3:]
+
+			sums = x.sum()
+			psums = x.multiply(x.quantity, axis=0).sum()
+			means = x.mean()
+
+			net[8] = round(sums.cost, 2)
+			net[16] = round(sums.last_cost, 2)
+			net[17] = round(sums.pnl, 2)
 
 			if single_ticker:
-				
-				x = pdetails[['delta', 'gamma', 'theta', 'vega', 'option_price']]
-				x = x.multiply(pdetails.quantity, axis=0).sum().round(6)
-				net[-6:-1] = x.values.tolist()
+
+				net[6] = round(means.implied_volatility, 2)
+				net[9] = round(psums.delta, 5)
+				net[10] = round(psums.gamma, 5)
+				net[11] = round(psums.theta, 5)
+				net[12] = round(psums.vega, 5)
+				net[15] = round(means.last_vol, 2)
 
 				attributions['position']['stock price'] = attributions[oids[0]]['stock price']
 
 			else:
 
-				net[-2] = (pdetails.option_price * pdetails.quantity).sum()
 				attributions['position']['stock price'] = []
-				
-			net[-1] = pdetails.pnl.sum().round(2)
+
+			for i in [6, 15]:
+				net[i] = str(net[i]) + "%"
+
+			for i in [8, 16, 17]:
+				net[i] = str(net[i]) + "$"
 
 			###############################################################################################
-			
-			c = ["pnl", "implied_volatility", "stock_price", "last_price"]
-			pdetails.loc[:, c] = pdetails.loc[:, c].round(2)
 			
 			transpose_cols = pdetails.option_id.values
 			pdetails = pdetails[ordered_cols]
@@ -396,21 +416,22 @@ class Scenarios:
 			pdetails.columns = transpose_cols
 			
 			###############################################################################################
-			
-			pdetails.loc["IV", :] = pdetails.loc["IV", :].astype(str) + "%"
-			pdetails.loc["Option Price", :] = pdetails.loc["Option Price", :].astype(str) + "$"
-			pdetails.loc["Stock Price", :] = pdetails.loc["Stock Price", :].astype(str) + "$"
+
+			for label in ["IV", "Last IV"]:
+				pdetails.loc[label, :] = pdetails.loc[label, :].astype(str) + "%"
+
+			labels = ["Option Price", "Last Option Price", "Stock Price"]
+			labels += ["Last Stock Price", "Cost", "Last Cost", "Profit/Loss"]
+			for label in labels:
+				pdetails.loc[label, :] = pdetails.loc[label, :].astype(str) + "$"
 
 			pdetails['Net'] = net
-			pdetails.loc["Last Option Price", :] = pdetails.loc["Last Option Price", :].astype(str) + "$"
-			pdetails.loc["Cost", :] = pdetails.loc["Cost", :].astype(str) + "$"
-			pdetails.loc["Profit/Loss", :] = pdetails.loc["Profit/Loss", :].astype(str) + "$"
 
 			###############################################################################################
 
 			idx = len(position_attributions)
 
-			s2r1 = html("canvas", "", {"id" : f"PnLChart{idx}", "width" : 9, "height" : 4, "style" : "padding-top: 1rem;"})
+			s2r1 = html("canvas", "", {"id" : f"PnLChart{idx}", "width" : 10, "height" : 5, "style" : "padding-top: 1rem;"})
 			s2r1 = html("div", s2r1, {"class" : "col-lg-12", "style" : "padding-left: 0.25rem"})
 			s2r1 = html("div", s2r1, {"class" : "row"})
 
