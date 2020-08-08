@@ -328,16 +328,18 @@ class Scenarios:
 			
 			for oid in oids:
 				
-				option_pnl = position[position.option_id == oid].loc[:, ccum_cols][1:]
+				option_pnl = position[position.option_id == oid]
+				stock_price = option_pnl.stock_price[1:].values.tolist()
+
+				option_pnl = option_pnl.loc[:, ccum_cols][1:]
 				option_pnl = option_pnl.to_dict('list')
 				
 				option_pnl = {key[4:-5] : option_pnl[key] for key in option_pnl}
 				option_pnl['net'] = option_pnl['']
 				del option_pnl['']
 				
+				option_pnl['stock price'] = stock_price
 				attributions[oid] = option_pnl
-				
-			position_attributions.append(attributions)
 			
 			###############################################################################################
 			
@@ -367,11 +369,17 @@ class Scenarios:
 			net = [""] * len(display_cols)
 
 			if single_ticker:
+				
 				x = pdetails[['delta', 'gamma', 'theta', 'vega', 'option_price']]
 				x = x.multiply(pdetails.quantity, axis=0).sum().round(6)
 				net[-6:-1] = x.values.tolist()
+
+				attributions['position']['stock price'] = attributions[oids[0]]['stock price']
+
 			else:
+
 				net[-2] = (pdetails.option_price * pdetails.quantity).sum()
+				attributions['position']['stock price'] = []
 				
 			net[-1] = pdetails.pnl.sum().round(2)
 
@@ -402,35 +410,78 @@ class Scenarios:
 
 			idx = len(position_attributions)
 
-			s3r1 = html("canvas", "", {"id" : f"PnLChart{idx}", "width" : 3, "height" : 2, "style" : "padding-top: 1rem;"})
-			s3r1 = html("div", s3r1, {"class" : "col-lg-12", "style" : "padding-left: 0.25rem"})
-			s3r1 = html("div", s3r1, {"class" : "row"})
+			s2r1 = html("canvas", "", {"id" : f"PnLChart{idx}", "width" : 9, "height" : 4, "style" : "padding-top: 1rem;"})
+			s2r1 = html("div", s2r1, {"class" : "col-lg-12", "style" : "padding-left: 0.25rem"})
+			s2r1 = html("div", s2r1, {"class" : "row"})
 
-			s3r2 = ""
-			chart_options = ["Net", "Delta", "Gamma", "Theta", "Vega", "Rho", "Vanna"]
-			chart_options += ["Veta", "Speed", "Zomma", "Color", "Ultima", "Charm"]
+			###############################################################################################
+
+			instrumentOptions = html("option", "Position", {"value" : "position"})
+			for option in oids:
+				instrumentOptions += html("option", option, {"value" : option})
+
+			s2r2r1 = html("select", instrumentOptions, {"class" : "selectpicker", "id" : f"instrumentSelect{idx}", "scenario" : idx})
+			s2r2r1 = html("div", s2r2r1, {"class" : "col-8"})
+			label = html("label", "Instrument", {"class" : "col-4 col-form-label"})
+			s2r2r1 = html("div", label + s2r2r1, {"class" : "form-group row"})
+			
+			s2r2r2 = html("option", "Daily Change", {"value" : "d"})
+			s2r2r2 += html("option", "Cummulative Change", {"value" : "c"})
+			s2r2r2 = html("select", s2r2r2, {"class" : "selectpicker", "id" : f"representationSelect{idx}", "scenario" : idx})
+			s2r2r2 = html("div", s2r2r2, {"class" : "col-8"})
+			label = html("label", "Representation", {"class" : "col-4 col-form-label"})
+			s2r2r2 = html("div", label + s2r2r2, {"class" : "form-group row", "style" : "margin-left: 2rem; border-left: 1px solid rgba(0, 0, 0, 0.25)"})
+
+			s2r2 = html("div", s2r2r1 + s2r2r2, {"class" : "row", "style" : "margin-left: 1rem;"})
+
+			###############################################################################################
+
+			variableOptions = ""
+			chart_options = ["Net", "Delta", "Gamma", "Theta", "Vega", "Rho", "Stock Price"]
+			chart_options += ["Vanna", "Veta", "Speed", "Zomma", "Color", "Ultima", "Charm"]
 			for option in chart_options:
-				s3r2 += html("option", option, {"value" : option.lower()}) 
+				variableOptions += html("option", option, {"value" : option.lower()})
 
-			s3r2 = html("select", s3r2, {"class" : "selectpicker", "id" : f"variableSelect{idx}", "multiple" : "multiple"})
-			s3r2 = html("div", s3r2, {"class" : "col-lg-12"})
-			s3r2 = html("div", s3r2, {"class" : "row"})
+			s2r3r1 = html("select", variableOptions, {"class" : "selectpicker", "id" : f"variableSelectL{idx}", "multiple" : "multiple", "scenario" : idx})
+			s2r3r1 = html("div", s2r3r1, {"class" : "col-8"})
+			label = html("label", "L Variable(s)", {"class" : "col-4 col-form-label"})
+			s2r3r1 = html("div", label + s2r3r1, {"class" : "form-group row"})
 
-			s3 = html("div", s3r1 + s3r2, {"class" : "col-lg-4 positionSegment", "style" : "margin-right: none;"})
+			s2r3r2 = html("select", variableOptions, {"class" : "selectpicker", "id" : f"variableSelectR{idx}", "multiple" : "multiple", "scenario" : idx})
+			s2r3r2 = html("div", s2r3r2, {"class" : "col-8"})
+			label = html("label", "R Variable(s)", {"class" : "col-4 col-form-label"})
+			s2r3r2 = html("div", label + s2r3r2, {"class" : "form-group row", "style" : "margin-left: 1.175rem; border-left: 1px solid rgba(0, 0, 0, 0.25)"})
+
+			s2r3 = html("div", s2r3r1 + s2r3r2, {"class" : "row", "style" : "margin-left: 1rem;"})
 
 			###############################################################################################
 
-			s2 = html("div", "", {"class" : "col-lg-3 positionSegment"})
+			s2 = html("div", s2r1 + s2r2 + s2r3, {"class" : "col-lg-7 positionSegment", "style" : "margin-right: none;"})
 
 			###############################################################################################
 
-			s1 = html("h3", f"Scenario #{idx}") + html("br", "") + html("h6", "Position Details")
+			s1 = html("h3", f"Scenario #{idx + 1}") + html("br", "") + html("h6", "Position Details")
 			s1 += pdetails.to_html(classes="table table-sm table-hover smallTable", border=0, justify="unset")
 			s1 = html("div", s1, {"class" : "col-lg-5 positionSegment"})
 
+			position_rows.append(html("div", s1+s2, {"class" : "row positionRow"}))
+
 			###############################################################################################
 
-			position_rows.append(html("div", s1+s2+s3, {"class" : "row positionRow"}))
+			for instrument in attributions:
+
+				variables = attributions[instrument]
+				_variables = variables.copy()
+
+				for key in _variables:
+					_variables[key] = [0] + np.diff(_variables[key]).tolist()
+
+				attributions[instrument] = {
+					"c" : variables,
+					"d" : _variables
+				}
+
+			position_attributions.append(attributions)
 
 		self._position_rows = " ".join(position_rows)
 		self.position_attributions = position_attributions

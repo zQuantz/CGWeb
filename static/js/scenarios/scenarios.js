@@ -16,6 +16,213 @@ var tickers = {};
 var strikes = {};
 
 var minDate = "2019-12-01";
+var colors = [
+	'rgba(179,43,235)',
+	'rgba(212,177,23)',
+	'rgba(232,76,18)',
+	'rgba(88,63,241)',
+	'rgba(103,252,104)',
+	'rgba(135,207,253)',
+	'rgba(252,250,91)',
+	'rgba(211,39,188)',
+	'rgba(241,53,71)',
+	'rgba(7,31,91)',
+	'rgba(206,73,141)',
+	'rgba(51,206,70)',
+	'rgba(153,48,148)',
+	'rgba(114,88,30)',
+	'rgba(67,45,139)',
+	'rgba(79,239,233)',
+	'rgba(245,32,250)',
+	'rgba(124,81,226)',
+	'rgba(185,78,65)',
+	'rgba(92,0,98)',
+	'rgba(60,18,148)',
+	'rgba(134,6,19)',
+	'rgba(125,231,14)',
+	'rgba(191,139,219)',
+	'rgba(75,137,87)',
+	'rgba(6,178,146)',
+	'rgba(14,212,247)',
+	'rgba(193,58,162)',
+	'rgba(224,178,58)',
+	'rgba(248,156,69)',
+	'rgba(204,44,128)',
+	'rgba(178,116,31)',
+	'rgba(8,43,224)',
+	'rgba(121,86,160)',
+	'rgba(154,60,239)',
+	'rgba(21,8,12)',
+	'rgba(129,13,251)',
+	'rgba(160,100,161)',
+	'rgba(122,197,150)',
+	'rgba(131,200,150)',
+	'rgba(243,144,69)',
+	'rgba(75,145,79)',
+	'rgba(219,20,160)',
+	'rgba(204,127,161)',
+	'rgba(24,3,146)',
+	'rgba(142,22,198)',
+	'rgba(84,92,161)',
+	'rgba(22,0,193)',
+	'rgba(170,197,16)',
+	'rgba(77,50,145)',
+	'rgba(35,123,63)',
+	'rgba(29,152,138)',
+	'rgba(204,58,112)',
+	'rgba(52,14,198)',
+	'rgba(51,203,178)',
+	'rgba(116,187,26)',
+	'rgba(85,149,88)',
+	'rgba(207,252,17)',
+	'rgba(77,164,185)',
+	'rgba(88,13,162)',
+	'rgba(28,155,108)',
+	'rgba(77,32,90)',
+	'rgba(41,177,19)',
+	'rgba(183,225,7)',
+	'rgba(26,90,224)',
+	'rgba(42,7,229)',
+	'rgba(137,74,2)',
+	'rgba(77,154,25)',
+	'rgba(4,89,33)',
+	'rgba(182,162,64)',
+	'rgba(44,121,154)',
+	'rgba(66,240,187)',
+	'rgba(198,136,121)',
+	'rgba(95,167,155)',
+	'rgba(5,15,50)',
+	'rgba(51,119,142)',
+	'rgba(43,238,50)',
+	'rgba(56,31,7)',
+	'rgba(219,209,22)',
+	'rgba(95,203,159)',
+	'rgba(220,32,69)',
+	'rgba(103,225,167)',
+	'rgba(15,102,86)',
+	'rgba(248,173,201)',
+	'rgba(76,240,11)',
+	'rgba(130,181,208)',
+	'rgba(82,41,170)',
+	'rgba(43,80,229)',
+	'rgba(173,183,199)',
+	'rgba(59,109,155)',
+	'rgba(2,161,231)',
+	'rgba(204,68,175)',
+	'rgba(123,79,140)',
+	'rgba(157,188,251)',
+	'rgba(84,128,4)',
+	'rgba(193,115,44)',
+	'rgba(189,48,83)',
+	'rgba(48,247,124)',
+	'rgba(104,151,197)',
+	'rgba(58,33,23)'
+]
+
+var chartConfig = {
+
+	type: 'line',
+	data: {
+		datasets: []
+	},
+	options: {
+		
+		title: {
+			display:true,
+			text:"P&L Attribution",
+			position:"top"
+		},
+
+		legend: {
+			display:true
+		},
+
+		tooltips: {
+			enabled:false,
+			mode: "y",
+			bodyFontStyle: 'bold',
+			callbacks: {}
+		},
+
+		elements: {
+			
+			point: {
+				enabled:false,
+				radius:0,
+				hitRadius:10,
+				hoverRadius:0,
+				pointStyle:'circle'
+			},
+
+		},
+
+		scales: {
+
+			xAxes: [{
+				
+				type: 'linear',
+				position: 'bottom',
+
+				scaleLabel: {
+					display: true,
+					labelString: '',
+					fontStyle: "bold",
+					fontSize: 14,
+					padding: {
+						bottom: 0,
+						top: -5
+					}
+				},
+
+				gridLines: {}
+
+			}],
+
+			yAxes: [{
+				
+				type: "linear",
+				id: "leftAxis",
+				position: "left",
+				scaleLabel: {
+					display: true,
+					labelString: '',
+					fontStyle: "bold",
+					fontSize: 14,
+					padding: {
+						bottom: -5,
+						top: 5
+					}
+				},
+
+				gridLines: {}
+
+			},
+			{
+				
+				display: "auto",
+				type: "linear",
+				id: "rightAxis",
+				position: "right",
+				scaleLabel: {
+					display: true,
+					labelString: '',
+					fontStyle: "bold",
+					fontSize: 14,
+					padding: {
+						bottom: -5,
+						top: 5
+					}
+				},
+
+				gridLines: {}
+
+			}]
+
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function init(scenarios_htmls){
 
@@ -168,6 +375,72 @@ function removeAllPositions(){
 
 }
 
+function scenarioParameterChange(){
+
+	let idx = this.getAttribute("scenario");
+	idx = Number(idx);
+
+	let chart = scenarioCharts[idx];
+	chart.data.datasets = [];
+
+	let leftVariables = $(`#variableSelectL${idx}`);
+	let rightVariables = $(`#variableSelectR${idx}`);
+	let representation = $(`#representationSelect${idx}`);
+	let instrument = $(`#instrumentSelect${idx}`);
+
+	let attributions = positionAttributions[idx][instrument.val()];
+	attributions = attributions[representation.val()];
+
+	leftVariables.val().forEach( (variable, ctr1) => {
+
+		let data = [];
+		attributions[variable].forEach( (value, ctr2) => {
+			
+			data.push({
+				y: value,
+				x: ctr2
+			})
+
+		})
+
+		chart.data.datasets.push({
+			label: variable.substring(0, 1).toUpperCase() + variable.substring(1) + " (L)",
+			data: data,
+			borderColor: colors[ctr1],
+			lineTension: 0,
+			yAxisID: 'leftAxis',
+			fill: false
+		})
+
+	})
+
+	rightVariables.val().forEach( (variable, ctr1) => {
+
+		let data = [];
+		attributions[variable].forEach( (value, ctr2) => {
+			
+			data.push({
+				y: value,
+				x: ctr2
+			})
+
+		})
+
+		chart.data.datasets.push({
+			label: variable.substring(0, 1).toUpperCase() + variable.substring(1) + " (R)",
+			data: data,
+			borderColor: colors[ctr1 + 50],
+			lineTension: 0,
+			yAxisID: 'rightAxis',
+			fill: false
+		})
+
+	})
+
+	chart.update();
+
+}
+
 function analyzePositions(){
 
 	let positions = [
@@ -207,135 +480,19 @@ function analyzePositions(){
 			positionAttributions = data.position_attributions;
 			$("#mainContainer").append(data.position_rows);
 
-			for(let i = 1; i <= positionAttributions.length; i++){
-
+			for(let i = 0; i < positionAttributions.length; i++){
 				var ctx = document.getElementById(`PnLChart${i}`).getContext('2d');
-				scenarioCharts.push(
-					new Chart(ctx, {
-
-						type: 'line',
-						data: {
-							datasets: []
-						},
-						options: {
-							
-							title: {
-								display:true,
-								text:"P&L Chart",
-								position:"top"
-							},
-
-							legend: {
-								display:true
-							},
-
-							tooltips: {
-								enabled:false,
-								mode: "y",
-								bodyFontStyle: 'bold',
-								callbacks: {}
-							},
-
-							elements: {
-								
-								point: {
-									enabled:false,
-									radius:0,
-									hitRadius:10,
-									hoverRadius:0,
-									pointStyle:'circle'
-								},
-
-							},
-
-							scales: {
-
-								xAxes: [{
-									
-									type: 'linear',
-									position: 'bottom',
-
-									scaleLabel: {
-										display: true,
-										labelString: '',
-										fontStyle: "bold",
-										fontSize: 14,
-										padding: {
-											bottom: 0,
-											top: -5
-										}
-									},
-
-									gridLines: {}
-
-								}],
-
-								yAxes: [{
-									
-									scaleLabel: {
-										display: true,
-										labelString: '',
-										fontStyle: "bold",
-										fontSize: 14,
-										padding: {
-											bottom: -5,
-											top: 5
-										}
-									},
-
-									gridLines: {}
-
-								}]
-
-							}
-						}
-					})
-				)
+				scenarioCharts.push(new Chart(ctx, Object.assign({}, chartConfig)));	
 			}
 
 			$(".selectpicker").selectpicker("refresh");
-			for(let i = 1; i <= positionAttributions.length; i++){
 
-				$(`#variableSelect${i}`).change( function() {
-
-					let id = this.id;
-					let idx = Number(id.replace("variableSelect", "")) - 1;
-					
-					let chart = scenarioCharts[idx];
-					chart.data.datasets = [];
-
-					let variables = $(`#${id}`).val();
-					let attributions = positionAttributions[idx]['position'];
-
-					variables.forEach( variable => {
-
-						let data = [];
-						attributions[variable].forEach( (value, ctr) => {
-							
-							data.push({
-								y: value,
-								x: ctr
-							})
-
-						})
-
-						chart.data.datasets.push({
-							label: variable.substring(0, 1).toUpperCase() + variable.substring(1),
-							data: data,
-							borderColor: 'rgba(255,0,0)',
-							backgroundColor: 'rgba(52, 58, 64, 0.15)',
-							cubicInterpolationMode: "monotone",
-							lineTension: 0
-						})
-
-					})
-
-					chart.update();
-
-				})
-
+			for(let i = 0; i < positionAttributions.length; i++){
+				$(`#variableSelectL${i}`).change(scenarioParameterChange);
+				$(`#variableSelectR${i}`).change(scenarioParameterChange);
+				$(`#representationSelect${i}`).change(scenarioParameterChange);
+				$(`#instrumentSelect${i}`).change(scenarioParameterChange);
 			}
-
 		}
 	}
 
