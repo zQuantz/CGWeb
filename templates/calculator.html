@@ -2,7 +2,7 @@
 <html>
 <head>
 
-	<title>Calculators</title>
+	<title>Greek Calculator</title>
 
 	<!-- jQuery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -28,8 +28,8 @@
 	<!-- Bootstrap Select End -->
 
 	<!-- Custom -->
-	<link rel="stylesheet" type="text/css" href="/static/css/calculators/calculators.css">
-	<script type="text/javascript" src="/static/js/calculators/calculators.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/calculator/calculator.css">
+	<script type="text/javascript" src="/static/js/calculator/calculator.js"></script>
 	<!-- Custom End -->
 
 </head>
@@ -45,41 +45,27 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" href="/builder">Builder</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Surface</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Monitor</a>
-				</li>
-				<li class="nav-item active">
-					<a class="nav-link" href="/calculators">Calculators</a>
-				</li>
-			</ul>
-		</div>
-
-		<form class="form-inline" action="#">
 			
 			<ul class="navbar-nav">
 				
+				<li class="nav-item">
+					<a class="nav-link" href="/builder">Builder</a>
+				</li>
+				
 				<li class="nav-item active">
-					<a class="nav-link" href="/calculators">Pricing & Greeks</a>
+					<a class="nav-link" href="/calculator">Greek Calculator</a>
 				</li>
 
 				<li class="nav-item">
 					<a class="nav-link" href="/scenarios">Scenario Analysis</a>
-				</li>				
+				</li>
 
 			</ul>
 
-		</form>
+		</div>
 
 	</nav>
 	<!-- Navbar End -->
-
 
 	<!-- Main Container -->
 	<div class="container-fluid">
@@ -90,7 +76,7 @@
 			<!-- Input Form Container -->
 			<div class="col-lg-4">
 				
-				<form action="/calculators" method="GET" style="margin-top: 1rem">
+				<form action="/calculator" method="GET" style="margin-top: 1rem">
 
 					<div class="form-group row">
 						<label for="inputS" class="col-sm-4 col-form-label variableLabel">Stock Price</label>

@@ -78,7 +78,7 @@ def execute():
 	data = json.loads(request.get_data())
 	return json.dumps(builder_obj.execute(data))
 
-@app.route("/calculators")
+@app.route("/calculator")
 def calculator():
 
 	greeks = None
@@ -86,7 +86,7 @@ def calculator():
 		greeks = calculate_greeks(request.args)
 		input_values.update(dict(request.args))
 
-	return render_template("calculators.html", greeks = greeks, input_values = input_values)
+	return render_template("calculator.html", greeks = greeks, input_values = input_values)
 
 @app.route("/scenarios", methods=["GET", "POST"])
 def scenarios():

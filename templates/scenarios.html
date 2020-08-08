@@ -46,35 +46,26 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" href="/builder">Builder</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Surface</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Monitor</a>
-				</li>
-				<li class="nav-item active">
-					<a class="nav-link" href="/calculators">Calculators</a>
-				</li>
-			</ul>
-		</div>
-
-		<form class="form-inline" action="#">
 			
 			<ul class="navbar-nav">
 				
 				<li class="nav-item">
-					<a class="nav-link" href="/calculators">Pricing & Greeks</a>
+					<a class="nav-link" href="/builder">Builder</a>
+				</li>
+				
+				<li class="nav-item">
+					<a class="nav-link" href="/calculator">Greek Calculator</a>
+				</li>
+				
+				<li class="nav-item active">
+					<a class="nav-link" href="/scenarios">Scenario Analysis</a>
 				</li>
 
-				<li class="nav-item active pageTabButton">
-					<a class="nav-link" href="/scenarios">Scenario Analysis</a>
-				</li>				
-
 			</ul>
+
+		</div>
+
+		<form class="form-inline" action="#">
 
 			<form class="form-inline" action="/scenarios">
 
@@ -82,10 +73,6 @@
 					{% if connector %}
 						{{connector._ticker_options | safe}}
 					{% endif %}
-<!-- 					<option>AAPL</option>
-					<option>MSFT</option>
-					<option>AMZN</option>
-					<option>WMT</option> -->
 				</select>
 
 				<button type="submit" class="btn btn-outline-light navButton">Fetch IDs</button>
@@ -154,11 +141,6 @@
 														{% if scenarios._option_ids %}
 															{{scenarios._option_ids | safe}}
 														{% endif %}
-<!-- 														<option>AAPL 2020-09-21 C325.0</option>
-														<option>AAPL 2020-09-21 P250.0</option>
-														<option>MSFT 2020-09-21 C165.0</option>
-														<option>MSFT 2020-09-21 C175.0</option>
-														<option>MSFT 2020-09-21 C155.0</option> -->
 													</select>
 												</div>
 

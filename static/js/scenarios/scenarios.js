@@ -476,6 +476,8 @@ function analyzePositions(){
 
 		if(this.readyState == 4 && this.status == 200){
 			
+			$("#scenarioAccordionCard").collapse("hide");
+
 			let data = JSON.parse(this.responseText);
 			positionAttributions = data.position_attributions;
 			$("#mainContainer").append(data.position_rows);

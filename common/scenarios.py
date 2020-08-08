@@ -431,7 +431,7 @@ class Scenarios:
 
 			idx = len(position_attributions)
 
-			s2r1 = html("canvas", "", {"id" : f"PnLChart{idx}", "width" : 10, "height" : 5, "style" : "padding-top: 1rem;"})
+			s2r1 = html("canvas", "", {"id" : f"PnLChart{idx}", "width" : 28, "height" : 18, "style" : "padding-top: 1rem;"})
 			s2r1 = html("div", s2r1, {"class" : "col-lg-12", "style" : "padding-left: 0.25rem"})
 			s2r1 = html("div", s2r1, {"class" : "row"})
 
@@ -446,8 +446,8 @@ class Scenarios:
 			label = html("label", "Instrument", {"class" : "col-4 col-form-label"})
 			s2r2r1 = html("div", label + s2r2r1, {"class" : "form-group row"})
 			
-			s2r2r2 = html("option", "Daily Change", {"value" : "d"})
-			s2r2r2 += html("option", "Cummulative Change", {"value" : "c"})
+			s2r2r2 = html("option", "Cummulative Change", {"value" : "c"})
+			s2r2r2 += html("option", "Daily Change", {"value" : "d"})
 			s2r2r2 = html("select", s2r2r2, {"class" : "selectpicker", "id" : f"representationSelect{idx}", "scenario" : idx})
 			s2r2r2 = html("div", s2r2r2, {"class" : "col-8"})
 			label = html("label", "Representation", {"class" : "col-4 col-form-label"})
@@ -477,13 +477,13 @@ class Scenarios:
 
 			###############################################################################################
 
-			s2 = html("div", s2r1 + s2r2 + s2r3, {"class" : "col-lg-7 positionSegment", "style" : "margin-right: none;"})
+			s2 = html("div", s2r1 + s2r2 + s2r3, {"class" : "col-lg-6 positionSegment", "style" : "margin-right: none;"})
 
 			###############################################################################################
 
 			s1 = html("h3", f"Scenario #{idx + 1}") + html("br", "") + html("h6", "Position Details")
 			s1 += pdetails.to_html(classes="table table-sm table-hover smallTable", border=0, justify="unset")
-			s1 = html("div", s1, {"class" : "col-lg-5 positionSegment"})
+			s1 = html("div", s1, {"class" : "col-lg-6 positionSegment"})
 
 			position_rows.append(html("div", s1+s2, {"class" : "row positionRow"}))
 
