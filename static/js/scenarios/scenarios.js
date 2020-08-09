@@ -469,6 +469,8 @@ function analyzePositions(){
 				$(`#variableSelectL${i}`).change();
 			}
 
+			$(".selectpicker").selectpicker("refresh");
+
 		}
 
 	}
