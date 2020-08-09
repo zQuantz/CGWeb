@@ -76,12 +76,37 @@ class Scenarios:
 
 	def __init__(self, connector):
 
+		self.reset()
 		self._option_ids = None
-		self._position_rows = None
-		self.position_attributions = None
 
 		self.connector = connector
 		self.generate_html_templates()
+
+	def reset(self):
+
+		self.ticker = None
+		self.symbol = None
+		self._position_rows = None
+		self.position_attributions = None
+
+	def generate_option_ids(self, tickers):
+
+		if not tickers:
+			self.reset()
+			return
+
+		self.ticker = tickers[0]
+		self.symbol = {
+			"symbol" : f"{self.connector.ticker_info[self.ticker]['exchange_code']}:{self.ticker}",
+			"ticker" : self.ticker
+		}
+
+		option_ids = self.connector.get_option_ids(tuple(tickers))
+		option_ids = option_ids.option_id.values
+
+		self._option_ids = ""
+		for option_id in option_ids:
+			self._option_ids += html("option", option_id, {})
 
 	def generate_scenarios(self, data):
 
@@ -506,19 +531,6 @@ class Scenarios:
 
 		self._position_rows = " ".join(position_rows)
 		self.position_attributions = position_attributions
-
-	def generate_option_ids(self, tickers):
-
-		if not tickers:
-			self.option_ids = None
-			return
-
-		option_ids = self.connector.get_option_ids(tuple(tickers))
-		option_ids = option_ids.option_id.values
-
-		self._option_ids = ""
-		for option_id in option_ids:
-			self._option_ids += html("option", option_id, {})
 
 	def generate_html_templates(self):
 

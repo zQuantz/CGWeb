@@ -53,3 +53,11 @@
 	margin: 0.5rem 0 0.5rem 0;
 }
 
+.modal-lg {
+	max-width: 90rem;
+}
+
+.candlesContent {
+	background-color: #131721;
+	height: 50rem;
+}

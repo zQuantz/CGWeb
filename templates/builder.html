@@ -56,27 +56,30 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarNav">
+			
 			<ul class="navbar-nav">
+				
 				<li class="nav-item active">
 					<a class="nav-link" href="/builder">Builder</span></a>
 				</li>
+				
 				<li class="nav-item">
-					<a class="nav-link" href="#">Surface</a>
+					<a class="nav-link" href="/calculator">Greek Calculator</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Monitor</a>
+				
+				<li class="nav-item active">
+					<a class="nav-link" href="/scenarios">Scenario Analysis</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/calculators">Calculators</a>
-				</li>
+
 			</ul>
+
 		</div>
 
 		<form class="form-inline" action="/builder">
 			
 			<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect" name="ticker">
 				{% if builder %}
-				{{connector._ticker_options | safe}}
+					{{connector._ticker_options | safe}}
 				{% endif %}
 			</select>
 

@@ -323,7 +323,7 @@ function resetPosition() {
 function addPosition() {
 
 	positions.push({
-		position: position,
+		position: Object.assign({}, position),
 		startDate: startDateInput.val(),
 		endDate: endDateInput.val(),
 		tickers: Object.keys(tickers),
@@ -362,17 +362,13 @@ function editPositions() {
 }
 
 function removePosition(ctr){
-
 	positions.splice(ctr, 1);
 	editPositions();
-
 }
 
 function removeAllPositions(){
-	
 	positions = [];
 	editPositions();
-
 }
 
 function scenarioParameterChange(){
@@ -443,31 +439,6 @@ function scenarioParameterChange(){
 
 function analyzePositions(){
 
-	let positions = [
-
-		{
-			startDate:  "2020-07-20",
-			endDate: "2020-08-04",
-			position: {
-				"AAPL 2020-08-21 P400.0": "1",
-				"AAPL 2020-08-21 C400.0": "-2"
-			},
-			strikes:["400.0"],
-			tickers:["AAPL"]
-		},
-		{
-			startDate:  "2020-07-20",
-			endDate: "2020-08-04",
-			position: {
-				"AAPL 2020-08-21 P410.0": "-1",
-				"AAPL 2020-08-21 C420.0": "-2"
-			},
-			strikes:["410.0","420.0"],
-			tickers:["AAPL"]
-		},
-
-	]
-
 	if (positions.length == 0)
 		return;
 
@@ -487,18 +458,73 @@ function analyzePositions(){
 				scenarioCharts.push(new Chart(ctx, Object.assign({}, chartConfig)));	
 			}
 
-			$(".selectpicker").selectpicker("refresh");
-
 			for(let i = 0; i < positionAttributions.length; i++){
 				$(`#variableSelectL${i}`).change(scenarioParameterChange);
 				$(`#variableSelectR${i}`).change(scenarioParameterChange);
 				$(`#representationSelect${i}`).change(scenarioParameterChange);
 				$(`#instrumentSelect${i}`).change(scenarioParameterChange);
+
+				$(`#variableSelectL${i}`).selectpicker("val", "net");
+				$(`#variableSelectL${i}`).selectpicker("refresh");
+				$(`#variableSelectL${i}`).change();
 			}
+
 		}
+
 	}
 
 	request.open("POST", "/scenarios");
 	request.send(JSON.stringify(positions));
+
+}
+
+function initCandles(symbol) {
+
+	$("#tickerSelect").val(symbol.ticker);
+	$("#tickerSelect").selectpicker("refresh");
+
+	new TradingView.widget(
+		{
+			"height" : "100%",
+			"width" : "100%",
+			"symbol": symbol.symbol,
+			"interval": "D",
+			"timezone": "Etc/UTC",
+			"theme": "dark",
+			"style": "1",
+			"locale": "en",
+			"toolbar_bg": "#f1f3f6",
+			"enable_publishing": false,
+			"allow_symbol_change": true,
+			"studies": [],
+			"container_id": "tradingviewDiv"
+		}
+	);
+
+}
+
+function removeAllScenarios() {
+
+	var request = new XMLHttpRequest();
+	request.onreadystatechange = function() {
+
+		if(this.readyState == 4 && this.status == 200){
+			
+			$("#scenarioAccordionCard").collapse("show");
+
+			scenarioCharts = [];
+			positions = [];
+			position = {};
+			tickers = {};
+			strikes = {};
+			positionAttributions = null;
+
+			window.location.href = "/scenarios";
+
+		}
+	}	
+
+	request.open("POST", "/scenarios");
+	request.send(JSON.stringify({"reset" : true}));
 
 }

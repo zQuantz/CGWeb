@@ -33,6 +33,10 @@
 	<script type="text/javascript" src="/static/js/scenarios/scenarios.js"></script>
 	<!-- Custom End -->
 
+	<!-- Trading View -->
+	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+	<!-- Trading View End -->
+
 </head>
 <body>
 
@@ -69,7 +73,7 @@
 
 			<form class="form-inline" action="/scenarios">
 
-				<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Tickers.." id="tickerSelect" name="tickers" multiple>
+				<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Tickers.." id="tickerSelect" name="tickers">
 					{% if connector %}
 						{{connector._ticker_options | safe}}
 					{% endif %}
@@ -85,7 +89,7 @@
 	<!-- Navbar End -->
 
 	<!-- Main Container -->
-	<div id="mainContainer" class="container-fluid" style="width: 95%; margin-top: 1rem; margin-bottom: 1rem;">
+	<div id="mainContainer" class="container-fluid" style="width: 95%; margin-top: 1rem; margin-bottom: 5rem;">
 
 		<!-- Top Row -->
 		<div class="row">
@@ -122,14 +126,14 @@
 											<div class="form-group row">
 												<label for="startDateInput" class="col-2 col-form-label">Start Date</label>
 												<div class="col-10">
-													<input class="form-control squared" type="date" id="startDateInput" min="2019-12-01" max="2020-07-30" required>
+													<input class="form-control squared" type="date" id="startDateInput" min="2019-12-01" max="{{today}}" required>
 												</div>
 											</div>
 
 											<div class="form-group row">
 												<label for="endDateInput" class="col-2 col-form-label">End Date</label>
 												<div class="col-10">
-													<input class="form-control squared" type="date" id="endDateInput" min="2019-12-01" max="2020-07-30" required>
+													<input class="form-control squared" type="date" id="endDateInput" min="2019-12-01" max="{{today}}" required>
 												</div>
 											</div>
 
@@ -241,9 +245,60 @@
 	</div>
 	<!-- Main Container End -->
 
+	<!-- Lower Navbar -->
+	<nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<span style="margin-left: 96.25rem; margin-right: 0rem;">
+		
+			<button type="button" class="btn btn-outline-light navButton" id="candlesButton" data-toggle="modal" data-target="#candlesModal">Candles</button>
+			<button type="button" class="btn btn-outline-danger navButton" onclick="removeAllScenarios()" style="margin-right: 0rem;">Reset</button>
+
+		</span>
+
+	</nav>
+	<!-- Lower Navbar End -->
+
+	<!-- Candles Modal -->
+	<div class="modal fade" id="candlesModal" tabindex="-1" role="dialog" aria-labelledby="candlesModal" aria-hidden="true">
+
+		<div class="modal-dialog modal-dialog-centered modal-lg modal-sm" role="document">
+
+			<div class="modal-content candlesContent">
+
+				<div class="modal-body" id="candlesModalBody">
+
+					<!-- TradingView Widget BEGIN -->
+					<div class="tradingview-widget-container">
+
+						<div id="tradingviewDiv"></div>
+
+					</div>
+					<!-- TradingView Widget END -->
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	<!-- Candles Modal End -->
+
 	<script type="text/javascript">
 		init({{scenarios.templates|tojson|safe}});
 	</script>
+
+	{% if scenarios.ticker %}
+		
+		<script type="text/javascript">
+			initCandles({{scenarios.symbol|tojson|safe}})
+		</script>
+
+	{% endif %}
 
 </body>
 </html>

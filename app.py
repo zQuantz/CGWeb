@@ -2,6 +2,7 @@ from common.calculator import calculate_greeks
 
 from gevent.pywsgi import WSGIServer
 from flask import render_template
+from datetime import datetime
 from flask import request
 from flask import Flask
 
@@ -15,7 +16,7 @@ import json
 
 print("Initializing Builder Object")
 connector = Connector()
-# builder_obj = Builder(connector)
+builder_obj = Builder(connector)
 scenarios_obj = Scenarios(connector)
 print("Builder Object Completed")
 
@@ -24,9 +25,9 @@ input_values = {
 	for key in ["S", "K", "IV", "t", "r", "q", "type"]
 }
 
-###################################################################################################
-
 app = Flask(__name__)
+
+###################################################################################################
 
 @app.after_request
 def after_request(response):
@@ -47,7 +48,7 @@ def builder():
 
 	builder_obj.fetch_ticker(ticker, date)
 
-	return render_template("index.html", name=ticker, builder=builder_obj, connector=connector)
+	return render_template("builder.html", name=ticker, builder=builder_obj, connector=connector)
 
 @app.route("/update", methods=["POST"])
 def update():
@@ -78,6 +79,8 @@ def execute():
 	data = json.loads(request.get_data())
 	return json.dumps(builder_obj.execute(data))
 
+###################################################################################################
+
 @app.route("/calculator")
 def calculator():
 
@@ -92,16 +95,25 @@ def calculator():
 def scenarios():
 
 	if request.method == "POST":
+
 		data = json.loads(request.get_data())
+
+		if type(data) is dict and data.get('reset'):
+			return json.dumps({})
+
 		scenarios_obj.generate_scenarios(data)
 		return json.dumps({
 			"position_rows" : scenarios_obj._position_rows,
 			"position_attributions" : scenarios_obj.position_attributions
 		})
-	else:
-		scenarios_obj.generate_option_ids(request.args.getlist("tickers"))
 
-	return render_template("scenarios.html", scenarios = scenarios_obj, connector = None)
+	else:
+
+		scenarios_obj.generate_option_ids(request.args.getlist("tickers"))
+		scenarios_obj._position_rows = None
+
+	today = datetime.now().strftime("%Y-%m-%d")
+	return render_template("scenarios.html", scenarios = scenarios_obj, connector = connector, today = today)
 
 if __name__ == '__main__':
 

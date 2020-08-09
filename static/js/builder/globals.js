@@ -218,8 +218,8 @@ function initCandles(symbol) {
 
 	new TradingView.widget(
 		{
-			"height" : Math.round(0.78 * window.innerHeight),
-			"width" : Math.round(0.7297197076180661 * window.innerWidth),
+			"height" : "100%",
+			"width" : "100%",
 			"symbol": symbol,
 			"interval": "D",
 			"timezone": "Etc/UTC",
