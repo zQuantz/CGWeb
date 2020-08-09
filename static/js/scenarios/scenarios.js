@@ -160,21 +160,19 @@ var chartConfig = {
 
 			xAxes: [{
 				
-				type: 'linear',
-				position: 'bottom',
-
-				scaleLabel: {
-					display: true,
-					labelString: '',
-					fontStyle: "bold",
-					fontSize: 14,
-					padding: {
-						bottom: 0,
-						top: -5
-					}
+				type: 'time',
+				time: {
+					unit: "week",
 				},
-
-				gridLines: {}
+				ticks: {
+					source: "auto",
+					autoSkip: true,
+					autoSkipPadding: 75,
+					maxRotation: 0,
+					minRotation: 0,
+					beginAtZero: false
+				},
+				distribution: "series",
 
 			}],
 
@@ -389,19 +387,9 @@ function scenarioParameterChange(){
 
 	leftVariables.val().forEach( (variable, ctr1) => {
 
-		let data = [];
-		attributions[variable].forEach( (value, ctr2) => {
-			
-			data.push({
-				y: value,
-				x: ctr2
-			})
-
-		})
-
 		chart.data.datasets.push({
 			label: variable.substring(0, 1).toUpperCase() + variable.substring(1) + " (L)",
-			data: data,
+			data: attributions[variable],
 			borderColor: colors[ctr1],
 			lineTension: 0,
 			yAxisID: 'leftAxis',
@@ -412,19 +400,9 @@ function scenarioParameterChange(){
 
 	rightVariables.val().forEach( (variable, ctr1) => {
 
-		let data = [];
-		attributions[variable].forEach( (value, ctr2) => {
-			
-			data.push({
-				y: value,
-				x: ctr2
-			})
-
-		})
-
 		chart.data.datasets.push({
 			label: variable.substring(0, 1).toUpperCase() + variable.substring(1) + " (R)",
-			data: data,
+			data: attributions[variable],
 			borderColor: colors[ctr1 + 50],
 			lineTension: 0,
 			yAxisID: 'rightAxis',
@@ -455,7 +433,8 @@ function analyzePositions(){
 
 			for(let i = 0; i < positionAttributions.length; i++){
 				var ctx = document.getElementById(`PnLChart${i}`).getContext('2d');
-				scenarioCharts.push(new Chart(ctx, Object.assign({}, chartConfig)));	
+				scenarioCharts.push(new Chart(ctx, Object.assign({}, chartConfig)));
+				scenarioCharts[i].data.labels = positionAttributions[i]	.dates;
 			}
 
 			for(let i = 0; i < positionAttributions.length; i++){

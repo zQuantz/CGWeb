@@ -378,6 +378,11 @@ class Scenarios:
 			x = position.date_current.value_counts()
 			x = x[x == len(oids)]
 			pdetails = position[position.date_current.isin(x.index)]
+
+			dates = pdetails.date_current.unique()
+			dates = [datetime(d.year, d.month, d.day).timestamp() for d in dates]
+			dates = [date * 1000 for date in dates]
+			attributions['dates'] = dates
 			
 			pdetails_end = pdetails.iloc[-len(oids):].reset_index(drop=True)
 			pdetails = pdetails.iloc[:len(oids)].reset_index(drop=True)
@@ -516,6 +521,9 @@ class Scenarios:
 
 			for instrument in attributions:
 
+				if instrument == "dates":
+					continue
+
 				variables = attributions[instrument]
 				_variables = variables.copy()
 
@@ -528,6 +536,7 @@ class Scenarios:
 				}
 
 			position_attributions.append(attributions)
+
 
 		self._position_rows = " ".join(position_rows)
 		self.position_attributions = position_attributions
