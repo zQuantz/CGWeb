@@ -138,10 +138,28 @@ var chartConfig = {
 		},
 
 		tooltips: {
-			enabled:false,
-			mode: "y",
+			enabled: true,
+			mode: "x",
 			bodyFontStyle: 'bold',
-			callbacks: {}
+			callbacks: {
+				title: function(item, obj){
+					let i = item[0].label.lastIndexOf(", ");
+					return item[0].label.substring(0, i);
+				},
+				label: function(item, data){
+
+                    var label = data.datasets[item.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+
+                    label += Math.round(item.yLabel * 100) / 100;
+                    label += "$";
+                    return label;
+
+				}
+			}
 		},
 
 		elements: {
@@ -185,11 +203,7 @@ var chartConfig = {
 					display: true,
 					labelString: '',
 					fontStyle: "bold",
-					fontSize: 14,
-					padding: {
-						bottom: -5,
-						top: 5
-					}
+					fontSize: 14
 				},
 
 				gridLines: {}

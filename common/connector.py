@@ -15,6 +15,7 @@ class Connector():
 	HOUR_OFFSET = 22
 	engine = sql.create_engine(CONFIG['db_address'])
 	max_tries = 3
+	moneyness = 0.1
 
 	def __init__(self):
 
@@ -298,6 +299,69 @@ class Connector():
 				{ticker_str}
 			ORDER BY date_current, strike_price
 		"""
+
+		return self.read(query)
+
+	def get_time_iv(self, ticker):
+
+		query = """
+			SELECT
+				date_current,
+				ROUND( (LOG(days_to_expiry) / LOG(2)), 0 ) as log_dte,
+				AVG(implied_volatility) as IV
+			FROM
+				(
+				SELECT
+					options.date_current,
+					ROUND(252 * time_to_expiry, 0) as days_to_expiry,
+					implied_volatility,
+					ABS(strike_price / adj_close - 1) as moneyness
+				FROM
+					options
+				INNER JOIN
+					ohlc
+				ON
+					ohlc.date_current = options.date_current
+				AND ohlc.ticker = options.ticker
+				WHERE
+					options.ticker = "{ticker}"
+				AND time_to_expiry >= (15 / 252)
+				) as agg1
+			WHERE
+				moneyness <= {moneyness}
+			GROUP BY date_current, log_dte
+		""".format(ticker=ticker, moneyness=self.moneyness)
+
+		return self.read(query)
+
+	def get_iv(self, ticker):
+
+		query = """
+			SELECT
+				date_current,
+				AVG(implied_volatility) as IV
+			FROM
+				(
+				SELECT
+					options.date_current,
+					ROUND(252 * time_to_expiry, 0) as days_to_expiry,
+					implied_volatility,
+					ABS(strike_price / adj_close - 1) as moneyness
+				FROM
+					options
+				INNER JOIN
+					ohlc
+				ON
+					ohlc.date_current = options.date_current
+				AND ohlc.ticker = options.ticker
+				WHERE
+					options.ticker = "{ticker}"
+				AND time_to_expiry >= (10 / 252)
+				) as agg1
+			WHERE
+				moneyness <= {moneyness}
+			GROUP BY date_current
+		""".format(ticker=ticker, moneyness=self.moneyness)
 
 		return self.read(query)
 

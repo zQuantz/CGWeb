@@ -1,0 +1,42 @@
+.tickerPicker {
+	line-height: 1.25;
+	width: 20rem !important;
+}
+
+.tickerPicker button {
+	border-color: var(--dark);
+	border-radius: 0;
+}
+
+.pageTabButton {
+	border-right: 1px solid rgba(255, 255, 255, 0.5);
+	margin-right: 0.5rem
+}
+
+.navButton {
+	margin-right: 1rem;
+	border-radius: 0;
+	height: 2.3rem;
+	width: 7rem;
+}
+
+.navButton::placeholder {
+	color: white;
+}
+
+.navButton::hover {
+	background-color: #ececec;
+}
+
+.navButton:hover::placeholder {
+	color: black;
+}
+
+.modal-lg {
+	max-width: 90rem;
+}
+
+.candlesContent {
+	background-color: #131721;
+	height: 50rem;
+}

@@ -9,6 +9,7 @@ from flask import Flask
 from common.connector import Connector
 from common.scenarios import Scenarios
 from common.builder import Builder
+from common.iv import IV
 
 import json
 
@@ -16,6 +17,7 @@ import json
 
 print("Initializing Builder Object")
 connector = Connector()
+iv_obj = IV(connector)
 builder_obj = Builder(connector)
 scenarios_obj = Scenarios(connector)
 print("Builder Object Completed")
@@ -114,6 +116,12 @@ def scenarios():
 
 	today = datetime.now().strftime("%Y-%m-%d")
 	return render_template("scenarios.html", scenarios = scenarios_obj, connector = connector, today = today)
+
+@app.route("/iv")
+def iv():
+
+	iv_obj.get_iv(request.args.get("ticker"))
+	return render_template("iv.html", iv = iv_obj, connector = connector)
 
 if __name__ == '__main__':
 

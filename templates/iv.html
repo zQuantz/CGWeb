@@ -2,7 +2,7 @@
 <html>
 <head>
 
-	<title>Scenarios</title>
+	<title>IV</title>
 
 	<!-- jQuery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -29,9 +29,8 @@
 	<!-- Bootstrap Select End -->
 
 	<!-- Custom -->
-	<link rel="stylesheet" type="text/css" href="/static/css/scenarios/scenarios.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/scenarios/position.css">
-	<script type="text/javascript" src="/static/js/scenarios/scenarios.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/iv/iv.css">
+	<script type="text/javascript" src="/static/js/iv/iv.js"></script>
 	<!-- Custom End -->
 
 	<!-- Trading View -->
@@ -67,7 +66,7 @@
 				</li>
 
 				<li class="nav-item active">
-					<a class="nav-link" href="/iv">I.V</a>
+					<a class="nav-link" href="/iv">IV</a>
 				</li>
 
 			</ul>
@@ -78,13 +77,13 @@
 
 			<form class="form-inline" action="/iv">
 
-				<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Tickers.." id="tickerSelect" name="tickers">
+				<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Ticker.." id="tickerSelect" name="ticker">
 					{% if connector %}
 						{{connector._ticker_options | safe}}
 					{% endif %}
 				</select>
 
-				<button type="submit" class="btn btn-outline-light navButton">Fetch IDs</button>
+				<button type="submit" class="btn btn-outline-light navButton">Fetch</button>
 
 			</form>
 
@@ -99,25 +98,29 @@
 		<!-- Top Row -->
 		<div class="row">
 
+			<div class="col-lg-12" style="height: 20rem;">
+				<canvas id="ivChart" width="19" height="8" style="padding-top: 1rem"></canvas>
+			</div>
+
 		</div>
 		<!-- Top Row End -->
 
-		<!-- Bottom Row -->
-		<div class="row">
-			
-			<!-- TradingView Widget BEGIN -->
-			<div class="tradingview-widget-container">
-
-				<div id="tradingviewDiv"></div>
-
-			</div>
-			<!-- TradingView Widget END -->
-
-		</div>
-		<!-- Bottom Row End -->
-
 	</div>
 	<!-- Main Container End -->
+
+	<!-- Lower Navbar -->
+	<nav class="navbar fixed-bottom navbar-expand-lg navbar-dark bg-dark">
+
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<span style="margin-left: 104.5rem; margin-right: 0rem;">
+			<button type="button" class="btn btn-outline-light navButton" id="candlesButton" data-toggle="modal" data-target="#candlesModal">Candles</button>
+		</span>
+
+	</nav>
+	<!-- Lower Navbar End -->
 
 	<!-- Candles Modal -->
 	<div class="modal fade" id="candlesModal" tabindex="-1" role="dialog" aria-labelledby="candlesModal" aria-hidden="true">
@@ -128,6 +131,14 @@
 
 				<div class="modal-body" id="candlesModalBody">
 
+					<!-- TradingView Widget BEGIN -->
+					<div class="tradingview-widget-container">
+
+						<div id="tradingviewDiv"></div>
+
+					</div>
+					<!-- TradingView Widget END -->
+
 				</div>
 
 			</div>
@@ -136,6 +147,19 @@
 
 	</div>
 	<!-- Candles Modal End -->
+
+	<script type="text/javascript">
+		init()
+	</script>
+
+	{% if iv.ticker %}
+
+		<script type="text/javascript">
+			initTicker({{iv.data|tojson|safe}},
+					   {{iv.symbol|tojson|safe}})
+		</script>
+
+	{% endif %}
 
 </body>
 </html>
