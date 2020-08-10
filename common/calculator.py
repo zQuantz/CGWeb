@@ -36,6 +36,11 @@ display_columns = [
 	for col in columns + ["option_type"] + greek_columns
 ]
 
+###################################################################################################
+
+empty_table = pd.DataFrame([], columns = display_columns)
+empty_table = empty_table.to_html(classes=["table table-sm table-hover table-borderless"])
+
 maxi = 0.01
 mini = 0.01
 n_increments = (maxi * 100) / mini
@@ -47,24 +52,24 @@ n_variables = 6
 
 ###################################################################################################
 
-def process(value):
+def process(value, factor=1):
 
     if "," in value:
-        return [float(v) for v in value.split(",")]
+        return [float(v) / factor for v in value.split(",")]
     elif ":" in value:
-        s, e, j = [float(v) for v in value.split(":")]
+        s, e, j = [float(v) / factor for v in value.split(":")]
         return np.arange(s, e + j, j).tolist()
     else:
-        return [float(value)]
+        return [float(value) / factor]
 
 def calculate_greeks(args):
 
 	S = process(args.get("S"))
 	K = process(args.get("K"))
-	IV = process(args.get("IV"))
-	T = process(args.get("t"))
-	r = process(args.get("r"))
-	q = process(args.get("q"))
+	IV = process(args.get("IV"), 100)
+	T = process(args.get("t"), 365)
+	r = process(args.get("r"), 100)
+	q = process(args.get("q"), 100)
 	otype = args.get("type")
 
 	###################################################################################################
@@ -188,7 +193,13 @@ def calculate_greeks(args):
 		n_increments + i * (n_variables * len(increments)) - 1
 		for i in range(n_options) 
 	]
+
 	table = options.iloc[idc, :].reset_index(drop=True)
+	table['Time To Expiry'] = (table['Time To Expiry'] * 365).astype(int)
+
+	c = ["Implied Volatility", "Rate", "Dividend Yield"]
+	table.loc[:, c] = table.loc[:, c] * 100
+
 	table = table.to_html(classes=["table table-sm table-hover table-borderless"])
 
 	return {

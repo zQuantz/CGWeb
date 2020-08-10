@@ -26,6 +26,17 @@ var colors = [
  	'rgba(0,0,128)'
  ];
 
+ var factors = [
+ 	1,
+ 	1,
+ 	100,
+ 	365,
+ 	100,
+ 	100
+ ]
+
+ //////////////////////////////////////////////////////////////////////////////////////////////////
+
 function init(greeks){
 
 	option_dropdown = $("#optionSelect");
@@ -36,8 +47,6 @@ function init(greeks){
 	n_options = greeks['n_options'];
 	options = greeks['options'];
 	names = greeks['names'];
-
-	initChart();
 
 	option_dropdown.change(updateChart);
 	xvar_dropdown.change(updateChart);
@@ -99,14 +108,10 @@ function initChart(){
 						display: true,
 						labelString: '',
 						fontStyle: "bold",
-						fontSize: 14,
-						padding: {
-							bottom: 0,
-							top: -5
-						}
+						fontSize: 14
 					},
 
-					gridLines: {}
+					ticks: {}
 
 				}],
 
@@ -116,11 +121,7 @@ function initChart(){
 						display: true,
 						labelString: '',
 						fontStyle: "bold",
-						fontSize: 14,
-						padding: {
-							bottom: -5,
-							top: 5
-						}
+						fontSize: 14
 					},
 
 					gridLines: {}
@@ -150,7 +151,7 @@ function updateChart(){
 
 			data.push({
 				y: Math.round(options[row_offset + i][yvar] * 1000000) / 1000000,
-				x: Math.round(options[row_offset + i][xvar] * 1000000) / 1000000
+				x: factors[xvar] * Math.round(options[row_offset + i][xvar] * 1000000) / 1000000
 			})
 
 		}
@@ -159,11 +160,18 @@ function updateChart(){
 			label: `ID: ${oid}`,
 			data: data,
 			borderColor: colors[idx],
-			backgroundColor: 'rgba(52, 58, 64, 0.15)'
+			backgroundColor: 'rgba(52, 58, 64, 0.15)',
+			fill: false
 		});
 
 		sensitivityChart.options.scales.xAxes[0].scaleLabel.labelString = names[xvar];
 		sensitivityChart.options.scales.yAxes[0].scaleLabel.labelString = names[yvar];
+
+		let xmin = data[0].x;
+		let xmax = data[data.length - 1].x;
+
+		sensitivityChart.options.scales.xAxes[0].ticks['max'] = xmax * 1.03;
+		sensitivityChart.options.scales.xAxes[0].ticks['stepSize'] = (xmax - xmin) / 6;
 
 	})
 

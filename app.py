@@ -1,4 +1,4 @@
-from common.calculator import calculate_greeks
+from common.calculator import calculate_greeks, empty_table
 
 from gevent.pywsgi import WSGIServer
 from flask import render_template
@@ -91,7 +91,7 @@ def calculator():
 		greeks = calculate_greeks(request.args)
 		input_values.update(dict(request.args))
 
-	return render_template("calculator.html", greeks = greeks, input_values = input_values)
+	return render_template("calculator.html", greeks = greeks, input_values = input_values, empty_table = empty_table)
 
 @app.route("/scenarios", methods=["GET", "POST"])
 def scenarios():

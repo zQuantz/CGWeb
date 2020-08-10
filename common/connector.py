@@ -20,19 +20,19 @@ class Connector():
 	def __init__(self):
 
 		print("Collecting Ticker Dates")
-		self.ticker_dates = self.get_ticker_dates()
+		# self.ticker_dates = self.get_ticker_dates()
 
-		print("Collecting Ticker Info")
-		self.ticker_info = self.get_ticker_info()
+		# print("Collecting Ticker Info")
+		# self.ticker_info = self.get_ticker_info()
 
-		print("Collecting Interest Rates")
-		self.rates = self.get_rates()
+		# print("Collecting Interest Rates")
+		# self.rates = self.get_rates()
 
-		print("Collecting Table Lengths")
-		self.lengths = self.get_table_lengths()
+		# print("Collecting Table Lengths")
+		# self.lengths = self.get_table_lengths()
 
-		print("Generating Data Coordinates")
-		self.generate_data_coords()
+		# print("Generating Data Coordinates")
+		# self.generate_data_coords()
 
 	def update(self):
 
