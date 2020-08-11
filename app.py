@@ -96,6 +96,8 @@ def calculator():
 @app.route("/scenarios", methods=["GET", "POST"])
 def scenarios():
 
+	scenarios_obj._position_rows = None
+
 	if request.method == "POST":
 
 		data = json.loads(request.get_data())
@@ -112,7 +114,6 @@ def scenarios():
 	else:
 
 		scenarios_obj.generate_option_ids(request.args.getlist("tickers"))
-		scenarios_obj._position_rows = None
 
 	today = datetime.now().strftime("%Y-%m-%d")
 	return render_template("scenarios.html", scenarios = scenarios_obj, connector = connector, today = today)

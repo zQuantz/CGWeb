@@ -119,121 +119,6 @@ var colors = [
 	'rgba(58,33,23)'
 ]
 
-var chartConfig = {
-
-	type: 'line',
-	data: {
-		datasets: []
-	},
-	options: {
-		
-		title: {
-			display:true,
-			text:"P&L Attribution",
-			position:"top"
-		},
-
-		legend: {
-			display:true
-		},
-
-		tooltips: {
-			enabled: true,
-			mode: "x",
-			bodyFontStyle: 'bold',
-			callbacks: {
-				title: function(item, obj){
-					let i = item[0].label.lastIndexOf(", ");
-					return item[0].label.substring(0, i);
-				},
-				label: function(item, data){
-
-                    var label = data.datasets[item.datasetIndex].label || '';
-
-                    if (label) {
-                        label += ': ';
-                    }
-
-                    label += Math.round(item.yLabel * 100) / 100;
-                    label += "$";
-                    return label;
-
-				}
-			}
-		},
-
-		elements: {
-			
-			point: {
-				enabled:false,
-				radius:0,
-				hitRadius:10,
-				hoverRadius:0,
-				pointStyle:'circle'
-			},
-
-		},
-
-		scales: {
-
-			xAxes: [{
-				
-				type: 'time',
-				time: {
-					unit: "week",
-				},
-				ticks: {
-					source: "auto",
-					autoSkip: true,
-					autoSkipPadding: 75,
-					maxRotation: 0,
-					minRotation: 0,
-					beginAtZero: false
-				},
-				distribution: "series",
-
-			}],
-
-			yAxes: [{
-				
-				type: "linear",
-				id: "leftAxis",
-				position: "left",
-				scaleLabel: {
-					display: true,
-					labelString: '',
-					fontStyle: "bold",
-					fontSize: 14
-				},
-
-				gridLines: {}
-
-			},
-			{
-				
-				display: "auto",
-				type: "linear",
-				id: "rightAxis",
-				position: "right",
-				scaleLabel: {
-					display: true,
-					labelString: '',
-					fontStyle: "bold",
-					fontSize: 14,
-					padding: {
-						bottom: -5,
-						top: 5
-					}
-				},
-
-				gridLines: {}
-
-			}]
-
-		}
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function init(scenarios_htmls){
@@ -429,6 +314,138 @@ function scenarioParameterChange(){
 
 }
 
+function getChartConfig(i){
+
+	let attributions = positionAttributions[i]['position']['c'];
+	let variable = "net";
+
+	let config = {
+
+		type: 'line',
+		data: {
+			labels: positionAttributions[i].dates,
+			datasets: [{
+				label: variable.substring(0, 1).toUpperCase() + variable.substring(1) + " (L)",
+				data: attributions[variable],
+				borderColor: colors[0],
+				lineTension: 0,
+				yAxisID: 'leftAxis',
+				fill: false
+			}]
+		},
+		options: {
+			
+			title: {
+				display:true,
+				text:"P&L Attribution",
+				position:"top"
+			},
+
+			legend: {
+				display:true
+			},
+
+			tooltips: {
+				enabled: true,
+				mode: "index",
+				bodyFontStyle: 'bold',
+				callbacks: {
+					title: function(item, obj){
+						let i = item[0].label.lastIndexOf(", ");
+						return item[0].label.substring(0, i);
+					},
+					label: function(item, data){
+
+	                    var label = data.datasets[item.datasetIndex].label || '';
+
+	                    if (label) {
+	                        label += ': ';
+	                    }
+
+	                    label += Math.round(item.yLabel * 100) / 100;
+	                    label += "$";
+	                    return label;
+
+					}
+				}
+			},
+
+			elements: {
+				
+				point: {
+					enabled:false,
+					radius:0,
+					hitRadius:10,
+					hoverRadius:0,
+					pointStyle:'circle'
+				},
+
+			},
+
+			scales: {
+
+				xAxes: [{
+					
+					type: 'time',
+					time: {
+						unit: "week",
+					},
+					ticks: {
+						source: "auto",
+						autoSkip: true,
+						autoSkipPadding: 75,
+						maxRotation: 0,
+						minRotation: 0,
+						beginAtZero: false
+					},
+					distribution: "series",
+
+				}],
+
+				yAxes: [{
+					
+					type: "linear",
+					id: "leftAxis",
+					position: "left",
+					scaleLabel: {
+						display: true,
+						labelString: '',
+						fontStyle: "bold",
+						fontSize: 14
+					},
+
+					gridLines: {}
+
+				},
+				{
+					
+					display: "auto",
+					type: "linear",
+					id: "rightAxis",
+					position: "right",
+					scaleLabel: {
+						display: true,
+						labelString: '',
+						fontStyle: "bold",
+						fontSize: 14,
+						padding: {
+							bottom: -5,
+							top: 5
+						}
+					},
+
+					gridLines: {}
+
+				}]
+
+			}
+		}
+	}
+
+	return config;
+
+}
+
 function analyzePositions(){
 
 	if (positions.length == 0)
@@ -447,19 +464,19 @@ function analyzePositions(){
 
 			for(let i = 0; i < positionAttributions.length; i++){
 				var ctx = document.getElementById(`PnLChart${i}`).getContext('2d');
-				scenarioCharts.push(new Chart(ctx, Object.assign({}, chartConfig)));
-				scenarioCharts[i].data.labels = positionAttributions[i]	.dates;
+				scenarioCharts.push(new Chart(ctx, getChartConfig(i)));
 			}
 
 			for(let i = 0; i < positionAttributions.length; i++){
+				
+				$(`#variableSelectL${i}`).selectpicker("val", "net");
+				$(`#variableSelectL${i}`).selectpicker("refresh");
+				
 				$(`#variableSelectL${i}`).change(scenarioParameterChange);
 				$(`#variableSelectR${i}`).change(scenarioParameterChange);
 				$(`#representationSelect${i}`).change(scenarioParameterChange);
 				$(`#instrumentSelect${i}`).change(scenarioParameterChange);
 
-				$(`#variableSelectL${i}`).selectpicker("val", "net");
-				$(`#variableSelectL${i}`).selectpicker("refresh");
-				$(`#variableSelectL${i}`).change();
 			}
 
 			$(".selectpicker").selectpicker("refresh");
