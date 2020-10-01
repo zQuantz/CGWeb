@@ -39,21 +39,21 @@ class Builder:
 
 		if date == "LIVE":
 
-			data = LiveTicker(ticker, self.connector.rates)
+			data = LiveTicker(ticker)
 			self.ticker = Ticker(ticker,
 								 date,
 								 data.options,
 								 data.ohlc,
-								 data.key_stats,
+								 data.keystats,
 								 self.connector.ticker_info[ticker])
 
 		else:
 
-			option_chain = self.connector.get_data((ticker,),(date,), "options")
+			options = self.connector.get_data((ticker,),(date,), "options")
 			ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
-			key_stats = self.connector.get_data((ticker,),(date,), "keystats")
+			keystats = self.connector.get_data((ticker,),(date,), "keystats")
 
-			self.ticker = Ticker(ticker, date, option_chain, ohlc, key_stats, self.connector.ticker_info[ticker])
+			self.ticker = Ticker(ticker, date, options, ohlc, keystats, self.connector.ticker_info[ticker])
 			self.tickers[ticker][date] = self.ticker
 
 	def generate_position_info_rows(self):

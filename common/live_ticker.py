@@ -21,14 +21,40 @@ PARSER = "lxml"
 
 NAMED_DATE_FMT = "%B %d, %Y"
 
+OPTION_COLS = [
+	"date_current",
+	"ticker",
+	"expiration_date",
+	"days_to_expiry",
+	"option_type",
+	"strike_price",
+	"bid_price",
+	"option_price",
+	"ask_price",
+	"implied_volatility",
+	"volume",
+	"open_interest"
+]
+
+OHLC_COLS = [
+	"date_current",
+	"ticker",
+	"open_price",
+	"high_price",
+	"low_price",
+	"close_price",
+	"adjclose_price",
+	"volume",
+	"dividend_yield",
+]
+
 ###################################################################################################
 
 class LiveTicker():
 
-	def __init__(self, ticker, rates):
+	def __init__(self, ticker):
 
 		self.ticker = ticker
-		self.rates = rates
 
 		try:
 			self.div = self.get_dividends()
@@ -47,7 +73,7 @@ class LiveTicker():
 		self.sleep()
 
 		try:
-			self.get_key_stats()
+			self.get_keystats()
 			print(f"{ticker},Key Stats,Success,")
 		except Exception as e:
 			self.key_stats = pd.DataFrame(columns = ["feature", "modifier", "value"])
@@ -149,32 +175,29 @@ class LiveTicker():
 
 		self.ohlc_date = datetime.strptime(prices[0], "%b %d, %Y").strftime("%Y-%m-%d")
 
-		cols = ['open_price', 'high_price', 'low_price', 'close_price', 'adjclose_price', 'volume']
-		prices = list(map(self.option_fmt, prices[1:], cols))
-		self.adj_close = prices[-2]
-
-		prices += [self.div, self.ohlc_date]
-		cols += ["dividend_yield", 'date_current']
-
-		self.ohlc = pd.DataFrame([prices], columns = cols)
+		prices = list(map(self.option_fmt, prices[1:], OHLC_COLS[:-2]))
+		prices = [DATE, self.ticker] + prices + [self.div]
+		self.adj_close = prices[-3]
+		self.ohlc = pd.DataFrame([prices], columns = OHLC_COLS)
 
 	def get_options(self):
 
-		def append_options(table, expiry_date_fmt, expiration_days, symbol):
+		def append_options(table, expiry_date_fmt, expiration_days, option_type):
 
 			for row in table.find_all("tr")[1:]:
 				es = [e for e in row.find_all("td")[2:]]
 				self.options.append([
 						self.ohlc_date,
+						self.ticker,
 						expiry_date_fmt,
-						np.round(max(expiration_days / 252, 0), 6),
-						symbol,
+						expiration_days,
+						option_type,
 						self.option_fmt(es[0].text, 'Strike Price'),
 						self.option_fmt(es[2].text, 'Bid'),
-						self.option_fmt(es[3].text, 'Ask'),
-						self.option_fmt(es[-2].text, 'Volume'),
 						self.option_fmt(es[1].text, 'Option Price'),
-						self.option_fmt(es[-1].text, 'Implied Volatility') / 100,
+						self.option_fmt(es[3].text, 'Ask'),
+						self.option_fmt(es[-1].text, 'Implied Volatility'),
+						self.option_fmt(es[-2].text, 'Volume'),
 						self.option_fmt(es[-3].text, 'Open Interest')
 					])
 
@@ -204,12 +227,10 @@ class LiveTicker():
 
 			expiry, expiry_date = option.get("value"), option.text
 			print(f"{self.ticker},Option Expiry,{expiry},{expiry_date.replace(',', '.')}")
-
-			expiry_date_fmt = datetime.strptime(expiry_date, NAMED_DATE_FMT).strftime("%Y-%m-%d")
 			
-			dt = datetime.fromtimestamp(int(expiry)).strftime("%Y-%m-%d")
-			dt_now = datetime.now().strftime("%Y-%m-%d")
-			expiration_days = np.busday_count(dt_now, dt)
+			expiry_date = datetime.strptime(expiry_date, NAMED_DATE_FMT)
+			expiry_date_fmt = expiry_date.strftime("%Y-%m-%d")
+			expiration_days = (expiry_date - datetime.now()).days + 1
 
 			page = url+f"&date={str(expiry)}"
 			bs, _ = get_page(page)
@@ -223,16 +244,15 @@ class LiveTicker():
 			if puts:
 				append_options(puts, expiry_date_fmt, expiration_days, 'P')
 
-		self.options = pd.DataFrame(self.options, columns = ['date_current', 'expiration_date', 'time_to_expiry',
-															 'option_type', 'strike_price', 'bid', 'ask', 'volume',
-															 'option_price', 'implied_volatility', 'open_interest'])
-		self.options = calculate_greeks(self.adj_close, self.div, self.options, self.rates)
-		self.options['ticker'] = self.ticker
-		self.options['option_id'] = (self.options.ticker + ' ' + self.options.expiration_date
-						  			 + ' ' + self.options.option_type
-						  			 + self.options.strike_price.round(2).astype(str))
+		df = pd.DataFrame(self.options, columns = OPTION_COLS)
+		oid = df.ticker + ' ' + df.expiration_date + ' ' + df.option_type
+		sp = df.strike_price.round(2).astype(str)
+		sp = sp.str.rstrip("0").str.rstrip(".")
+		df['option_id'] = oid + sp
 
-	def get_key_stats(self):
+		self.options = df
+
+	def get_keystats(self):
 
 		def get_items(bs, text):
 
@@ -269,4 +289,4 @@ class LiveTicker():
 		df = pd.DataFrame(key_stats, columns = ["feature", "modifier", "value"])
 		pkey = ["feature", "modifier"]
 		df.loc[:, pkey] = df[pkey].fillna('')
-		self.key_stats = df
+		self.keystats = df

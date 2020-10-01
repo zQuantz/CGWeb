@@ -289,12 +289,13 @@ class Connector():
 
 		query = f"""
 			SELECT
-				DISTINCT(option_id)
+				option_id
 			FROM
-				options
+				tickeroids
 			WHERE
 				{ticker_str}
-			ORDER BY date_current, strike_price
+			ORDER BY
+				option_id
 		"""
 
 		return self.read(query)
