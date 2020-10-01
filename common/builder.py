@@ -51,7 +51,7 @@ class Builder:
 
 			option_chain = self.connector.get_data((ticker,),(date,), "options")
 			ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
-			key_stats = self.connector.get_data((ticker,),(date,), "key_stats")
+			key_stats = self.connector.get_data((ticker,),(date,), "keystats")
 
 			self.ticker = Ticker(ticker, date, option_chain, ohlc, key_stats, self.connector.ticker_info[ticker])
 			self.tickers[ticker][date] = self.ticker

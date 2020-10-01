@@ -149,7 +149,7 @@ class LiveTicker():
 
 		self.ohlc_date = datetime.strptime(prices[0], "%b %d, %Y").strftime("%Y-%m-%d")
 
-		cols = ['open', 'high', 'low', 'close', 'adj_close', 'stock_volume']
+		cols = ['open_price', 'high_price', 'low_price', 'close_price', 'adjclose_price', 'volume']
 		prices = list(map(self.option_fmt, prices[1:], cols))
 		self.adj_close = prices[-2]
 
