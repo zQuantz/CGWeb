@@ -2,67 +2,31 @@ from scipy.stats import norm
 import pandas as pd
 import numpy as np
 
-###################################################################################################
-
-t_map = [
-	0,
-	30,
-	60,
-	90,
-	180,
-	12 * 30,
-	24 * 30,
-	36 * 30,
-	60 * 30,
-	72 * 30,
-	120 * 30,
-	240 * 30,
-	360 * 30
+greek_cols = [
+	'delta',
+	'gamma',
+	'theta',
+	'vega',
+	'rho',
+	'vanna',
+	'vomma',
+	'charm',
+	'veta',
+	'speed',
+	'zomma',
+	'color',
+	'ultima'
 ]
-t_map = np.array(t_map) / 360
 
-###################################################################################################
-
-def calculate_greeks(stock_price, div, options, r_map):
+def calculate_greeks(options):
 
 	if len(options) == 0:
 		return options
 
-	def get_rate(t):
-
-		if t >= 30:
-			return r_map[-1]
-		
-		b1 = t_map <= t
-		b2 = t_map > t
-
-		r1 = r_map[b1][-1]
-		r2 = r_map[b2][0]
-
-		t1 = t_map[b1][-1]
-		t2 = t_map[b2][0]
-		
-		interpolated_rate = (t - t1) / (t2 - t1)
-		interpolated_rate *= (r2 - r1)
-
-		return interpolated_rate + r1
-
-	time_to_expirations = options.time_to_expiry.unique()	
-	unique_rates = {
-		tte : get_rate(tte)
-		for tte in time_to_expirations
-	}
-
-	options['rate'] = options.time_to_expiry.map(unique_rates)
-	options['stock_price'] = stock_price
-	options['dividend_yield'] = div
-
-	###############################################################################################
-
 	o = options.copy()
 	m = o.option_type.map({"C" : 1, "P" : -1}).values
 
-	tau = o.time_to_expiry.values
+	tau = o.days_to_expiry.values / 365
 	rtau = np.sqrt(tau)
 	iv = o.implied_volatility.values
 	S = o.stock_price.values
@@ -162,4 +126,4 @@ def calculate_greeks(stock_price, div, options, r_map):
 	options.loc[:, greek_cols] = options[greek_cols].round(6).fillna(0)
 	options = options.sort_values(["date_current", "option_type"], ascending=True)
 
-	return options.drop(['stock_price', 'dividend_yield', 'rate'], axis=1)
+	return options

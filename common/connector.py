@@ -130,32 +130,23 @@ class Connector():
 
 	def get_scenarios(self, clauses):
 
-		query = f"""
-		    SELECT
-		        t1.*,
-		        ratemap.rate
-		    FROM
-		        (
-		        SELECT
-		            options.*,
-		            ohlc.adj_close as stock_price,
-		            ohlc.dividend_yield
-		        FROM
-		            options
-		        JOIN
-		            ohlc
-		        ON
-		            options.date_current = ohlc.date_current
-		        AND options.ticker = ohlc.ticker
-		        WHERE
-		            {clauses}
-		        ) as t1
-		    JOIN
-		        ratemap
-		    ON
-		        ratemap.date_current = t1.date_current
-		    AND ROUND(t1.time_to_expiry * 365, 0) = ratemap.time_to_expiry
-		"""
+		query = """
+			SELECT
+				options.*,
+				trm.rate,
+				ohlc.adjclose_price AS stock_price,
+				ohlc.dividend_yield AS dividend_yield
+			FROM
+				options
+			INNER JOIN
+				treasuryratemap AS trm
+				USING(date_current, days_to_expiry)
+				INNER JOIN
+					ohlc
+					USING(date_current, ticker)
+			WHERE
+				{clauses}
+		""".format(clauses=clauses)
 		return self.read(query)
 
 	def get_password(self, username):
