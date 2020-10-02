@@ -121,7 +121,7 @@ def scenarios():
 @app.route("/iv")
 def iv():
 
-	iv_obj.get_iv(request.args.get("ticker"))
+	iv_obj.get_surface(request.args.get("ticker"))
 	return render_template("iv.html", iv = iv_obj, connector = connector)
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+from common.utils.html import html
 import pandas as pd
 import numpy as np
 import sys, os
@@ -8,6 +9,35 @@ class IV:
 
 		self.reset()
 		self.connector = connector
+		self.html = {
+			"iv_selector_table" : self.generate_iv_selector()
+		}
+
+	def generate_iv_selector(self):
+
+		def td(label, _id):
+		    e = html("button", label, {
+		    	"class": "ivSelectButton",
+		    	"id" : _id
+		    })
+		    return html("td", e)
+
+		trs = []
+		for maturity in [1, 3, 6, 9, 12, 18, 24]:
+		    
+		    tr = td(f"{maturity}M {80}%", f"m{maturity}m{80}")
+		    for moneyness in range(85, 125, 5):
+		        
+		        label = f"{maturity}M {moneyness}%"
+		        tr += td(label, f"m{maturity}m{moneyness}")
+		        
+		    trs.append(html("tr", tr))
+
+		tbody = html("tbody", "".join(trs))
+		return html("table", tbody, {
+			"id" : "ivSelectorTable",
+			"class" : "table table-sm table-bordered"
+		})
 
 	def reset(self):
 
@@ -15,7 +45,7 @@ class IV:
 		self.symbol = None
 		self.ticker = None
 
-	def get_iv(self, ticker):
+	def get_surface(self, ticker):
 
 		if not ticker:
 			self.reset()
@@ -29,19 +59,6 @@ class IV:
 			"symbol" : self.symbol
 		}
 
-		time_iv = self.connector.get_time_iv(ticker)
-		time_iv['date_current'] = pd.to_datetime(time_iv.date_current).astype(int) / (10 ** 6)
-		
-		time_iv['log_dte'] = time_iv.log_dte.astype(int).astype(str)
-		time_iv = time_iv[['date_current', 'log_dte', 'IV']]
-
-		time_iv = time_iv.pivot(index="date_current", columns="log_dte", values="IV") * 100
-		time_iv = time_iv.ffill()
-
-		data = time_iv.to_dict("list")
-		data['dates'] = list(time_iv.index.astype(int))
-
-		iv = self.connector.get_iv(ticker)
-		data['Global'] = list(iv.IV.ffill() * 100)
-
-		self.data = data
+		self.surface = self.connector.get_surface(ticker)
+		self.surface['date_current'] = self.surface.date_current.astype(str)
+		self.surface = self.surface.to_dict("list")

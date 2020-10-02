@@ -300,6 +300,21 @@ class Connector():
 
 		return self.read(query)
 
+	def get_surface(self, ticker):
+
+		query = f"""
+			SELECT
+				*
+			FROM
+				surface
+			WHERE
+				ticker = "{ticker}"
+			ORDER BY
+				date_current ASC
+		"""
+
+		return self.read(query)
+
 ###################################################################################################
 
 if __name__ == '__main__':

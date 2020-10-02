@@ -105,6 +105,10 @@
 		</div>
 		<!-- Top Row End -->
 
+		<div id="ivSelectorTableContent" hidden>
+			{{iv.html.iv_selector_table|safe}}
+		</div>
+
 	</div>
 	<!-- Main Container End -->
 
@@ -115,9 +119,15 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<span style="margin-left: 104.5rem; margin-right: 0rem;">
-			<button type="button" class="btn btn-outline-light navButton" id="candlesButton" data-toggle="modal" data-target="#candlesModal">Candles</button>
-		</span>
+		<button id="ivSelectorPopover" type="button" class="btn btn-outline-light navButton" data-container="body" data-toggle="popover" data-placement="top">
+			IV Selector
+		</button>
+
+		<ul class="navbar-nav ml-auto">
+			<button type="button" class="btn btn-outline-light navButton" id="candlesButton" data-toggle="modal" data-target="#candlesModal">
+				Candles
+			</button>
+		</ul>
 
 	</nav>
 	<!-- Lower Navbar End -->
@@ -149,13 +159,13 @@
 	<!-- Candles Modal End -->
 
 	<script type="text/javascript">
-		init()
+		init({{iv.html|tojson|safe}})
 	</script>
 
 	{% if iv.ticker %}
 
 		<script type="text/javascript">
-			initTicker({{iv.data|tojson|safe}},
+			initTicker({{iv.surface|tojson|safe}},
 					   {{iv.symbol|tojson|safe}})
 		</script>
 

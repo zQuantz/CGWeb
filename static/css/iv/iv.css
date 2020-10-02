@@ -17,7 +17,7 @@
 	margin-right: 1rem;
 	border-radius: 0;
 	height: 2.3rem;
-	width: 7rem;
+	width: 10rem;
 }
 
 .navButton::placeholder {
@@ -39,4 +39,44 @@
 .candlesContent {
 	background-color: #131721;
 	height: 50rem;
+}
+
+.ivSelectButton {
+	width: 100%;
+	height: 100%;
+	margin: 0%;
+	padding: 0%;
+	border: none;
+	background-color: white;
+}
+
+.ivSelectButton:active, .ivSelectButton:focus {
+  outline: 0;
+  border: none;
+  -moz-outline-style: none;
+}
+
+.ivSelectButtonActive, .ivSelectButton:hover {
+	background-color: #343A40;
+	color: white;
+}
+
+#ivSelectorTable td {
+	padding: 0;
+	margin: 0;
+}
+
+.popover {
+	max-width: 30rem;
+	max-height: 30rem;
+}
+
+.popover-body {
+	margin:0;
+	padding:0.25rem;
+}
+
+.popover-body table {
+	margin:0;
+	padding:0;
 }
