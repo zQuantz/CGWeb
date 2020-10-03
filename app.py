@@ -96,13 +96,12 @@ def calculator():
 @app.route("/scenarios", methods=["GET", "POST"])
 def scenarios():
 
-	scenarios_obj._position_rows = None
-
 	if request.method == "POST":
 
 		data = json.loads(request.get_data())
 
 		if type(data) is dict and data.get('reset'):
+			scenarios_obj.reset()
 			return json.dumps({})
 
 		scenarios_obj.generate_scenarios(data)

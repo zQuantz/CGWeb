@@ -71,6 +71,7 @@ class Scenarios:
 
 		self.ticker = None
 		self.symbol = None
+		self.selectors = None
 		self._position_rows = None
 		self.position_attributions = None
 
@@ -87,11 +88,44 @@ class Scenarios:
 		}
 
 		option_ids = self.connector.get_option_ids(tuple(tickers))
-		option_ids = option_ids.option_id.values
+		oids = option_ids.option_id.str.split(" ", expand=True)
+		oids.columns = ['ticker', 'expiration', 'tstrike']
 
-		self._option_ids = ""
-		for option_id in option_ids:
-			self._option_ids += html("option", option_id, {})
+		def convert(ticker):
+			ticker = ticker.groupby("expiration")["tstrike"].apply(list)
+			return ticker.to_dict()
+
+		selectors = oids.groupby("ticker").apply(convert).to_dict()
+
+		tickers = "".join([
+			html("option", ticker, {"value" : ticker})
+			for ticker in selectors
+		])
+
+		expirations = {
+			ticker : "".join([
+				html("option", expiration, {"value" : expiration})
+				for expiration in selectors[ticker]
+			])
+			for ticker in selectors
+		}
+
+		tstrikes = {
+			ticker : {
+				expiration : "".join([
+					html("option", tstrike, {"value" : tstrike})
+					for tstrike in selectors[ticker][expiration]
+				])
+				for expiration in selectors[ticker]
+			}
+			for ticker in selectors
+		}
+
+		self.selectors = {
+			"tickers" : tickers,
+			"expirations" : expirations,
+			"tstrikes" : tstrikes
+		}
 
 	def generate_scenarios(self, data):
 
@@ -116,6 +150,8 @@ class Scenarios:
 				"""
 				
 			clause += f"""
+				AND options.date_current
+					BETWEEN "{dates[0]}" AND "{dates[1]}" 
 				AND options.date_current >= "{dates[0]}"
 				AND options.date_current <= "{dates[1]}"
 			"""
@@ -186,11 +222,13 @@ class Scenarios:
 			attrs = attrs.div(os.option_price.shift(), axis=0)
 			attrs = attrs.multiply(scale, axis=0)
 			attrs = attrs.multiply(os.option_price.shift(), axis=0)    
-			os.loc[:, attr_cols] = attrs
 
 			cumattrs = attrs.cumsum(axis=0)
 			cumattrs.columns = cum_cols
 			os = pd.concat([os, cumattrs], axis=1)
+
+			os.loc[:, attr_cols] = attrs
+			os.loc[0, :] = os.loc[0, :].fillna(0)
 			
 			os['attr'] = os.delta_attr + os.gamma_attr + os.speed_attr
 			os['attr'] += os.vega_attr + os.vomma_attr + os.ultima_attr
@@ -200,9 +238,9 @@ class Scenarios:
 			
 			os['cum_attr'] = os.attr.cumsum()
 			
-			os['approximated_price'] = os.option_price.shift() + os.attr
-			
 			return os
+
+		###############################################################################################
 
 		position_attributions, position_rows = [], []
 
@@ -216,7 +254,7 @@ class Scenarios:
 			position = options[options.option_id.isin(oids)]
 			position = position[position.date_current >= datetime.strptime(dates[0], "%Y-%m-%d").date()]
 			position = position[position.date_current <= datetime.strptime(dates[1], "%Y-%m-%d").date()]
-			
+
 			x = position.date_current.value_counts()
 			x = x[x == len(oids)]
 			position = position[position.date_current.isin(x.index)]
@@ -230,21 +268,21 @@ class Scenarios:
 			
 			ccum_cols = cum_cols + ['cum_attr']
 			position.loc[:, ccum_cols] = position.loc[:, ccum_cols].multiply(position.quantity, axis=0)
-			position_pnl = position.groupby('date_current').sum().loc[:, ccum_cols][1:]
+			position_pnl = position.groupby('date_current').sum().loc[:, ccum_cols]
 			
 			position_pnl = position_pnl.to_dict('list')
 			position_pnl = {key[4:-5] : position_pnl[key] for key in position_pnl}
 			position_pnl['net'] = position_pnl['']
-			del position_pnl['']
-			
+			del position_pnl['']			
+
 			attributions['position'] = position_pnl
 			
 			for oid in oids:
 				
 				option_pnl = position[position.option_id == oid]
-				stock_price = option_pnl.stock_price[1:].values.tolist()
+				stock_price = option_pnl.stock_price.values.tolist()
 
-				option_pnl = option_pnl.loc[:, ccum_cols][1:]
+				option_pnl = option_pnl.loc[:, ccum_cols]
 				option_pnl = option_pnl.to_dict('list')
 				
 				option_pnl = {key[4:-5] : option_pnl[key] for key in option_pnl}
@@ -253,7 +291,7 @@ class Scenarios:
 				
 				option_pnl['stock price'] = stock_price
 				attributions[oid] = option_pnl
-			
+
 			###############################################################################################
 			
 			x = position.date_current.value_counts()
@@ -271,13 +309,13 @@ class Scenarios:
 			single_ticker = pdetails.ticker.nunique() == 1
 			pdetails = pdetails.drop(["ticker", "option_type", "strike_price", "bid_price", "ask_price"], axis=1)
 
-			pdetails['implied_volatility'] = (pdetails.implied_volatility * 100).round(2)
-			pdetails['days_to_expiry'] = pdetails.days_to_expiry * 365
+			pdetails['implied_volatility'] = pdetails.implied_volatility
+			pdetails['days_to_expiry'] = pdetails.days_to_expiry
 			pdetails['cost'] = pdetails.option_price * pdetails.quantity
 
 			pdetails['last_stock'] = pdetails_end.stock_price
 			pdetails['last_price'] = pdetails_end.option_price
-			pdetails['last_vol'] = (pdetails_end.implied_volatility * 100).round(2)
+			pdetails['last_vol'] = pdetails_end.implied_volatility
 			pdetails['last_cost'] = pdetails_end.option_price * pdetails_end.quantity
 
 			pdetails['pnl'] = pdetails_end.option_price - pdetails.option_price 
@@ -417,7 +455,6 @@ class Scenarios:
 				}
 
 			position_attributions.append(attributions)
-
 
 		self._position_rows = " ".join(position_rows)
 		self.position_attributions = position_attributions

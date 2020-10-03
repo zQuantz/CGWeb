@@ -1,8 +1,11 @@
+var optionTypeStrikeSelect = null;
+var optionExpirationSelect = null;
+var optionTickerSelect = null;
+
 var positionAttributions = null;
 var positionAccordion = null;
 var actionEntryTbody = null;
 var startDateInput = null;
-var optionSelect = null;
 var endDateInput = null;
 
 var accordion_tr = null;
@@ -11,9 +14,13 @@ var option_tr = null;
 
 var scenarioCharts = [];
 var positions = [];
+var selectors = {};
 var position = {};
 var tickers = {};
 var strikes = {};
+
+var ticker = "";
+var expiration = "";
 
 var minDate = "2019-12-01";
 var colors = [
@@ -121,17 +128,39 @@ var colors = [
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function init(scenarios_htmls){
+function initTicker(symbol, templates, _selectors) {
+
+	$("#tickerSelect").val(symbol.ticker);
+	$("#tickerSelect").selectpicker("refresh");
+
+	selectors = _selectors;
+	accordion_tr = templates['accordion_tr'];
+	accordion = templates['accordion'];
+	option_tr = templates['option_tr'];
 
 	actionEntryTbody = $("#actionEntryTbody");
 	positionAccordion = $("#positionAccordion");
 
-	optionSelect = $("#optionSelect");
-	optionSelect.change(editPosition);
+	optionTickerSelect = $("#optionTickerSelect");
+	optionExpirationSelect = $("#optionExpirationSelect");
+	optionTypeStrikeSelect = $("#optionTypeStrikeSelect");
 
-	accordion_tr = scenarios_htmls['accordion_tr'];
-	accordion = scenarios_htmls['accordion'];
-	option_tr = scenarios_htmls['option_tr'];
+	optionTickerSelect.change(function() {
+		ticker = optionTickerSelect.val();
+		optionExpirationSelect
+			.empty()
+			.html(selectors.expirations[ticker])
+			.selectpicker("refresh");
+	})
+	optionExpirationSelect.change(function() {
+		ticker = optionTickerSelect.val();
+		expiration = optionExpirationSelect.val();
+		optionTypeStrikeSelect
+			.empty()
+			.html(selectors.tstrikes[ticker][expiration])
+			.selectpicker("refresh");
+	})
+	optionTypeStrikeSelect.change(editPosition)
 
 	startDateInput = $("#startDateInput");
 	endDateInput = $("#endDateInput");
@@ -144,6 +173,24 @@ function init(scenarios_htmls){
 		endDateInput.attr("min", startDateInput.val())
 	});
 
+	new TradingView.widget(
+		{
+			"height" : "100%",
+			"width" : "100%",
+			"symbol": symbol.symbol,
+			"interval": "D",
+			"timezone": "Etc/UTC",
+			"theme": "dark",
+			"style": "1",
+			"locale": "en",
+			"toolbar_bg": "#f1f3f6",
+			"enable_publishing": false,
+			"allow_symbol_change": true,
+			"studies": [],
+			"container_id": "tradingviewDiv"
+		}
+	);
+
 }
 
 function removeOption(e){
@@ -151,8 +198,12 @@ function removeOption(e){
 	let id = e.parentElement.parentElement.id;
 	delete position[id];
 
-	optionSelect.selectpicker("val", Object.keys(position));
-	optionSelect.selectpicker('refresh');
+	let tstrikes = Object.keys(position)
+		.map(x => x.split(" ")[2]);
+
+	optionTypeStrikeSelect
+		.selectpicker("val", tstrikes)
+		.selectpicker('refresh');
 
 	editPosition();
 
@@ -174,8 +225,10 @@ function editPosition(){
 
 	actionEntryTbody.empty();
 
-	options = optionSelect.val();
+	options = optionTypeStrikeSelect.val();
 	options.forEach( (option, ctr) => {
+
+		option = `${ticker} ${expiration} ${option}`
 
 		newPosition[option] = 0;
 
@@ -205,9 +258,18 @@ function resetPosition() {
 
 	position = {};
 	tickers = {};
-	
-	optionSelect.selectpicker("val", []);
-	optionSelect.selectpicker("refresh");
+
+	optionTickerSelect
+		.selectpicker("val", "")
+		.selectpicker("refresh");
+
+	optionExpirationSelect
+		.selectpicker("val", "")
+		.selectpicker("refresh");
+
+	optionTypeStrikeSelect
+		.selectpicker("val", [])
+		.selectpicker("refresh");
 
 	startDateInput.val("");
 	endDateInput.val("");
@@ -490,51 +552,15 @@ function analyzePositions(){
 
 }
 
-function initCandles(symbol) {
-
-	$("#tickerSelect").val(symbol.ticker);
-	$("#tickerSelect").selectpicker("refresh");
-
-	new TradingView.widget(
-		{
-			"height" : "100%",
-			"width" : "100%",
-			"symbol": symbol.symbol,
-			"interval": "D",
-			"timezone": "Etc/UTC",
-			"theme": "dark",
-			"style": "1",
-			"locale": "en",
-			"toolbar_bg": "#f1f3f6",
-			"enable_publishing": false,
-			"allow_symbol_change": true,
-			"studies": [],
-			"container_id": "tradingviewDiv"
-		}
-	);
-
-}
-
 function removeAllScenarios() {
 
 	var request = new XMLHttpRequest();
 	request.onreadystatechange = function() {
 
-		if(this.readyState == 4 && this.status == 200){
-			
-			$("#scenarioAccordionCard").collapse("show");
-
-			scenarioCharts = [];
-			positions = [];
-			position = {};
-			tickers = {};
-			strikes = {};
-			positionAttributions = null;
-
+		if(this.readyState == 4 && this.status == 200)
 			window.location.href = "/scenarios";
-
-		}
-	}	
+		
+	}
 
 	request.open("POST", "/scenarios");
 	request.send(JSON.stringify({"reset" : true}));

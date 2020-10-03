@@ -28,11 +28,11 @@ def calculate_greeks(options):
 
 	tau = o.days_to_expiry.values / 365
 	rtau = np.sqrt(tau)
-	iv = o.implied_volatility.values
+	iv = o.implied_volatility.values / 100
 	S = o.stock_price.values
 	K = o.strike_price.values
-	q = o.dividend_yield.values
-	r = o.rate.values
+	q = o.dividend_yield.values / 100
+	r = o.rate.values / 100
 
 	###################################################################################################
 

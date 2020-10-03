@@ -78,7 +78,7 @@
 
 			<form class="form-inline" action="/scenarios">
 
-				<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Tickers.." id="tickerSelect" name="tickers">
+				<select class="selectpicker form-control tickerPicker" data-live-search="true" title="Tickers.." id="tickerSelect" multiple name="tickers">
 					{% if connector %}
 						{{connector._ticker_options | safe}}
 					{% endif %}
@@ -144,12 +144,23 @@
 
 											<div class="form-group row">
 
-												<label for="optionSelect" class="col-2 col-form-label">Options</label>
-												<div class="col-10">
-													<select class="selectpicker form-control" data-live-search="true" title="Options.." id="optionSelect" name="ticker" multiple required="required">
-														{% if scenarios._option_ids %}
-															{{scenarios._option_ids | safe}}
+												<label for="optionTickerSelect" class="col-2 col-form-label">Options</label>
+
+												<div class="col-3">
+													<select class="selectpicker form-control optionSelector" data-live-search="true" title="Ticker.." id="optionTickerSelect" required="required">
+														{% if scenarios.selectors %}
+															{{scenarios.selectors['tickers'] | safe}}
 														{% endif %}
+													</select>
+												</div>
+
+												<div class="col-4">
+													<select class="selectpicker form-control optionSelector" data-live-search="true" title="Expiration.." id="optionExpirationSelect" required="required">
+													</select>
+												</div>
+
+												<div class="col-3">
+													<select class="selectpicker form-control optionSelector" data-live-search="true" title="(C|P)Strike.." id="optionTypeStrikeSelect" multiple required="required">
 													</select>
 												</div>
 
@@ -242,7 +253,6 @@
 		</div>
 		<!-- Top Row End -->
 
-
 		{% if scenarios._position_rows %}
 			{{scenarios._position_rows | safe}}
 		{% endif %}
@@ -257,12 +267,10 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<span style="margin-left: 96.25rem; margin-right: 0rem;">
-		
+		<ul class="navbar-nav ml-auto">
 			<button type="button" class="btn btn-outline-light navButton" id="candlesButton" data-toggle="modal" data-target="#candlesModal">Candles</button>
 			<button type="button" class="btn btn-outline-danger navButton" onclick="removeAllScenarios()" style="margin-right: 0rem;">Reset</button>
-
-		</span>
+		</ul>
 
 	</nav>
 	<!-- Lower Navbar End -->
@@ -293,14 +301,12 @@
 	</div>
 	<!-- Candles Modal End -->
 
-	<script type="text/javascript">
-		init({{scenarios.templates|tojson|safe}});
-	</script>
-
 	{% if scenarios.ticker %}
 		
 		<script type="text/javascript">
-			initCandles({{scenarios.symbol|tojson|safe}})
+			initTicker({{scenarios.symbol|tojson|safe}},
+					   {{scenarios.templates|tojson|safe}},
+					   {{scenarios.selectors|tojson|safe}})
 		</script>
 
 	{% endif %}
