@@ -116,7 +116,7 @@ function displayPositions(){
 		newRow = newRow.replace("PREMIUM", premium);
 		summaryRow = summaryRow.replace("NET_PREMIUM", premium);
 
-		let iv = option.option.implied_volatility * 100;
+		let iv = option.option.implied_volatility;
 		iv = numberFormat(iv, 2, "%");		
 		newRow = newRow.replace("I.V.", iv);
 
@@ -227,7 +227,7 @@ function addToPosition(direction, option_id){
 
 		let option = options[option_id];
 		position.options[option_id] = new Option(option, netQty,
-			direction > 0 ? option.ask : option.bid,
+			direction > 0 ? option.ask_price : option.bid_price,
 			option.option_type == "C" ? 1 : -1);
 		position.size += 1;
 

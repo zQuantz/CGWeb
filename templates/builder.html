@@ -248,13 +248,12 @@
 			<input class="btn btn-outline-light builderNavButton" placeholder="U. Change" id="uChange" onchange="onChangeUChange()">
 		</div>
 
-		<button class="btn btn-outline-light builderNavButton" type="button" id="executeButton" data-toggle="modal" data-target="#executeModal">Execute</button>
+		<ul class="navbar-nav ml-auto">
+			<button class="btn btn-outline-light builderNavButton" type="button" id="candlesButton" data-toggle="modal" data-target="#candlesModal">Candles</button>
+			<button class="btn btn-outline-light builderNavButton" type="button" id="executeButton" data-toggle="modal" data-target="#executeModal">Execute</button>
+		</ul>
 
-		<button class="btn btn-outline-light builderNavButton" type="button" id="candlesButton" data-toggle="modal" data-target="#candlesModal">Candles</button>
 
-		<form class="form-inline" action="/builder">
-			<button type="button" class="btn btn-outline-light builderNavButton">Analyze</button>
-		</form>
 
 	</nav>
 	<!-- Lower Navbar End -->
