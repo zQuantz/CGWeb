@@ -181,8 +181,7 @@ function init(){
 				bodyFontStyle: 'bold',
 				callbacks: {
 					title: function(item, obj){
-						let i = item[0].label.lastIndexOf(", ");
-						return item[0].label.substring(0, i);
+						return item[0].label;
 					},
 					label: function(item, data){
 
