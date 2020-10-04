@@ -5,15 +5,15 @@ import pandas as pd
 
 class Ticker():
 
-	def __init__(self, ticker, date, option_chain, ohlc, key_stats, ticker_info):
+	def __init__(self, ticker, date, options, ohlc, keystats, ticker_info):
 
 		self.ohlc = ohlc
 		self.date = date
-		self.ks = key_stats
+		self.ks = keystats
 		self.ticker = ticker
 		self.ticker_info = ticker_info
 
-		self.stock_price = ohlc.adj_close.values[0]
+		self.stock_price = ohlc.adjclose_price.values[0]
 		self.stock_info = {
 			"stock_price" : self.stock_price,
 			"price_increment" : max(0.01, round(self.stock_price * 0.001, 2)),
@@ -21,23 +21,23 @@ class Ticker():
 		}
 
 		cols = ['date_current', 'expiration_date']
-		option_chain.loc[:, cols] = option_chain.loc[:, cols].astype(str)
+		options.loc[:, cols] = options.loc[:, cols].astype(str)
 
-		self.option_chain = option_chain
-		self._option_chain = ""
+		self.options = options
+		self._options = ""
 
-		self.option_data = self.option_chain.set_index("option_id")
+		self.option_data = self.options.set_index("option_id")
 		self.option_data = self.option_data.T.to_dict()
 
-		self.generate_option_chain()
+		self.generate_options()
 		self.generate_stock_info()
 
-	def generate_option_chain(self):
+	def generate_options(self):
 
 		def format_wheel(expiration):
 
-			exp = self.option_chain.expiration_date == expiration
-			exp = self.option_chain[exp]
+			exp = self.options.expiration_date == expiration
+			exp = self.options[exp]
 		
 			calls = exp[exp.option_type == "C"]
 			calls = calls[COLS]
@@ -127,8 +127,8 @@ class Ticker():
 
 			return str(_wheel)
 
-		expirations = self.option_chain.groupby("expiration_date").apply(
-			lambda x: int(x.time_to_expiry.unique() * 252)
+		expirations = self.options.groupby("expiration_date").apply(
+			lambda x: int(x.days_to_expiry.unique())
 		)
 
 		collapsed = ""
@@ -166,7 +166,7 @@ class Ticker():
 			show = ""
 			aria_expanded = "false"
 
-			self._option_chain += html("div", card_header+card_body, {"class" : "card bg-dark"})
+			self._options += html("div", card_header+card_body, {"class" : "card bg-dark"})
 
 	def generate_stock_info(self):
 
@@ -176,9 +176,9 @@ class Ticker():
 		tds += html("td", self.ticker_info['industry'], {})
 		tds += html("td", self.ticker_info['sector'], {})
 
-		dchange = self.ohlc.adj_close - self.ohlc.open
+		dchange = self.ohlc.adjclose_price - self.ohlc.open_price
 		dchange = dchange.values[0]
-		pchange = dchange / self.ohlc.open.values[0]
+		pchange = dchange / self.ohlc.open_price.values[0]
 		tds += html("td", f"{round(dchange, 2)}$ ({round(pchange * 100, 2)}%)", {})
 
 		###########################################################################################
@@ -188,7 +188,7 @@ class Ticker():
 			relvol = self.ks[
 				(self.ks.feature == "Avg Vol") & (self.ks.modifier == "3 month")
 			]
-			relvol = self.ohlc.stock_volume.values[0] / float(relvol.value.values[0])
+			relvol = self.ohlc.volume.values[0] / float(relvol.value.values[0])
 			relvol = f"{round(relvol, 2)}"
 
 		except Exception as e:
@@ -199,8 +199,7 @@ class Ticker():
 
 		###########################################################################################
 
-		div_yield = self.ohlc.dividend_yield
-		div_yield = div_yield.values[0] * 100
+		div_yield = self.ohlc.dividend_yield.values[0]
 		tds += html("td", f"{round(div_yield, 2)}%", {})
 
 		try:

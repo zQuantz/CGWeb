@@ -1,4 +1,5 @@
 from common.const import CONFIG, TAS_COLS, PT_COLS
+from common.greeks import calculate_greeks
 from common.live_ticker import LiveTicker
 from common.connector import Connector
 from common.utils.html import html
@@ -40,6 +41,14 @@ class Builder:
 		if date == "LIVE":
 
 			data = LiveTicker(ticker)
+			data.options['dividend_yield'] = data.ohlc.dividend_yield[0]
+			data.options['stock_price'] = data.ohlc.adjclose_price[0]
+
+			rate = data.options.days_to_expiry
+			data.options['rate'] = rate.map(self.connector.ratemap)
+
+			data.options = calculate_greeks(data.options)
+
 			self.ticker = Ticker(ticker,
 								 date,
 								 data.options,
@@ -49,7 +58,9 @@ class Builder:
 
 		else:
 
-			options = self.connector.get_data((ticker,),(date,), "options")
+			options = self.connector.get_options(ticker, date)
+			options = calculate_greeks(options)
+
 			ohlc = self.connector.get_data((ticker,),(date,), "ohlc")
 			keystats = self.connector.get_data((ticker,),(date,), "keystats")
 

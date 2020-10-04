@@ -162,7 +162,7 @@ class LiveTicker():
 			div = div.text.split(' ')[1][1:-1]
 			div = div.replace('N/A', '')
 
-		return self.option_fmt(div, 'Dividend') / 100
+		return self.option_fmt(div, 'Dividend')
 
 	def get_ohlc(self):
 
@@ -176,7 +176,7 @@ class LiveTicker():
 		self.ohlc_date = datetime.strptime(prices[0], "%b %d, %Y").strftime("%Y-%m-%d")
 
 		prices = list(map(self.option_fmt, prices[1:], OHLC_COLS[:-2]))
-		prices = [DATE, self.ticker] + prices + [self.div]
+		prices = [self.ohlc_date, self.ticker] + prices + [self.div]
 		self.adj_close = prices[-3]
 		self.ohlc = pd.DataFrame([prices], columns = OHLC_COLS)
 

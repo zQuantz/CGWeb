@@ -34,7 +34,6 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/builder/option_chain.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/builder/position_info.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/builder/stock_info.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/builder/execution.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/builder/modals.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/builder/main.css">
 
@@ -222,7 +221,7 @@
 				<!-- Option Chain -->
 				<div class="accordion" id="optionChainAccordion">
 					{% if builder.ticker %}
-					{{builder.ticker._option_chain | safe}}
+						{{builder.ticker._options | safe}}
 					{% endif %}
 				</div>
 				<!-- Option Chain End-->

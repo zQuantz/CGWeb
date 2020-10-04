@@ -25,8 +25,8 @@ class Connector():
 		print("Collecting Ticker Info")
 		self.ticker_info = self.get_ticker_info()
 
-		print("Collecting Interest Rates")
-		self.rates = self.get_rates()
+		print("Collecting Interest Rate Map")
+		self.ratemap = self.get_ratemap()
 
 		print("Collecting Table Lengths")
 		self.lengths = self.get_table_lengths()
@@ -60,9 +60,9 @@ class Connector():
 
 		if lengths['treasuryrates'] != self.lengths['treasuryrates']:
 
-			self.rates = self.get_rates()
+			self.ratemap = self.get_ratemap()
 			self.lengths['treasuryrates'] = lengths['treasuryrates']
-			updates = True
+			updated = True
 
 		if updated:
 			self.generate_data_coords()
@@ -128,6 +128,28 @@ class Connector():
 		if tries >= self.max_tries:
 			raise Exception("Too Many SQL Errors.")
 
+	def get_options(self, ticker, date):
+
+		query = """
+			SELECT
+				options.*,
+				trm.rate,
+				ohlc.adjclose_price AS stock_price,
+				ohlc.dividend_yield AS dividend_yield
+			FROM
+				options
+			INNER JOIN
+				treasuryratemap AS trm
+				USING(date_current, days_to_expiry)
+				INNER JOIN
+					ohlc
+					USING(date_current, ticker)
+			WHERE
+				ticker = "{ticker}"
+			AND date_current = "{date}"
+		""".format(ticker=ticker, date = date)
+		return self.read(query)
+
 	def get_scenarios(self, clauses):
 
 		query = """
@@ -148,6 +170,23 @@ class Connector():
 				{clauses}
 		""".format(clauses=clauses)
 		return self.read(query)
+
+	def get_ratemap(self):
+
+		query = """
+			SELECT
+				days_to_expiry,
+				rate
+			FROM
+				treasuryratemap
+			ORDER BY
+				date_current DESC
+			LIMIT
+				3651;
+		"""
+
+		df = self.read(query).set_index("days_to_expiry")
+		return df['rate'].to_dict()
 
 	def get_password(self, username):
 
@@ -224,24 +263,6 @@ class Connector():
 		data = data.groupby("ticker")["date_current"]
 		data = data.apply(list).to_dict()
 		return data
-
-	def get_rates(self):
-
-		date = datetime.now() - timedelta(days=7)
-		date = date.strftime("%Y-%m-%d")
-
-		query = f"""
-			SELECT
-				*
-			FROM
-				treasuryrates
-			WHERE
-				date_current >= "{date}"
-		"""
-		data = self.read(query)
-		rates = list(data.iloc[-1, 1:].values / 100)
-		rates = np.array([0] + rates)
-		return rates
 
 	def get_data(self, tickers, dates, table):
 
