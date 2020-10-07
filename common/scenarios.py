@@ -228,7 +228,7 @@ class Scenarios:
 			os = pd.concat([os, cumattrs], axis=1)
 
 			os.loc[:, attr_cols] = attrs
-			os.loc[0, :] = os.loc[0, :].fillna(0)
+			os.iloc[0, :] = os.iloc[0, :].fillna(0)
 			
 			os['attr'] = os.delta_attr + os.gamma_attr + os.speed_attr
 			os['attr'] += os.vega_attr + os.vomma_attr + os.ultima_attr
