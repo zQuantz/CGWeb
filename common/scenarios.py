@@ -408,7 +408,7 @@ class Scenarios:
 
 			variableOptions = ""
 			chart_options = ["Net", "Delta", "Gamma", "Theta", "Vega", "Rho", "Stock Price"]
-			chart_options += ["Vanna", "Veta", "Speed", "Zomma", "Color", "Ultima", "Charm"]
+			chart_options += ["Vanna", "Vomma", "Veta", "Speed", "Zomma", "Color", "Ultima", "Charm"]
 			for option in chart_options:
 				variableOptions += html("option", option, {"value" : option.lower()})
 
