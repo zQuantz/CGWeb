@@ -224,7 +224,6 @@ function editPosition(){
 	let newStrikes = {};
 
 	actionEntryTbody.empty();
-
 	options = optionTypeStrikeSelect.val();
 	options.forEach( (option, ctr) => {
 
@@ -247,6 +246,24 @@ function editPosition(){
 		newStrikes[option.split(" ")[2].substring(1)] = 0;
 
 	})
+
+	for (option in position){
+
+		if (option in newPosition)
+			continue;
+
+		newPosition[option] = position[option];
+
+		let ntr = option_tr.replace("OPTION_ID", option);
+		ntr = ntr.replace("OPTION_ID", option);
+		actionEntryTbody.append(ntr);
+		
+		$("#actionEntryTbody input:last").val(newPosition[option]);
+
+		newTickers[option.split(" ")[0]] = 0;
+		newStrikes[option.split(" ")[2].substring(1)] = 0;
+
+	}
 
 	position = newPosition;
 	tickers = newTickers;
@@ -510,6 +527,69 @@ function getChartConfig(i){
 
 function analyzePositions(){
 
+	positions = [
+	// Front Month and the next
+		{
+			startDate: "2020-07-13",
+			endDate: "2020-07-27",
+			strikes: ["240", "360"],
+			tickers: ["TSLA"],
+			position: {
+				"TSLA 2020-08-21 C320" : 1,
+				"TSLA 2020-08-21 P220" : 1,
+				"TSLA 2020-09-18 C380" : -1,
+				"TSLA 2020-09-18 P220" : -1,
+			}
+		},
+
+
+
+		// 2nd Front and the 6th
+		{
+			startDate: "2020-07-13",
+			endDate: "2020-07-27",
+			strikes: ["240", "360"],
+			tickers: ["TSLA"],
+			position: {
+				"TSLA 2020-09-18 C380" : 1,
+				"TSLA 2020-09-18 P220" : 1,
+				"TSLA 2021-01-15 C380" : -1,
+				"TSLA 2021-01-15 P220" : -1,
+			}
+		},
+
+		// 3rd Front and the 6th
+		{
+			startDate: "2020-07-13",
+			endDate: "2020-07-27",
+			strikes: ["240", "360"],
+			tickers: ["TSLA"],
+			position: {
+				"TSLA 2020-10-16 C380" : 1,
+				"TSLA 2020-10-16 P220" : 1,
+				"TSLA 2021-01-15 C380" : -1,
+				"TSLA 2021-01-15 P220" : -1,
+			}
+		},
+
+		// 4rd Front and the 6th
+		{
+			startDate: "2020-07-13",
+			endDate: "2020-07-27",
+			strikes: ["240", "360"],
+			tickers: ["TSLA"],
+			position: {
+				"TSLA 2020-11-20 C380" : 1,
+				"TSLA 2020-11-20 P220" : 1,
+				"TSLA 2021-01-15 C380" : -1,
+				"TSLA 2021-01-15 P220" : -1,
+			}
+		},
+
+	]
+
+	console.log("Sending Positions", positions);
+
 	if (positions.length == 0)
 		return;
 
@@ -547,6 +627,7 @@ function analyzePositions(){
 
 	}
 
+	console.log("Sending");
 	request.open("POST", "/scenarios");
 	request.send(JSON.stringify(positions));
 

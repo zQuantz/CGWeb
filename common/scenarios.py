@@ -129,7 +129,7 @@ class Scenarios:
 
 	def generate_scenarios(self, data):
 
-		positions, clauses = [], []
+		clauses, positions = [], []
 		for position in data:
 
 			positions.append([
@@ -152,20 +152,17 @@ class Scenarios:
 			clause += f"""
 				AND options.date_current
 					BETWEEN "{dates[0]}" AND "{dates[1]}" 
-				AND options.date_current >= "{dates[0]}"
-				AND options.date_current <= "{dates[1]}"
 			"""
-			
+
 			clauses.append(f"({clause})")
 
-		clauses = " OR ".join(clauses)
-		options = self.connector.get_scenarios(clauses)
+		options = self.connector.get_scenarios(" OR ".join(clauses))
 		options = calculate_greeks(options)
 
 		def calculate_pnl_attribution(os):
-		
-			dt = os.date_current.diff().dt.days
-			dt = dt.fillna(0)
+			
+			dt = pd.to_datetime(os.date_current)
+			dt = dt.diff().dt.days.fillna(0)
 			dt = 1
 			
 			dS = os.stock_price.diff().fillna(0).values
@@ -408,7 +405,7 @@ class Scenarios:
 
 			variableOptions = ""
 			chart_options = ["Net", "Delta", "Gamma", "Theta", "Vega", "Rho", "Stock Price"]
-			chart_options += ["Vanna", "Veta", "Speed", "Zomma", "Color", "Ultima", "Charm"]
+			chart_options += ["Vanna", "Vomma", "Veta", "Speed", "Zomma", "Color", "Ultima", "Charm"]
 			for option in chart_options:
 				variableOptions += html("option", option, {"value" : option.lower()})
 

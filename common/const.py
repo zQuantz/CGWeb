@@ -82,8 +82,11 @@ PT_COLS += ['direction', 'strategy', 'sentiment', 'notes', 'image_filenames', 'i
 with open(f"{DIR}/config.json", "r") as file:
 	CONFIG = json.loads(file.read())
 
-with open(f"{DIR}/config.json", "w") as file:
-	CONFIG['date'] = datetime.now().strftime("%Y-%m-%d")
-	file.write(json.dumps(CONFIG))
+with open(f"{DIR}/config_gcp.json", "r") as file:
+	CONFIG_GCP = json.loads(file.read())
+
+# with open(f"{DIR}/config.json", "w") as file:
+# 	CONFIG['date'] = datetime.now().strftime("%Y-%m-%d")
+# 	file.write(json.dumps(CONFIG))
 
 ###################################################################################################

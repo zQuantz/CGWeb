@@ -6,15 +6,37 @@ import numpy as np
 import sys, os
 import json
 
-from common.const import CONFIG
+from common.const import CONFIG, CONFIG_GCP
 
 ###################################################################################################
 
 class Connector():
 
 	HOUR_OFFSET = 22
-	engine = sql.create_engine(CONFIG['db_address'])
 	max_tries = 3
+	
+	# engine = sql.create_engine(CONFIG['db_address'],
+	# 						   pool_size=3,
+	# 						   max_overflow=0,
+	# 						   pool_recycle=299,
+	# 						   pool_pre_ping=True)
+
+	engine = sql.create_engine(
+	    sql.engine.url.URL(
+	        drivername="mysql+pymysql",
+	        username=CONFIG_GCP['db_user'],
+	        password=CONFIG_GCP['db_password'],
+	        host=CONFIG_GCP['db_ip'],
+	        port=CONFIG_GCP['db_port'],
+	        database=CONFIG_GCP['db'],
+	        query={"unix_socket":CONFIG_GCP['db_socket']}
+	    ),
+	    pool_size=3,
+		max_overflow=0,
+		pool_recycle=299,
+		pool_pre_ping=True
+	)
+
 	moneyness = 0.1
 
 	def __init__(self):
