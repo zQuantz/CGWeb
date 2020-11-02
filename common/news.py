@@ -50,8 +50,6 @@ class News:
 
 		for i, item in enumerate(items):
 
-			print(i)
-
 			title = item.get("title", None)
 			if not title:
 				continue
