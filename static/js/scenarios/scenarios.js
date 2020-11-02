@@ -527,69 +527,6 @@ function getChartConfig(i){
 
 function analyzePositions(){
 
-	positions = [
-	// Front Month and the next
-		{
-			startDate: "2020-07-13",
-			endDate: "2020-07-27",
-			strikes: ["240", "360"],
-			tickers: ["TSLA"],
-			position: {
-				"TSLA 2020-08-21 C320" : 1,
-				"TSLA 2020-08-21 P220" : 1,
-				"TSLA 2020-09-18 C380" : -1,
-				"TSLA 2020-09-18 P220" : -1,
-			}
-		},
-
-
-
-		// 2nd Front and the 6th
-		{
-			startDate: "2020-07-13",
-			endDate: "2020-07-27",
-			strikes: ["240", "360"],
-			tickers: ["TSLA"],
-			position: {
-				"TSLA 2020-09-18 C380" : 1,
-				"TSLA 2020-09-18 P220" : 1,
-				"TSLA 2021-01-15 C380" : -1,
-				"TSLA 2021-01-15 P220" : -1,
-			}
-		},
-
-		// 3rd Front and the 6th
-		{
-			startDate: "2020-07-13",
-			endDate: "2020-07-27",
-			strikes: ["240", "360"],
-			tickers: ["TSLA"],
-			position: {
-				"TSLA 2020-10-16 C380" : 1,
-				"TSLA 2020-10-16 P220" : 1,
-				"TSLA 2021-01-15 C380" : -1,
-				"TSLA 2021-01-15 P220" : -1,
-			}
-		},
-
-		// 4rd Front and the 6th
-		{
-			startDate: "2020-07-13",
-			endDate: "2020-07-27",
-			strikes: ["240", "360"],
-			tickers: ["TSLA"],
-			position: {
-				"TSLA 2020-11-20 C380" : 1,
-				"TSLA 2020-11-20 P220" : 1,
-				"TSLA 2021-01-15 C380" : -1,
-				"TSLA 2021-01-15 P220" : -1,
-			}
-		},
-
-	]
-
-	console.log("Sending Positions", positions);
-
 	if (positions.length == 0)
 		return;
 
