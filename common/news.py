@@ -7,7 +7,7 @@ import numpy as np
 import sys, os
 import json
 
-NEWS_DIR = "/home/zquantz/OscraP/rss/news_data"
+NEWS_DIR = "/home/zqretrace/OscraP/rss/news_data"
 
 class News:
 
