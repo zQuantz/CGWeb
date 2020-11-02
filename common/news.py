@@ -43,11 +43,14 @@ class News:
 				except Exception as e:
 					print(e)
 
+		if len(items) != 0:
 			self.generate_news(items)
 
 	def generate_news(self, items):
 
-		for item in items:
+		for i, item in enumerate(items):
+
+			print(i)
 
 			title = item.get("title", None)
 			if not title:
