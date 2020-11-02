@@ -9,6 +9,7 @@ from flask import Flask
 from common.connector import Connector
 from common.scenarios import Scenarios
 from common.builder import Builder
+from common.news import News
 from common.iv import IV
 
 import json
@@ -20,6 +21,7 @@ connector = Connector()
 iv_obj = IV(connector)
 builder_obj = Builder(connector)
 scenarios_obj = Scenarios(connector)
+news_obj = News()
 print("Builder Object Completed")
 
 input_values = {
@@ -122,6 +124,23 @@ def iv():
 
 	iv_obj.get_surface(request.args.get("ticker"))
 	return render_template("iv.html", iv = iv_obj, connector = connector)
+
+@app.route("/news", methods=["GET"])
+def news():
+
+	news_obj.reset()
+	return render_template("news.html", news = news_obj)
+
+@app.route("/news_update", methods=["GET"])
+def news_update():
+
+	old_ctr = news_obj.ctr
+	news_obj.fetch_news()
+	cards = news_obj.cards[old_ctr:]
+
+	return json.dumps({
+		"cards" : cards[-100:]
+	})
 
 if __name__ == '__main__':
 
