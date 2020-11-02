@@ -26,26 +26,26 @@ class News:
 		self.files = set(['.gitignore'])
 		self.items = set()
 		self.cards = []
+		self.times = []
 
 	def fetch_news(self):
 
 		new_files = set(os.listdir(NEWS_DIR)).difference(self.files)
 		
+		items = []
 		for new_file in new_files:
 
 			with open(f"{NEWS_DIR}/{new_file}", "r") as file:
 
 				try:
-					items = json.loads(file.read())
-					self.generate_news(items)
+					items.extend(json.loads(file.read()))
 					self.files.add(new_file)
 				except Exception as e:
 					print(e)
 
-	def generate_news(self, items):
+			self.generate_news(items)
 
-		new_cards = []
-		new_times = []
+	def generate_news(self, items):
 
 		for item in items:
 
@@ -125,11 +125,12 @@ class News:
 
 			card = html("div", card_header + card_body, {"class" : "card bg-dark fade-in"})
 			
-			new_cards.append(card)
-			new_times.append(_time)
+			self.cards.append(card)
+			self.times.append(_time)
 
 			self.ctr += 1
 			self.items.add(hash_)
 
-		idc = np.argsort(new_times)
-		self.cards.extend([new_cards[idx] for idx in idc])
+		idc = np.argsort(self.times)
+		self.times = [self.times[idx] for idx in idc]
+		self.cards = [self.cards[idx] for idx in idc]
