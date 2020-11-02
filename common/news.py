@@ -1,13 +1,18 @@
 from datetime import datetime, timedelta
 from common.utils.html import html
 from urllib.parse import urlsplit
+from socket import gethostname
 from hashlib import sha256
 import pandas as pd
 import numpy as np
 import sys, os
 import json
 
-NEWS_DIR = "/home/zqretrace/OscraP/rss/news_data"
+hostname = gethostname()
+if hostname == 'zQ':
+	NEWS_DIR = f"/home/zquantz/OscraP/rss/news_data"
+else:
+	NEWS_DIR = f"/home/zqretrace/OscraP/rss/news_data"
 
 class News:
 
@@ -75,7 +80,7 @@ class News:
 			time = datetime.strptime(time, "%Y-%d-%m %H:%M:%S.%f")
 			time = time - timedelta(hours=5)
 			_time = int(time.timestamp())
-			time = time.strftime("%H:%M:%S")
+			time = time.strftime("%Y-%d-%m %H:%M:%S")
 
 			time_badge = html("span", time, {"class" : "badge badge-secondary newsTag"})
 			publisher_badge = html("a", publisher, {
@@ -92,7 +97,7 @@ class News:
 					"type" : "button",
 					"data-toggle" : "collapse",
 					"data-target" : f"#collapse{self.ctr}",
-					"aria-expanded" : "true",
+					"aria-expanded" : "false",
 					"aria-controls" : f"collapse{self.ctr}"
 			})
 			card_header = "".join([
@@ -118,7 +123,7 @@ class News:
 						"data-parent" : "#newsAccordion"
 					})
 
-			card = html("div", card_header + card_body, {"class" : "card bg-dark"})
+			card = html("div", card_header + card_body, {"class" : "card bg-dark fade-in"})
 			
 			new_cards.append(card)
 			new_times.append(_time)

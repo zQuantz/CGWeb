@@ -15,7 +15,7 @@ function fetch_news(){
 			let data = JSON.parse(this.responseText);
 			let newsAccordion = $("#newsAccordion");
 			data.cards.forEach(card => {
-				newsAccordion.prepend(card);
+				$(card).hide().prependTo("#newsAccordion").show();
 			})
 
 		}
