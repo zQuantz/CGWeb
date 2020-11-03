@@ -1,7 +1,7 @@
 
 function init(){
 
-	setInterval(fetch_news, 5000);
+	setInterval(fetch_news, 15_000);
 
 }
 
