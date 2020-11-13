@@ -76,7 +76,7 @@ class LiveTicker():
 			self.get_keystats()
 			print(f"{ticker},Key Stats,Success,")
 		except Exception as e:
-			self.key_stats = pd.DataFrame(columns = ["feature", "modifier", "value"])
+			self.keystats = pd.DataFrame(columns = ["feature", "modifier", "value"])
 			print(f"{ticker},Key Stats,Failure,{e}")
 		self.sleep()
 

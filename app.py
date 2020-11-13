@@ -50,7 +50,7 @@ def builder():
 	print("ticker", ticker)
 	print("date", date)
 
-	builder_obj.fetch_ticker(ticker, date)
+	builder_obj.fetch_ticker(ticker, "LIVE" if not date else date)
 
 	return render_template("builder.html", name=ticker, builder=builder_obj, connector=connector)
 

@@ -173,7 +173,6 @@ class Ticker():
 		tds = ""
 		tds += html("td", "", {})
 		tds += html("td", self.ticker_info['full_name'], {})
-		tds += html("td", self.ticker_info['industry'], {})
 		tds += html("td", self.ticker_info['sector'], {})
 
 		dchange = self.ohlc.adjclose_price - self.ohlc.open_price
