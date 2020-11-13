@@ -158,6 +158,7 @@ class Scenarios:
 
 		options = self.connector.get_scenarios(" OR ".join(clauses))
 		options = calculate_greeks(options)
+		options['option_price'] = ((options.bid_price + options.ask_price) * 0.5).round(2)
 
 		def calculate_pnl_attribution(os):
 			
@@ -167,8 +168,7 @@ class Scenarios:
 			
 			dS = os.stock_price.diff().fillna(0).values
 			dSig = os.implied_volatility.diff().fillna(0).values
-			dSig *= 100
-			dR = os.rate.diff().fillna(0).values * 100
+			dR = os.rate.diff().fillna(0).values
 			dOption = os.option_price.diff().fillna(0).values
 			
 			rho = os.rho.shift()
