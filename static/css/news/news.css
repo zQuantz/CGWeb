@@ -1,0 +1,42 @@
+.accordionButton {
+	color: rgb(255, 255, 255);
+	font-size: 1.15rem;
+	padding: 0.1rem;
+	line-height: 0.75;
+}
+
+.accordionButton:hover {
+	color: rgb(255, 255, 255);
+}
+
+.accordionTab {
+	line-height: 0.5;
+}
+
+.accordionCardBody {
+	border: 0.095rem solid var(--dark);
+	background-color: white;
+	padding-left: 1rem;
+	font-size: 1.05rem;
+}
+
+.newsTag {
+	margin-right: 0.5rem;
+}
+
+.fade-in {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.5s;
+}
+
+@keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

@@ -526,27 +526,7 @@ function getChartConfig(i){
 }
 
 function analyzePositions(){
-
-	positions = [
-		{
-			startDate: "2020-07-13",
-			endDate: "2020-07-27",
-			strikes: ["240", "360"],
-			tickers: ["TSLA"],
-			position: {
-				"TSLA 2021-03-19 C348" : 1,
-				"TSLA 2021-03-19 C362" : 2,
-				"TSLA 2020-10-16 C250" : -1,
-				"TSLA 2020-10-16 C314" : -1,
-				"TSLA 2020-10-16 C366" : -2,
-				"TSLA 2020-10-16 P368" : -1,
-			}
-		}
-
-	]
-
-	console.log("Sending Positions", positions);
-
+	
 	if (positions.length == 0)
 		return;
 
