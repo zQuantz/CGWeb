@@ -213,7 +213,7 @@ class LiveTicker():
 					break
 
 				ctr += 1
-				print(f"{self.ticker},{self.batch_id},Option Download,{ctr}")
+				print(f"{self.ticker},Option Download,{ctr}")
 				self.sleep()
 
 			return bs, options
