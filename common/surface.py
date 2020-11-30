@@ -1,9 +1,5 @@
 from sklearn.linear_model import LinearRegression
 from common.greeks import calculate_greeks
-import plotly.graph_objects as go
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-import seaborn as sns
 import pandas as pd
 import numpy as np
 import sys, os
