@@ -8,6 +8,7 @@ from flask import Flask
 
 from common.connector import Connector
 from common.scenarios import Scenarios
+from common.surface import Surface
 from common.builder import Builder
 from common.news import News
 from common.iv import IV
@@ -19,6 +20,7 @@ import json
 print("Initializing Builder Object")
 connector = Connector()
 iv_obj = IV(connector)
+surface_obj = Surface(connector)
 builder_obj = Builder(connector)
 scenarios_obj = Scenarios(connector)
 news_obj = News()
@@ -124,6 +126,18 @@ def iv():
 
 	iv_obj.get_surface(request.args.get("ticker"))
 	return render_template("iv.html", iv = iv_obj, connector = connector)
+
+@app.route("/surface")
+def surface():
+
+	ticker = request.args.get('ticker', None)
+	date = request.args.get('date', None)
+
+	print("ticker", ticker)
+	print("date", date)
+
+	surface_obj.get_surface(ticker, date)
+	return render_template("surface.html", surface = surface_obj, connector = connector)
 
 @app.route("/news", methods=["GET"])
 def news():
