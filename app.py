@@ -9,6 +9,7 @@ from flask import Flask
 from common.connector import Connector
 from common.scenarios import Scenarios
 from common.surface import Surface
+from common.density import Density
 from common.builder import Builder
 from common.news import News
 from common.iv import IV
@@ -22,6 +23,7 @@ connector = Connector()
 iv_obj = IV(connector)
 surface_obj = Surface(connector)
 builder_obj = Builder(connector)
+density_obj = Density(connector)
 scenarios_obj = Scenarios(connector)
 news_obj = News()
 print("Builder Object Completed")
@@ -138,6 +140,18 @@ def surface():
 
 	surface_obj.get_surface(ticker, date)
 	return render_template("surface.html", surface = surface_obj, connector = connector)
+
+@app.route("/density")
+def density():
+
+	ticker = request.args.get('ticker', None)
+	date = request.args.get('date', None)
+
+	print("ticker", ticker)
+	print("date", date)
+
+	density_obj.get_risk_neutral_density(ticker, date)
+	return render_template("density.html", density = density_obj, connector = connector)
 
 @app.route("/news", methods=["GET"])
 def news():
