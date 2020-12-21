@@ -53,7 +53,7 @@ class Density:
 		K = data.strike_price.values
 		q = np.log(1 + data.dividend_yield / 100).values
 		r = np.log(1 + data.rate).values
-		v = data.implied_volatility.values
+		v = data.implied_volatility.values / 100
 		T = (data.days_to_expiry / 252).values
 
 		d2 = np.log(S / K) + (r - q - 0.5 * v * v) * T
