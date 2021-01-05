@@ -8,6 +8,7 @@ from flask import Flask
 
 from common.connector import Connector
 from common.scenarios import Scenarios
+from common.monitor import Monitor
 from common.surface import Surface
 from common.density import Density
 from common.builder import Builder
@@ -19,13 +20,16 @@ import json
 ###################################################################################################
 
 print("Initializing Builder Object")
-# connector = Connector()
-# iv_obj = IV(connector)
-# surface_obj = Surface(connector)
-# builder_obj = Builder(connector)
-# density_obj = Density(connector)
-# scenarios_obj = Scenarios(connector)
-# news_obj = News()
+connector = Connector()
+
+iv_obj = IV(connector)
+monitor_obj = Monitor(connector)
+surface_obj = Surface(connector)
+builder_obj = Builder(connector)
+density_obj = Density(connector)
+scenarios_obj = Scenarios(connector)
+news_obj = News()
+
 print("Builder Object Completed")
 
 input_values = {
@@ -91,7 +95,19 @@ def execute():
 
 @app.route("/monitor")
 def monitor():
-	return render_template("monitor.html")
+
+	params = {
+		"ticker_list" : "main",
+		"term_one" : 2,
+		"term_two" : 6,
+		"down_strike" : 95,
+		"up_strike" : 105,
+		"lookback" : 6,
+		"end_date" : "2021-01-04"
+	}
+
+	monitor_obj.calculate_monitor(**params)
+	return render_template("monitor.html", monitor = monitor_obj, connector = connector)
 
 @app.route("/calculator")
 def calculator():

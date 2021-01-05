@@ -2,3 +2,10 @@ table {
 	line-height: 1;
 	font-size: 0.85rem;
 }
+
+tr > td:nth-child(1){
+	text-align: left;
+}
+tr > td:nth-child(2){
+	text-align: left;
+}

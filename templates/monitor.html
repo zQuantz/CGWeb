@@ -83,13 +83,14 @@
 	<!-- Navbar End -->
 
 	<!-- Main Container -->
-	<div class="container-fluid" style="width: 90%; margin-top: 1rem; margin-bottom: 1rem;">
+	<div class="container-fluid" style="width: 95%; margin-top: 1rem; margin-bottom: 1rem;">
 
-		<table class="table table-sm table-hover">
+		<table class="table table-sm table-hover" style="text-align: center">
 			
-			<thead style="text-align: center;">
+			<thead>
 				
 				<tr>
+
 					<th scope="col" colspan="2"> </th>
 					<th scope="col" colspan="3"> </th>
 					<th scope="col" colspan="7">Spot</th>
@@ -97,14 +98,15 @@
 					<th scope="col" colspan="5">Flows</th>
 					<th scope="col" colspan="3"> </th>
 					<th scope="col" colspan="7">Volatility</th>
-					<th scope="col" colspan="3"> </th>
-					<th scope="col" colspan="8">Skew & Term Structure</th>
+					<th scope="col" colspan="2"> </th>
+					<th scope="col" colspan="4">Skew & Term Structure</th>
+
 				</tr>
 
 				<tr>
 
-					<th scope="col">Ticker</th>
-					<th scope="col">Name</th>
+					<th scope="col" style="text-align: left;">Ticker</th>
+					<th scope="col" style="text-align: left;">Name</th>
 					<th scope="col"> </th>
 					<th scope="col"> </th>
 					<th scope="col"> </th>
@@ -118,7 +120,7 @@
 					<th scope="col"> </th>
 					<th scope="col"> </th>
 					<th scope="col"> </th>
-					<th scope="col">$ (M)</th>
+					<th scope="col">Notional</th>
 					<th scope="col">RCV</th>
 					<th scope="col">RPV</th>
 					<th scope="col">RTV</th>
@@ -126,11 +128,11 @@
 					<th scope="col"> </th>
 					<th scope="col"> </th>
 					<th scope="col"> </th>
-					<th scope="col">I.&sigma;</th>
+					<th scope="col">i.&sigma;</th>
 					<th scope="col">1D&#916;</th>
 					<th scope="col">1W&#916;</th>
-					<th scope="col">R.&sigma; (3M)</th>
-					<th scope="col">R.&sigma; (6M)</th>
+					<th scope="col">{{monitor.term_one}}M r.&sigma;</th>
+					<th scope="col">{{monitor.term_two}}M r.&sigma;</th>
 					<th scope="col">V.R.P</th>
 					<th scope="col"> </th>
 					<th scope="col"> </th>
@@ -138,10 +140,15 @@
 					<th scope="col">D.Skew</th>
 					<th scope="col">U.Skew</th>
 					<th scope="col">F.Skew</th>
-					<th scope="col">12m - 3m</th>
+					<th scope="col">{{monitor.term_two}}m - {{monitor.term_one}}m</th>
+
 				</tr>
 
 			</thead>
+
+			{% if monitor._data %}
+				{{monitor._data | safe}}
+			{% endif %}
 
 		</table>
 
