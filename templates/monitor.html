@@ -2,7 +2,7 @@
 <html>
 <head>
 
-	<title>Market News</title>
+	<title>Vol Monitor</title>
 
 	<!-- jQuery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -23,8 +23,8 @@
 	<!-- Bootstrap Select End -->
 
 	<!-- Custom -->
-	<link rel="stylesheet" type="text/css" href="/static/css/news/news.css">
-	<script type="text/javascript" src="/static/js/news/news.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/css/monitor/monitor.css">
+	<script type="text/javascript" src="/static/js/monitor/monitor.js"></script>
 	<!-- Custom End -->
 
 </head>
@@ -44,7 +44,7 @@
 			<ul class="navbar-nav">
 				
 				<li class="nav-item">
-					<a class="nav-link" href="/Monitor">Monitor</a>
+					<a class="nav-link active" href="/Monitor">Monitor</a>
 				</li>
 
 				<li class="nav-item">
@@ -64,7 +64,7 @@
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link active" href="/news">News</a>
+					<a class="nav-link" href="/news">News</a>
 				</li>
 
 				<li class="nav-item">
@@ -83,22 +83,70 @@
 	<!-- Navbar End -->
 
 	<!-- Main Container -->
-	<div class="container-fluid" style="width: 99%; margin-top: 1rem; margin-bottom: 1rem;">
+	<div class="container-fluid" style="width: 90%; margin-top: 1rem; margin-bottom: 1rem;">
 
-		<!-- Main Accordion -->
-		<div class="accordion" id="newsAccordion">
+		<table class="table table-sm table-hover">
+			
+			<thead style="text-align: center;">
+				
+				<tr>
+					<th scope="col" colspan="2"> </th>
+					<th scope="col" colspan="3"> </th>
+					<th scope="col" colspan="7">Spot</th>
+					<th scope="col" colspan="3"> </th>
+					<th scope="col" colspan="5">Flows</th>
+					<th scope="col" colspan="3"> </th>
+					<th scope="col" colspan="7">Volatility</th>
+					<th scope="col" colspan="3"> </th>
+					<th scope="col" colspan="8">Skew & Term Structure</th>
+				</tr>
 
-			{{news._cards | safe}}
+				<tr>
 
-		</div>
-		<!-- Main Accordion End -->
+					<th scope="col">Ticker</th>
+					<th scope="col">Name</th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col">Last Px</th>
+					<th scope="col">1D$&#916;</th>
+					<th scope="col">1D%&#916;</th>
+					<th scope="col">&#918;-Score</th>
+					<th scope="col">1W%&#916;</th>
+					<th scope="col">1M%&#916;</th>
+					<th scope="col">1Y%&#916;</th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col">$ (M)</th>
+					<th scope="col">RCV</th>
+					<th scope="col">RPV</th>
+					<th scope="col">RTV</th>
+					<th scope="col">Put/Call OI</th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col">I.&sigma;</th>
+					<th scope="col">1D&#916;</th>
+					<th scope="col">1W&#916;</th>
+					<th scope="col">R.&sigma; (3M)</th>
+					<th scope="col">R.&sigma; (6M)</th>
+					<th scope="col">V.R.P</th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col">D.Skew</th>
+					<th scope="col">U.Skew</th>
+					<th scope="col">F.Skew</th>
+					<th scope="col">12m - 3m</th>
+				</tr>
+
+			</thead>
+
+		</table>
 
 	</div>
 	<!-- Main Container End -->
-
-	<script type="text/javascript">
-		init()
-	</script>
 
 </body>
 </html>

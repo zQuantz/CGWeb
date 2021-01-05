@@ -19,13 +19,13 @@ import json
 ###################################################################################################
 
 print("Initializing Builder Object")
-connector = Connector()
-iv_obj = IV(connector)
-surface_obj = Surface(connector)
-builder_obj = Builder(connector)
-density_obj = Density(connector)
-scenarios_obj = Scenarios(connector)
-news_obj = News()
+# connector = Connector()
+# iv_obj = IV(connector)
+# surface_obj = Surface(connector)
+# builder_obj = Builder(connector)
+# density_obj = Density(connector)
+# scenarios_obj = Scenarios(connector)
+# news_obj = News()
 print("Builder Object Completed")
 
 input_values = {
@@ -88,6 +88,10 @@ def execute():
 	return json.dumps(builder_obj.execute(data))
 
 ###################################################################################################
+
+@app.route("/monitor")
+def monitor():
+	return render_template("monitor.html")
 
 @app.route("/calculator")
 def calculator():
