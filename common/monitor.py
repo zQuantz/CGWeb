@@ -1,16 +1,58 @@
 from scipy.stats import percentileofscore
 from bs4 import BeautifulSoup
 import sqlalchemy as sql
+from matplotlib import cm
 import pandas as pd
 import numpy as np
 import json
 
 from datetime import datetime, timedelta
 import pandas_market_calendars as mcal
-from matplotlib import cm
-CMAP = cm.get_cmap("coolwarm_r")
 
 ###################################################################################################
+
+def bs(_str):
+	return BeautifulSoup(_str, features="lxml")
+
+def percentile(feature, lookback):
+	
+	def compute(x):
+		_min = x.min()
+		_max = x.max()
+		return (x.values[-1] - _min) / (_max - _min)
+	
+	return feature.rolling(lookback, min_periods=int(lookback * 0.90)).apply(compute)
+
+def percentile_rank(feature, lookback):
+	return feature.rolling(lookback, min_periods=int(lookback * 0.90)).apply(
+		lambda x: percentileofscore(x, x.values[-1])
+	) / 100
+
+def background_color(pctile):
+
+	if np.isnan(pctile):
+		return f"background-color:white;"
+
+	color = CMAP(pctile)
+	color = [int(value * 255) for value in color]
+	color[-1] = 0.65
+
+	return f"background-color:rgba{str(tuple(color))};"
+
+def color(value):
+
+	if value < 0:
+		color = "red"
+	elif value > 0:
+		color =  "green"
+	else:
+		color = "black"
+
+	return f"color:{color};"
+
+###################################################################################################
+
+CMAP = cm.get_cmap("coolwarm_r")
 
 DATE_FMT = "%Y-%m-%d"
 S252 = np.sqrt(252)
@@ -29,14 +71,17 @@ tdays_df = pd.DataFrame(TDAYS, columns = ['date_current'])
 TICKER_LISTS = {
 	"main" : {
 		"Indices" : [
-			"SPY", "QQQ", "DIA", "IWM", "VTI", "VEA", "AGG", "IEFA"
+			"SPY", "QQQ", "DIA", "IWM", "VTI", "VEA", "FEZ", "EEM"
 		],
 		"Sectors" : [
-			"XLE", "XLP", "XOP", "XLV", "XLF", "XLK", "XLC", "XLU"
+			"XLE", "XOP", "XLV", "XLF", "XLK", "XLU", "XLY"
 		],
 		"Commodities" : [
-			"GLD", "IAU", "SLV", "USO"
+			"GLD", "GDX", "SLV", "USO"
 		],
+		"Credit" : [
+			"HYG", "TLT", "LQD"
+		] ,
 		"Big Tech" : [
 			"AAPL", "MSFT", "AMZN", "GOOG", "FB", "TSLA", "BABA", "NVDA", "PYPL", "ADBE", "NFLX"
 		]
@@ -144,48 +189,13 @@ FMTS.update({
     for col in FLOAT_COLS
 })
 FMTS.update({
-    "notional_flow" : "{:,.0f}B$".format
+    "notional_flow" : "{:,.0f}M$".format
 })
 
 BLANK_ROW = pd.DataFrame([[""]*len(COL_ORDER)], columns = COL_ORDER)
-BLANK_ROW = BeautifulSoup(BLANK_ROW.to_html(index=False, header=False), features="lxml")
+BLANK_ROW = bs(BLANK_ROW.to_html(index=False, header=False))
 BLANK_ROW = BLANK_ROW.find("tr")
 BLANK_ROW['style'] = "height:1.5rem;"
-
-###################################################################################################
-
-def percentile(feature, lookback):
-	
-	def compute(x):
-		_min = x.min()
-		_max = x.max()
-		return 100 * (x.values[-1] - _min) / (_max - _min)
-	
-	return feature.rolling(lookback, min_periods=lookback).apply(compute)
-
-def percentile_rank(feature, lookback):
-	return feature.rolling(lookback, min_periods=lookback).apply(
-		lambda x: percentileofscore(x, x.values[-1])
-	)
-
-def background_color(pctile):
-
-	color = CMAP(pctile)
-	color = [int(value * 255) for value in color]
-	color[-1] = 0.65
-
-	return f"background-color:rgba{str(tuple(color))};"
-
-def color(value):
-
-	if value < 0:
-		color = "red"
-	elif value > 0:
-		color =  "green"
-	else:
-		color = "black"
-
-	return f"color:{color};"
 
 ###################################################################################################
 
@@ -271,7 +281,7 @@ class Monitor:
 			pv = df.put_volume
 			tv = (cv + pv)
 			
-			df['notional_flow'] = (tv * 100 * df.spot_price) / 1e9
+			df['notional_flow'] = (tv * 100 * df.spot_price) / 1e6
 			df['rel_call_volume'] = cv / cv.rolling(20, min_periods=20).mean()
 			df['rel_put_volume'] = pv / pv.rolling(20, min_periods=20).mean()
 			df['rel_total_volume'] = tv / tv.rolling(20, min_periods=20).mean()
@@ -286,7 +296,7 @@ class Monitor:
 			## Percentiles
 			for col in PCTILE_COLS:
 				
-				pctile = percentile(df[col], lookback).values[-1]
+				pctile = percentile_rank(df[col], lookback).values[-1]
 				styles[ticker][COL_ORDER.index(col)] += background_color(pctile)
 
 			col = "spot_one_day_zscore"
@@ -306,13 +316,13 @@ class Monitor:
 		data['blank'] = ' '
 		data = data[COL_ORDER]
 
-		tbody = BeautifulSoup("<tbody></tbody>", features="lxml").find("tbody")
+		tbody = bs("<tbody></tbody>").find("tbody")
 		trs = ""
 		for category in TICKER_LISTS[ticker_list]:
 			
 			group = data[data.ticker.isin(TICKER_LISTS[ticker_list][category])]
 			table = group.to_html(index=False, header=False, formatters=FMTS)
-			table = BeautifulSoup(table, features="lxml")
+			table = bs(table)
 
 			for tr in table.find_all("tr"):
 
@@ -325,4 +335,4 @@ class Monitor:
 			
 			trs += f"{str(BLANK_ROW)}\n"
 
-		self._data = BeautifulSoup(f"<tbody>{trs}</tbody>").find("tbody")
+		self._data = bs(f"<tbody>{trs}</tbody>").find("tbody")
