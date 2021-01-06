@@ -95,7 +95,7 @@ TDAYS = mcal.date_range(
 TDAYS = [str(day)[:10] for day in TDAYS]
 tdays_df = pd.DataFrame(TDAYS, columns = ['date_current'])
 
-TOL = 0.95
+TOL = 0.85
 
 ###################################################################################################
 
@@ -119,8 +119,7 @@ TICKER_LISTS = {
 	}, 
 	"main_spreads" : {
 		"Indices" : ["QQQ SPY", "IWM SPY", "EEM SPY", "QQQ IWM"],
-		"Sectors" : ["XLE SPY", "XLF SPY", "XLK SPY", "XLU SPY", "XLV SPY", "XLY SPY", "XOP SPY"],
-		"Credit" : ["HYG SPY", "LQD SPY"]
+		"Credit" : ["HYG SPY", "LQD SPY", "TLT SPY"]
 	}
 }
 
@@ -431,13 +430,15 @@ class Monitor:
 		for pair in pairs:
 			
 			d1, d2 = data[data.ticker == pair[0]], data[data.ticker == pair[1]]
-			spread_df = d1.merge(d2, on="date_current", how="outer")
+			spread_df = tdays_df.merge(d1, on="date_current", how="outer")
+			spread_df = spread_df.merge(d2, on="date_current", how="outer")
 			
 			spread_df['ticker'] = " ".join(pair)
 			spread_df['spread'] = spread_df.atm_iv_x - spread_df.atm_iv_y
 			spread_df['spread2'] = spread_df.atm_iv2_x - spread_df.atm_iv2_y
 
-			spread_dfs.append(spread_df)	
+			spread_df.to_csv(f"/home/zquantz/Downloads/spread_{' '.join(pair)}.csv", index=False)
+			spread_dfs.append(spread_df)
 
 		data = pd.concat(spread_dfs).reset_index(drop=True)
 
@@ -476,8 +477,8 @@ class Monitor:
 				df[f'term_{name}_pct_rank'] = percentile_rank(spread, self.lookback) * 100
 				df[f'term_{name}_zscore'] = (spread - window.mean()) / window.std()
 
-				df[f'term_{name}_corr3'] = aiv1.rolling(63, min_periods = 60).corr(aiv2) * 100
-				df[f'term_{name}_corr6'] = aiv1.rolling(126, min_periods = 120).corr(aiv2) * 100
+				df[f'term_{name}_corr3'] = aiv1.rolling(63, min_periods = int(63 * TOL)).corr(aiv2) * 100
+				df[f'term_{name}_corr6'] = aiv1.rolling(126, min_periods = int(126 * TOL)).corr(aiv2) * 100
 
 				spot_x, spot_y = df.spot_price_x, df.spot_price_y
 				
