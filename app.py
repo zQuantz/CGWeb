@@ -97,15 +97,16 @@ def execute():
 def monitor():
 
 	params = {
-		"ticker_list" : "main",
-		"term_one" : 2,
-		"term_two" : 6,
-		"down_strike" : 95,
-		"up_strike" : 105,
-		"lookback" : 6,
-		"end_date" : "2021-01-04"
+		"ticker_list" : request.args.get("tickerList", "main"),
+		"term_one" : request.args.get("termOne", 3),
+		"term_two" : request.args.get("termTwo", 12),
+		"down_strike" : request.args.get("downStrike", 90),
+		"up_strike" : request.args.get("upStrike", 110),
+		"lookback" : request.args.get("lookback", 6),
+		"end_date" : request.args.get("endDate", datetime.now().strftime("%Y-%m-%d"))
 	}
 
+	monitor_obj.params = params
 	monitor_obj.calculate_monitor(**params)
 	return render_template("monitor.html", monitor = monitor_obj, connector = connector)
 

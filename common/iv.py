@@ -23,7 +23,7 @@ class IV:
 		    return html("td", e)
 
 		trs = []
-		for maturity in [1, 3, 6, 9, 12, 18, 24]:
+		for maturity in [1, 2, 3, 6, 9, 12, 18, 24]:
 		    
 		    tr = td(f"{maturity}M {80}%", f"m{maturity}m{80}")
 		    for moneyness in range(85, 125, 5):

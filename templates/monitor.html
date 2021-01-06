@@ -77,13 +77,24 @@
 
 			</ul>
 
+			<ul class="navbar-nav ml-auto">
+					
+					<button id="parameterPopover" type="button" class="btn btn-outline-light" data-container="body" data-toggle="popover" data-placement="left" style="width: 10rem; border-radius: 0">
+						Parameters
+					</button>
+					<button type="submit" form="parameterForm" class="btn btn-outline-light" style="width: 10rem; border-radius: 0; margin-left: 1rem">
+						Fetch
+					</button>
+
+			</ul>
+
 		</div>
 
 	</nav>
 	<!-- Navbar End -->
 
 	<!-- Main Container -->
-	<div class="container-fluid" style="width: 95%; margin-top: 1rem; margin-bottom: 1rem;">
+	<div class="container-fluid" style="width: 98%; margin-top: 1rem; margin-bottom: 1rem;">
 
 		<table class="table table-sm table-hover" style="text-align: center">
 			
@@ -155,5 +166,136 @@
 	</div>
 	<!-- Main Container End -->
 
-</body>
+	<div id="parameterFormDiv" hidden>
+
+		<form action="/monitor" method="get" id="parameterForm">	
+
+			<div class="container-fluid" style="width: 50rem; padding-right: 3rem;">
+
+				<div class="form-group row">
+
+					<label for="termOneInput" class="col-2 col-form-label">Term One</label>
+					<div class="col-4">
+						<select class="form-control squared" name="termOne" id="termOneInput">
+							<option value="1">1M</option>
+							<option value="2">2M</option>
+							<option value="3">3M</option>
+							<option value="6">6M</option>
+							<option value="9">9M</option>
+							<option value="12">12M</option>
+							<option value="18">18M</option>
+							<option value="24">24M</option>
+						</select>
+					</div>
+
+					<label for="termTwoInput" class="col-2 col-form-label">Term Two</label>
+					<div class="col-4">
+						<select class="form-control squared" name="termTwo" id="termTwoInput">
+							<option value="1">1M</option>
+							<option value="2">2M</option>
+							<option value="3">3M</option>
+							<option value="6">6M</option>
+							<option value="9">9M</option>
+							<option value="12">12M</option>
+							<option value="18">18M</option>
+							<option value="24">24M</option>
+						</select>
+					</div>
+
+				</div>
+
+				<div class="form-group row">
+
+					<label for="downStrikeInput" class="col-2 col-form-label">Down Strike</label>
+					<div class="col-4">
+						<select class="form-control squared" name="downStrike" id="downStrikeInput">
+							<option value="80">80</option>
+							<option value="85">85</option>
+							<option value="90">90</option>
+							<option value="95">95</option>
+							<option value="100">100</option>
+							<option value="105">105</option>
+							<option value="110">110</option>
+							<option value="115">115</option>
+							<option value="120">120</option>
+						</select>
+					</div>
+
+					<label for="upStrikeInput" class="col-2 col-form-label">Up Strike</label>
+					<div class="col-4">
+						<select class="form-control squared" name="upStrike" id="upStrikeInput">
+							<option value="80">80</option>
+							<option value="85">85</option>
+							<option value="90">90</option>
+							<option value="95">95</option>
+							<option value="100">100</option>
+							<option value="105">105</option>
+							<option value="110">110</option>
+							<option value="115">115</option>
+							<option value="120">120</option>
+						</select>
+					</div>
+
+				</div>
+
+				<div class="form-group row">
+
+					<label for="lookbackInput" class="col-2 col-form-label">Lookback</label>
+					<div class="col-4">
+						<select class="form-control squared" name="lookback" id="lookbackInput">
+							<option value="1">1M</option>
+							<option value="3">3M</option>
+							<option value="6">6M</option>
+							<option value="9">9M</option>
+							<option value="12">12M</option>
+						</select>
+					</div>
+
+					<label for="endDateInput" class="col-2 col-form-label">End Date</label>
+					<div class="col-4">
+						<input class="form-control squared" name="endDate" id="endDateInput" type="date">
+					</div>
+
+				</div>
+
+				<div class="form-group row">
+
+					<label for="tickerListInput" class="col-2 col-form-label">Ticker List</label>
+					<div class="col-10">
+						<select class="form-control squared" name="tickerList" id="tickerListInput">
+							<option value="main">Main - Indices, Sectors, Commodities, Rates, Big Tech</option>
+						</select>
+					</div>
+
+				</div>
+
+			</div>
+
+		</form>
+
+	</div>
+
+	<script type="text/javascript">
+
+		$('#parameterPopover').popover({
+		  content: $("#parameterFormDiv > form"),
+		  html: true
+		});
+		document.getElementById('endDateInput').valueAsDate = new Date();
+		
+		$("#termOneInput").val({{monitor.params.term_one}}).change()
+		$("#termTwoInput").val({{monitor.params.term_two}}).change()
+		
+		$("#upStrikeInput").val({{monitor.params.up_strike}}).change()
+		$("#downStrikeInput").val({{monitor.params.down_strike}}).change()
+		
+
+		$("#lookbackInput").val({{monitor.params.lookback}}).change()
+		$("#endDateInput").val("{{monitor.params.end_date}}").change()
+		$("#tickerListInput").val("{{monitor.params.ticker_list}}").change()
+
+	</script>
+
+	</body>
+
 </html>

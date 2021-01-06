@@ -9,3 +9,17 @@ tr > td:nth-child(1){
 tr > td:nth-child(2){
 	text-align: left;
 }
+
+label {
+  text-align: center;
+}
+
+.popover {
+	max-width: 75rem;
+	max-height: 75rem;
+}
+
+.popover-body {
+	margin-right:2rem
+	padding:0;
+}

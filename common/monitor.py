@@ -21,10 +21,10 @@ def percentile(feature, lookback):
 		_max = x.max()
 		return (x.values[-1] - _min) / (_max - _min)
 	
-	return feature.rolling(lookback, min_periods=int(lookback * 0.90)).apply(compute)
+	return feature.rolling(lookback, min_periods=int(lookback * 0.95)).apply(compute)
 
 def percentile_rank(feature, lookback):
-	return feature.rolling(lookback, min_periods=int(lookback * 0.90)).apply(
+	return feature.rolling(lookback, min_periods=int(lookback * 0.95)).apply(
 		lambda x: percentileofscore(x, x.values[-1])
 	) / 100
 
@@ -213,12 +213,12 @@ class Monitor:
 			for ticker in TICKER_LISTS[ticker_list][category]
 		]
 
-		self.tickers = tickers
-		self.term_one = term_one
-		self.term_two = term_two
-		self.down_strike = up_strike
-		self.lookback = lookback
-		self.end_date = end_date
+		
+		term_one = int(term_one)
+		term_two = int(term_two)
+		down_strike = int(down_strike)
+		up_strike = int(up_strike)
+		lookback = int(lookback)
 
 		query = f"""
 			SELECT
@@ -239,6 +239,7 @@ class Monitor:
 				USING(date_current, ticker)
 			WHERE
 				ticker IN {str(tuple(tickers))}
+			AND date_current <= "{end_date}"
 		"""
 		data = self.connector.read(query)
 		data['date_current'] = data.date_current.astype(str)
