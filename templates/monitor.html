@@ -96,6 +96,8 @@
 	<!-- Main Container -->
 	<div class="container-fluid" style="width: 98%; margin-top: 1rem; margin-bottom: 1rem;">
 
+		<h3>Singles</h3>
+
 		<table class="table table-sm table-hover" style="text-align: center">
 			
 			<thead>
@@ -142,8 +144,8 @@
 					<th scope="col">i.&sigma;</th>
 					<th scope="col">1D&#916;</th>
 					<th scope="col">1W&#916;</th>
-					<th scope="col">{{monitor.term_one}}M r.&sigma;</th>
-					<th scope="col">{{monitor.term_two}}M r.&sigma;</th>
+					<th scope="col">{{monitor.params.term_one}}M r.&sigma;</th>
+					<th scope="col">{{monitor.params.term_two}}M r.&sigma;</th>
 					<th scope="col">V.R.P</th>
 					<th scope="col"> </th>
 					<th scope="col"> </th>
@@ -151,17 +153,82 @@
 					<th scope="col">D.Skew</th>
 					<th scope="col">U.Skew</th>
 					<th scope="col">F.Skew</th>
-					<th scope="col">{{monitor.term_two}}m - {{monitor.term_one}}m</th>
+					<th scope="col">{{monitor.params.term_two}}m - {{monitor.params.term_one}}m</th>
 
 				</tr>
 
 			</thead>
 
 			{% if monitor._data %}
-				{{monitor._data | safe}}
+				{{monitor._data.singles | safe}}
 			{% endif %}
 
-		</table>		
+		</table>
+
+		<h3>Spreads</h3>
+
+		<table class="table table-sm table-hover" style="text-align: center">
+			
+			<thead>
+				
+				<tr>
+
+					<th scope="col" colspan="1"> </th>
+					<th scope="col" colspan="3"> </th>
+					<th scope="col" colspan="14">{{monitor.params.term_one}}M Spread</th>
+					<th scope="col" colspan="3"> </th>
+					<th scope="col" colspan="14">{{monitor.params.term_two}}M Spread</th>
+
+				</tr>
+
+				<tr>
+
+					<th scope="col" style="text-align: left;">Ticker</th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col">i.&sigma; Spread</th>
+					<th scope="col">1D&#916;</th>
+					<th scope="col">1W&#916;</th>
+					<th scope="col">1M&#916;</th>
+					<th scope="col">r.&sigma; Spread</th>
+					<th scope="col">Carry</th>
+					<th scope="col">&#918;-Score</th>
+					<th scope="col">Mean</th>
+					<th scope="col">Min</th>
+					<th scope="col">Max</th>
+					<th scope="col">Rank</th>
+					<th scope="col">Pct. Rank</th>
+					<th scope="col">3M Corr.</th>
+					<th scope="col">6M Corr.</th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col"> </th>
+					<th scope="col">i.&sigma; Spread</th>
+					<th scope="col">1D&#916;</th>
+					<th scope="col">1W&#916;</th>
+					<th scope="col">1M&#916;</th>
+					<th scope="col">r.&sigma; Spread</th>
+					<th scope="col">Carry</th>
+					<th scope="col">&#918;-Score</th>
+					<th scope="col">Mean</th>
+					<th scope="col">Min</th>
+					<th scope="col">Max</th>
+					<th scope="col">Rank</th>
+					<th scope="col">Pct. Rank</th>
+					<th scope="col">3M Corr.</th>
+					<th scope="col">6M Corr.</th>
+
+				</tr>
+
+			</thead>
+
+			{% if monitor._data %}
+				{{monitor._data.spreads | safe}}
+			{% endif %}
+
+		</table>
+
 
 	</div>
 	<!-- Main Container End -->

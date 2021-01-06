@@ -1,8 +1,8 @@
 from common.calculator import calculate_greeks, empty_table
 
+from datetime import datetime, timedelta
 from gevent.pywsgi import WSGIServer
 from flask import render_template
-from datetime import datetime
 from flask import request
 from flask import Flask
 
@@ -96,6 +96,7 @@ def execute():
 @app.route("/monitor")
 def monitor():
 
+	yday = (datetime.now() - timedelta(days=1))
 	params = {
 		"ticker_list" : request.args.get("tickerList", "main"),
 		"term_one" : request.args.get("termOne", 3),
@@ -103,7 +104,7 @@ def monitor():
 		"down_strike" : request.args.get("downStrike", 90),
 		"up_strike" : request.args.get("upStrike", 110),
 		"lookback" : request.args.get("lookback", 6),
-		"end_date" : request.args.get("endDate", datetime.now().strftime("%Y-%m-%d"))
+		"end_date" : request.args.get("endDate", yday.strftime("%Y-%m-%d"))
 	}
 
 	monitor_obj.params = params
