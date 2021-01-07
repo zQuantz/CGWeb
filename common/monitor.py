@@ -179,6 +179,7 @@ SINGLES_PCT_COLS = [
     "down_skew",
     "up_skew",
     "full_skew",
+    "atm_iv_percentile",
     "term_structure"
 ]
 SINGLES_DOL_COLS = [
@@ -387,7 +388,7 @@ class Monitor:
 			
 			## Volatility
 			iv = df.atm_iv
-			df['atm_iv_percentile'] = percentile(iv, self.lookback).values[-1]
+			df['atm_iv_percentile'] = percentile(iv, self.lookback).values[-1] * 100
 			df['iv_daily_net_change'] = iv.diff(1)
 			df['iv_weekly_net_change'] = iv.diff(5)
 			df['vol_risk_premium'] = df.atm_iv - df.rvol_term_one

@@ -48,7 +48,6 @@ def after_request(response):
 	response.headers["Pragma"] = "no-cache"
 	return response
 
-@app.route("/")
 @app.route("/builder")
 def builder():
 
@@ -93,6 +92,7 @@ def execute():
 
 ###################################################################################################
 
+@app.route("/")
 @app.route("/monitor")
 def monitor():
 
