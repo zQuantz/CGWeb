@@ -150,6 +150,7 @@ SINGLES_COL_ORDER = [
     "blank",
     "blank",
     "atm_iv",
+    "atm_iv_percentile",
     "iv_daily_net_change",
     "iv_weekly_net_change",
     "rvol_term_one",
@@ -386,6 +387,7 @@ class Monitor:
 			
 			## Volatility
 			iv = df.atm_iv
+			df['atm_iv_percentile'] = percentile(iv, self.lookback).values[-1]
 			df['iv_daily_net_change'] = iv.diff(1)
 			df['iv_weekly_net_change'] = iv.diff(5)
 			df['vol_risk_premium'] = df.atm_iv - df.rvol_term_one
@@ -549,10 +551,10 @@ class Monitor:
 				zs.m{term_one}m100 - zs.m{term_one}m{up_strike} AS up_skew
 			FROM
 				ohlc AS o
-			INNER JOIN
+			LEFT JOIN
 				aggoptionstats AS ao
 				USING(date_current, ticker)
-			INNER JOIN
+			LEFT JOIN
 				zsurface AS zs
 				USING(date_current, ticker)
 			WHERE
