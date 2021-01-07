@@ -437,8 +437,7 @@ class Monitor:
 			spread_df['spread'] = spread_df.atm_iv_x - spread_df.atm_iv_y
 			spread_df['spread2'] = spread_df.atm_iv2_x - spread_df.atm_iv2_y
 
-			spread_df.to_csv(f"/home/zquantz/Downloads/spread_{' '.join(pair)}.csv", index=False)
-			spread_dfs.append(spread_df)
+			spread_dfs.append(spread_df)	
 
 		data = pd.concat(spread_dfs).reset_index(drop=True)
 
