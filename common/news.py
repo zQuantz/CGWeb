@@ -97,7 +97,7 @@ class News:
 	def __init__(self):
 
 		self.reset()
-		self.es = Elasticsearch()
+		self.es = Elasticsearch(port=8607)
 
 	def reset(self):
 
