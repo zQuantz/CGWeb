@@ -1,6 +1,6 @@
 .accordionButton {
 	color: rgb(255, 255, 255);
-	font-size: 1.15rem;
+	font-size: 1rem;
 	padding: 0.1rem;
 	line-height: 0.75;
 }
@@ -22,6 +22,20 @@
 
 .newsTag {
 	margin-right: 0.5rem;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+}
+
+.popover {
+	max-width: 75rem;
+	max-height: 75rem;
+}
+
+.popover-body {
+	margin-right:2rem
+	padding:0;
 }
 
 .fade-in {

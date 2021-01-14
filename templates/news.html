@@ -44,7 +44,7 @@
 			<ul class="navbar-nav">
 				
 				<li class="nav-item">
-					<a class="nav-link" href="/monitor">Monitor</a>
+					<a class="nav-link" href="/news">news</a>
 				</li>
 
 				<li class="nav-item">
@@ -77,6 +77,18 @@
 
 			</ul>
 
+			<ul class="navbar-nav ml-auto">
+					
+					<input type="text" name="searchString" form="parameterForm" class="btn btn-outline-light" placeholder="Search..." style="width: 10rem; border-radius: 0" id="searchStringInput">
+					<button id="parameterPopover" type="button" class="btn btn-outline-light" data-container="body" data-toggle="popover" data-placement="left" style="width: 10rem; border-radius: 0; margin-left: 1rem">
+						Parameters
+					</button>
+					<button type="submit" form="parameterForm" class="btn btn-outline-light" style="width: 10rem; border-radius: 0; margin-left: 1rem">
+						Search
+					</button>
+
+			</ul>
+
 		</div>
 
 	</nav>
@@ -88,7 +100,9 @@
 		<!-- Main Accordion -->
 		<div class="accordion" id="newsAccordion">
 
-			{{news._cards | safe}}
+			{% if news._cards %}
+				{{ news._cards | safe }}
+			{% endif %}
 
 		</div>
 		<!-- Main Accordion End -->
@@ -96,8 +110,78 @@
 	</div>
 	<!-- Main Container End -->
 
+	<div id="parameterFormDiv" hidden>
+
+		<form action="/news" method="get" id="parameterForm">	
+
+			<div class="container-fluid" style="width: 50rem; padding-right: 3rem;">
+
+				<div class="form-group row">
+
+					<label for="tickersInput" class="col-2 col-form-label">Tickers</label>
+					<div class="col-4">
+						<input type="input" name="tickers" id="tickersInput">
+					</div>
+
+					<label for="categoriesInput" class="col-2 col-form-label">Categories</label>
+					<div class="col-4">
+						<input type="input" name="categories" id="categoriesInput">
+					</div>
+
+				</div>
+
+				<div class="form-group row">
+
+					<label for="startDateInput" class="col-2 col-form-label">Start Date</label>
+					<div class="col-4">
+						<input type="datetime-local" name="startDate" id="startDateInput">
+					</div>
+
+					<label for="endDateInput" class="col-2 col-form-label">End Date</label>
+					<div class="col-4">
+						<input type="datetime-local" name="endDate" id="endDateInput">
+					</div>
+
+				</div>
+
+				<div class="form-group row">
+
+					<label for="sentimentValueInput" class="col-4 col-form-label">Sentiment Value</label>
+					<div class="col-4">
+						<select class="form-control squared" name="sentimentBoundary" id="sentimentBoundaryInput">
+							<option value="lesser"><</option>
+							<option value="greater">></option>
+						</select>
+					</div>
+					<div class="col-4">
+						<input type="input" name="sentimentValue" id="sentimentValueInput">
+					</div>
+
+				</div>
+
+			</div>
+
+		</form>
+
+	</div>
+
 	<script type="text/javascript">
-		init()
+
+		$('#parameterPopover').popover({
+		  content: $("#parameterFormDiv > form"),
+		  html: true
+		});
+
+		$("#searchStringInput").val("{{news.params.searchString}}").change()
+		$("#tickersInput").val("{{news.params.tickers}}").change()
+		$("#categoriesInput").val("{{news.params.categories}}").change()
+
+		$("#startDateInput").val("{{news.params.startDate}}").change()
+		$("#endDateInput").val("{{news.params.endDate}}").change()
+		
+		$("#sentimentBoundaryInput").val("{{news.params.sentimentBoundary}}").change()
+		$("#sentimentValueInput").val("{{news.params.sentimentValue}}").change()
+
 	</script>
 
 </body>

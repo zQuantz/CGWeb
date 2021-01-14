@@ -178,19 +178,32 @@ def density():
 @app.route("/news", methods=["GET"])
 def news():
 
+	params = {}
+	args = request.args
+
+	if args.get('searchString', None):
+		params['search_string'] = args.get('searchString')
+
+	if args.get('tickers', None):
+		params['tickers'] = args.get('tickers').split(",")
+
+	if args.get('categories', None):
+		params['categories'] = args.get('categories').split(",")
+
+	if args.get('startDate', None):
+		params['timestamp_from'] = args.get('startDate')
+
+	if args.get('endDate', None):
+		params['timestamp_to'] = args.get('endDate')
+
+	if args.get('sentimentValue', None):
+		params[f'sentiment_{args.get("sentimentBoundary")}'] = float(args.get('sentimentValue')) / 100
+
+	news_obj.params = dict(args)
 	news_obj.reset()
+	news_obj.search_news(params)
+
 	return render_template("news.html", news = news_obj)
-
-@app.route("/news_update", methods=["GET"])
-def news_update():
-
-	old_ctr = news_obj.ctr
-	news_obj.fetch_news()
-	cards = news_obj.cards[old_ctr:]
-
-	return json.dumps({
-		"cards" : cards[-100:]
-	})
 
 if __name__ == '__main__':
 

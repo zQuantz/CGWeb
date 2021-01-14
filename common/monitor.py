@@ -108,11 +108,11 @@ TICKER_LISTS = {
 			"XLE", "XOP", "XLV", "XLF", "XLK", "XLU", "XLY"
 		],
 		"Commodities" : [
-			"GLD", "GDX", "SLV", "USO"
+			"GLD", "GDX", "SLV",
 		],
 		"Credit" : [
 			"HYG", "TLT", "LQD"
-		] ,
+		],
 		"Big Tech" : [
 			"AAPL", "MSFT", "AMZN", "GOOG", "FB", "TSLA", "BABA", "NVDA", "PYPL", "ADBE", "NFLX"
 		]

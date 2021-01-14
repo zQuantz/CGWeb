@@ -1,55 +1,122 @@
 from datetime import datetime, timedelta
+from elasticsearch import Elasticsearch
 from common.utils.html import html
 from urllib.parse import urlsplit
-from socket import gethostname
-from hashlib import sha256
 import pandas as pd
 import numpy as np
 import sys, os
 import json
 
-hostname = gethostname()
-if hostname == 'zQ':
-	NEWS_DIR = f"/home/zquantz/OscraP/rss/news_data"
-else:
-	NEWS_DIR = f"/home/zqretrace/OscraP/rss/news_data"
+sentmap = {
+	"positive" : "badge-success",
+	"neutral" : "badge-secondary",
+	"negative" : "badge-danger"
+}
+
+###################################################################################################
+
+def terms_filter(field, value):
+
+    return {"terms" : {field : value}}
+
+def range_filter(field, gte=None, lte=None):
+
+    _filter = {}
+
+    if lte:
+        _filter.update({"lte" : lte})
+
+    if gte:
+        _filter.update({"gte" : gte})
+
+    return {"range" : {field : _filter}}
+
+def search_news(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
+                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
+                categories=None):
+    
+    query = {
+        "query" : {
+            "function_score" : {
+                "query" : {
+                    "bool" : {}
+                },
+                "field_value_factor" : {
+                    "field" : "timestamp",
+                    "missing" : 0,
+                    "factor" : 1
+                }
+            }                
+        }
+    }
+    
+    if search_string:
+        query['query']['function_score']['query']['bool']['must'] = [
+            {"match" : {"search" : search_string}}
+        ]
+    else:
+    	query['sort'] = {
+    		"timestamp" : {
+    			"order" : "desc"
+    		}
+    	}
+
+    filters = []
+    if sentiment:
+        filters.append(terms_filter("sentiment", sentiment))
+
+    if tickers:
+        filters.append(terms_filter("tickers", tickers))
+
+    if language:
+        filters.append(terms_filter("language", language))
+
+    if authors:
+        filters.append(terms_filter("authors", tickers))
+
+    if categories:
+        filters.append(terms_filter("categories", categories))
+
+    if article_source:
+        filters.append(terms_filter("article_source", article_source))
+
+    if timestamp_from or timestamp_to:
+        filters.append(range_filter("timestamp", timestamp_from, timestamp_to))
+        
+    if sentiment_greater or sentiment_lesser:
+        filters.append(range_filter("sentiment_score", sentiment_greater, sentiment_lesser))
+    
+    query['query']['function_score']['query']['bool']['filter'] = filters
+
+    return query
+
+###################################################################################################
 
 class News:
 
 	def __init__(self):
 
 		self.reset()
+		self.es = Elasticsearch()
 
 	def reset(self):
 
-		self.ctr = 0
-		self.files = set(['.gitignore'])
-		self.items = set()
 		self.cards = []
-		self.times = []
+		self.ctr = 0
 
-	def fetch_news(self):
+	def search_news(self, params):
 
-		new_files = set(os.listdir(NEWS_DIR)).difference(self.files)
-		
-		items = []
-		for new_file in new_files:
+		query = search_news(**params)
+		query['size'] = 100
 
-			with open(f"{NEWS_DIR}/{new_file}", "r") as file:
-
-				try:
-					items.extend(json.loads(file.read()))
-					self.files.add(new_file)
-				except Exception as e:
-					print(e)
-
-		if len(items) != 0:
-			self.generate_news(items)
+		results = self.es.search(query, "news")
+		self.generate_news(results['hits']['hits'])
 
 	def generate_news(self, items):
 
 		for i, item in enumerate(items):
 
+			item = item['_source']
 			title = item.get("title", None)
 			if not title:
 				continue
@@ -57,19 +124,10 @@ class News:
 			summary = item.get("summary", None)
 			author = item.get("author", "")
 
-			dummy_item = {
-				"title" : title,
-				"summary" : summary,
-				"author" : author
-			}
-			dummy_item = json.dumps(dummy_item, sort_keys = True)
-			hash_ = sha256(dummy_item.encode()).hexdigest()
-
-			if hash_ in self.items:
-				continue
-
 			link = item.get("link", "http://www..com")
 			link_name = urlsplit(link).netloc.split(".")[1]
+			if link_name == "com":
+				link_name = urlsplit(link).netloc.split(".")[0]
 			link_name = link_name.upper()
 
 			if author == "":
@@ -77,8 +135,12 @@ class News:
 			else:
 				publisher = "  /  ".join([link_name, author])
 
-			time = item['oscrap_acquisition_datetime']
-			time = datetime.strptime(time, "%Y-%d-%m %H:%M:%S.%f")
+			time = item['timestamp']
+			try:
+				time = datetime.strptime(time, "%Y-%d-%mT%H:%M:%S")
+			except:
+				time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
+
 			time = time - timedelta(hours=5)
 			_time = int(time.timestamp())
 			time = time.strftime("%Y-%d-%m %H:%M:%S")
@@ -90,7 +152,16 @@ class News:
 				"target" : "_blank",
 				"rel" : "noopener noreferrer"
 			})
-			sentiment_badge = html("span", "Sentiment", {"class" : "badge badge-danger newsTag"})
+
+			sentiment = item.get("sentiment", None)
+			sentiment_score = item.get("sentiment_score", None)
+			if sentiment:
+				sentiment_badge = html("span", f"{sentiment.capitalize()} / {round(sentiment_score * 100, 0)}%", {
+					"class" : f"badge {sentmap[sentiment]} newsTag"
+				})
+			else:
+				sentiment_badge = ""
+
 			brs = "<br><br>"
 
 			card_header = html("button", title, {
@@ -104,7 +175,7 @@ class News:
 			card_header = "".join([
 				time_badge,
 				publisher_badge,
-				# sentiment_badge,
+				sentiment_badge,
 				brs,
 				card_header
 			])
@@ -127,11 +198,9 @@ class News:
 			card = html("div", card_header + card_body, {"class" : "card bg-dark fade-in"})
 			
 			self.cards.append(card)
-			self.times.append(_time)
-
 			self.ctr += 1
-			self.items.add(hash_)
 
-		idc = np.argsort(self.times)
-		self.times = [self.times[idx] for idx in idc]
-		self.cards = [self.cards[idx] for idx in idc]
+		if len(self.cards) != 0:
+			self._cards = "".join(self.cards)
+		else:
+			self._cards = None
