@@ -20,14 +20,15 @@ import json
 ###################################################################################################
 
 print("Initializing Builder Object")
-connector = Connector()
 
+connector = Connector()
 iv_obj = IV(connector)
 monitor_obj = Monitor(connector)
 surface_obj = Surface(connector)
 builder_obj = Builder(connector)
 density_obj = Density(connector)
 scenarios_obj = Scenarios(connector)
+
 news_obj = News()
 
 print("Builder Object Completed")
@@ -187,8 +188,8 @@ def news():
 	if args.get('tickers', None):
 		params['tickers'] = args.get('tickers').split(",")
 
-	if args.get('categories', None):
-		params['categories'] = args.get('categories').split(",")
+	if args.get('authors', None):
+		params['authors'] = args.get('authors').split(",")
 
 	if args.get('startDate', None):
 		params['timestamp_from'] = args.get('startDate')
@@ -196,8 +197,10 @@ def news():
 	if args.get('endDate', None):
 		params['timestamp_to'] = args.get('endDate')
 
-	if args.get('sentimentValue', None):
-		params[f'sentiment_{args.get("sentimentBoundary")}'] = float(args.get('sentimentValue')) / 100
+	if args.get('sentiment', None):
+		sentiment = args.get('sentiment')
+		sentiment, boundary = sentiment[1:], sentiment[:1]
+		params[f'sentiment_{news_obj.bm[boundary]}'] = float(sentiment) / 100
 
 	news_obj.params = dict(args)
 	news_obj.reset()

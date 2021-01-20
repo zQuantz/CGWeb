@@ -72,7 +72,66 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
         filters.append(terms_filter("language", language))
 
     if authors:
-        filters.append(terms_filter("authors", tickers))
+        filters.append(terms_filter("authors", authors))
+
+    if categories:
+        filters.append(terms_filter("categories", categories))
+
+    if article_source:
+        filters.append(terms_filter("article_source", article_source))
+
+    if timestamp_from or timestamp_to:
+        filters.append(range_filter("timestamp", timestamp_from, timestamp_to))
+        
+    if sentiment_greater or sentiment_lesser:
+        filters.append(range_filter("sentiment_score", sentiment_greater, sentiment_lesser))
+    
+    query['query']['function_score']['query']['bool']['filter'] = filters
+
+    return query
+
+def search_tweets(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
+                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
+                categories=None):
+    
+    query = {
+        "query" : {
+            "function_score" : {
+                "query" : {
+                    "bool" : {}
+                },
+                "field_value_factor" : {
+                    "field" : "timestamp",
+                    "missing" : 0,
+                    "factor" : 1
+                }
+            }                
+        }
+    }
+    
+    if search_string:
+        query['query']['function_score']['query']['bool']['must'] = [
+            {"match" : {"tweet" : search_string}}
+        ]
+    else:
+    	query['sort'] = {
+    		"timestamp" : {
+    			"order" : "desc"
+    		}
+    	}
+
+    filters = []
+    if sentiment:
+        filters.append(terms_filter("sentiment", sentiment))
+
+    if tickers:
+        filters.append(terms_filter("cashtags", tickers))
+
+    if language:
+        filters.append(terms_filter("language", language))
+
+    if authors:
+        filters.append(terms_filter("name", authors))
 
     if categories:
         filters.append(terms_filter("categories", categories))
@@ -98,10 +157,13 @@ class News:
 
 		self.reset()
 		self.es = Elasticsearch(port=8607)
+		self.bm = {
+			">" : "greater",
+			"<" : "lesser"
+		}
 
 	def reset(self):
 
-		self.cards = []
 		self.ctr = 0
 
 	def search_news(self, params):
@@ -110,30 +172,39 @@ class News:
 		query['size'] = 100
 
 		results = self.es.search(query, "news")
-		self.generate_news(results['hits']['hits'])
+		self._news_cards = self.generate_news(results['hits']['hits'], "title", "link")
 
-	def generate_news(self, items):
+		query = search_tweets(**params)
+		query['size'] = 100
+
+		results = self.es.search(query, "tweets")
+		self._tweets_cards = self.generate_news(results['hits']['hits'], "tweet", "name")
+
+	def generate_news(self, items, title_key, publisher_key):
+
+		cards = []
 
 		for i, item in enumerate(items):
 
 			item = item['_source']
-			title = item.get("title", None)
+			title = item.get(title_key, None)
 			if not title:
 				continue
 
 			summary = item.get("summary", None)
-			author = item.get("author", "")
 
-			link = item.get("link", "http://www..com")
-			link_name = urlsplit(link).netloc.split(".")[1]
-			if link_name == "com":
-				link_name = urlsplit(link).netloc.split(".")[0]
-			link_name = link_name.upper()
+			if publisher_key == "link":
 
-			if author == "":
-				publisher = link_name
+				link = item.get("link", "http://www..com")
+				link_name = urlsplit(link).netloc.split(".")[1]
+				if link_name == "com":
+					link_name = urlsplit(link).netloc.split(".")[0]
+				publisher = link_name.upper()
+
 			else:
-				publisher = "  /  ".join([link_name, author])
+
+				publisher = item.get("name", "///").upper()
+				link = item.get("link", "")
 
 			time = item['timestamp']
 			try:
@@ -197,10 +268,8 @@ class News:
 
 			card = html("div", card_header + card_body, {"class" : "card bg-dark fade-in"})
 			
-			self.cards.append(card)
+			cards.append(card)
 			self.ctr += 1
 
-		if len(self.cards) != 0:
-			self._cards = "".join(self.cards)
-		else:
-			self._cards = None
+		if len(cards) != 0:
+			return "".join(cards)

@@ -95,17 +95,45 @@
 	<!-- Navbar End -->
 
 	<!-- Main Container -->
-	<div class="container-fluid" style="width: 99%; margin-top: 1rem; margin-bottom: 1rem;">
+	<div class="container-fluid" style="width: 99%; margin-top: 0.5rem; margin-bottom: 1rem;">
 
-		<!-- Main Accordion -->
-		<div class="accordion" id="newsAccordion">
+		<!-- Main Row -->
+		<div class="row">
+			
+			<div class="col-6">
+				
+				<h5>News</h5>
 
-			{% if news._cards %}
-				{{ news._cards | safe }}
-			{% endif %}
+				<!-- News Accordion -->
+				<div class="accordion" id="newsAccordion">
+
+					{% if news._news_cards %}
+						{{ news._news_cards | safe }}
+					{% endif %}
+
+				</div>
+				<!-- News Accordion End -->
+
+			</div>
+
+			<div class="col-6">
+				
+				<h5>Tweets</h5>
+
+				<!-- Tweets Accordion -->
+				<div class="accordion" id="tweetsAccordion">
+
+					{% if news._tweets_cards %}
+						{{ news._tweets_cards | safe }}
+					{% endif %}
+
+				</div>
+				<!-- Tweets Accordion End -->
+
+			</div>
 
 		</div>
-		<!-- Main Accordion End -->
+		<!-- Main Row End -->
 
 	</div>
 	<!-- Main Container End -->
@@ -123,9 +151,9 @@
 						<input type="input" name="tickers" id="tickersInput">
 					</div>
 
-					<label for="categoriesInput" class="col-2 col-form-label">Categories</label>
+					<label for="authorsInput" class="col-2 col-form-label">Authors</label>
 					<div class="col-4">
-						<input type="input" name="categories" id="categoriesInput">
+						<input type="input" name="authors" id="authorsInput">
 					</div>
 
 				</div>
@@ -146,15 +174,9 @@
 
 				<div class="form-group row">
 
-					<label for="sentimentValueInput" class="col-4 col-form-label">Sentiment Value</label>
+					<label for="sentimentInput" class="col-2 col-form-label">Sentiment</label>
 					<div class="col-4">
-						<select class="form-control squared" name="sentimentBoundary" id="sentimentBoundaryInput">
-							<option value="lesser"><</option>
-							<option value="greater">></option>
-						</select>
-					</div>
-					<div class="col-4">
-						<input type="input" name="sentimentValue" id="sentimentValueInput">
+						<input type="input" name="sentiment" id="sentimentValue">
 					</div>
 
 				</div>
@@ -174,7 +196,7 @@
 
 		$("#searchStringInput").val("{{news.params.searchString}}").change()
 		$("#tickersInput").val("{{news.params.tickers}}").change()
-		$("#categoriesInput").val("{{news.params.categories}}").change()
+		$("#authorsInput").val("{{news.params.authors}}").change()
 
 		$("#startDateInput").val("{{news.params.startDate}}").change()
 		$("#endDateInput").val("{{news.params.endDate}}").change()
