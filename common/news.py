@@ -92,7 +92,7 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
 
 def search_tweets(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
                 timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
-                categories=None):
+                categories=None, hashtags=None, replies_count=None,retweets_count=None,likes_count=None):
     
     query = {
         "query" : {
@@ -121,6 +121,7 @@ def search_tweets(search_string="", sentiment=None, tickers=None, article_source
     	}
 
     filters = []
+    
     if sentiment:
         filters.append(terms_filter("sentiment", sentiment))
 
@@ -132,18 +133,24 @@ def search_tweets(search_string="", sentiment=None, tickers=None, article_source
 
     if authors:
         filters.append(terms_filter("name", authors))
-
-    if categories:
-        filters.append(terms_filter("categories", categories))
-
-    if article_source:
-        filters.append(terms_filter("article_source", article_source))
+   
+    if hashtags:
+        filters.append(terms_filter("hashtags", hashtags))
 
     if timestamp_from or timestamp_to:
         filters.append(range_filter("timestamp", timestamp_from, timestamp_to))
         
     if sentiment_greater or sentiment_lesser:
         filters.append(range_filter("sentiment_score", sentiment_greater, sentiment_lesser))
+	
+    if replies_count:
+        filters.append(range_filter("replies_count", replies_count))
+	
+    if retweets_count:
+        filters.append(range_filter("retweets_count", retweets_count))
+	
+    if likes_count:
+        filters.append(range_filter("likes_count", likes_count))
     
     query['query']['function_score']['query']['bool']['filter'] = filters
 
