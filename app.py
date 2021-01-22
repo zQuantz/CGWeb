@@ -189,7 +189,7 @@ def news():
 		params['tickers'] = args.get('tickers').split(",")
 
 	if args.get('authors', None):
-		params['authors'] = args.get('authors').split(",")
+		params['authors'] = args.get('authors').lower().split(",")
 
 	if args.get('startDate', None):
 		params['timestamp_from'] = args.get('startDate')

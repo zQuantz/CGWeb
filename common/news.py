@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from elasticsearch import Elasticsearch
 from common.utils.html import html
 from urllib.parse import urlsplit
+from hashlib import sha256
 import pandas as pd
 import numpy as np
 import sys, os
@@ -72,7 +73,7 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
         filters.append(terms_filter("language", language))
 
     if authors:
-        filters.append(terms_filter("authors", authors))
+        filters.append(terms_filter("article_source", authors))
 
     if categories:
         filters.append(terms_filter("categories", categories))
@@ -162,8 +163,7 @@ class News:
 
 	def __init__(self):
 
-		# self.es = Elasticsearch(port=8607)
-		self.es = Elasticsearch("35.203.120.124:8607")
+		self.es = Elasticsearch(port=8607)
 		self.bm = {
 			">" : "greater",
 			"<" : "lesser"

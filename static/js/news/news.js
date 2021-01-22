@@ -12,7 +12,7 @@ function init(_params, _hashs){
 	params = _params;
 	hashs = _hashs;
 
-	setInterval(fetch_news, 5_000);
+	setInterval(fetch_news, 10_000);
 
 }
 
