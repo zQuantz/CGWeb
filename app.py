@@ -197,16 +197,40 @@ def news():
 	if args.get('endDate', None):
 		params['timestamp_to'] = args.get('endDate')
 
+	if args.get('size', None):
+		params['size'] = args.get('size')
+	else:
+		params['size'] = 100
+
+	if args.get('likes', None):
+		params['likes_count'] = args.get('likes')
+
+	if args.get('hashtags', None):
+		params['hashtags'] = args.get('hashtags').split(",")
+
 	if args.get('sentiment', None):
+
 		sentiment = args.get('sentiment')
 		sentiment, boundary = sentiment[1:], sentiment[:1]
 		params[f'sentiment_{news_obj.bm[boundary]}'] = float(sentiment) / 100
 
-	news_obj.params = dict(args)
-	news_obj.reset()
-	news_obj.search_news(params)
+	news_obj.html_params = dict(args)
+	news_obj.params = params
 
-	return render_template("news.html", news = news_obj)
+	cards, hashs = news_obj.search_news(params)
+
+	return render_template("news.html", news = news_obj, cards = cards, hashs = hashs)
+
+@app.route("/news_update", methods=["GET", "POST"])
+def news_update():
+
+	params = json.loads(request.get_data())
+	cards, hashs = news_obj.search_news(params)
+
+	return json.dumps({
+		"cards" : cards,
+		"hashs" : hashs
+	})
 
 if __name__ == '__main__':
 

@@ -33,7 +33,7 @@ def range_filter(field, gte=None, lte=None):
 
 def search_news(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
                 timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
-                categories=None):
+                categories=None,  **kwargs):
     
     query = {
         "query" : {
@@ -92,7 +92,7 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
 
 def search_tweets(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
                 timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
-                categories=None, hashtags=None, replies_count=None,retweets_count=None,likes_count=None):
+                hashtags=None, replies_count=None,retweets_count=None,likes_count=None, **kwargs):
     
     query = {
         "query" : {
@@ -162,34 +162,46 @@ class News:
 
 	def __init__(self):
 
-		self.reset()
-		self.es = Elasticsearch(port=8607)
+		# self.es = Elasticsearch(port=8607)
+		self.es = Elasticsearch("35.203.120.124:8607")
 		self.bm = {
 			">" : "greater",
 			"<" : "lesser"
 		}
-
-	def reset(self):
-
-		self.ctr = 0
+		self.bm_inv = {
+			">" : "<",
+			"<" : ">"
+		}
 
 	def search_news(self, params):
 
 		query = search_news(**params)
-		query['size'] = 100
+		query['size'] = params['size']
 
 		results = self.es.search(query, "news")
-		self._news_cards = self.generate_news(results['hits']['hits'], "title", "link")
+		_news_cards = self.generate_news(results['hits']['hits'], "news", "title", "link")
 
 		query = search_tweets(**params)
-		query['size'] = 100
+		query['size'] = params['size']
 
 		results = self.es.search(query, "tweets")
-		self._tweets_cards = self.generate_news(results['hits']['hits'], "tweet", "name")
+		_tweets_cards = self.generate_news(results['hits']['hits'], "tweets", "tweet", "name")
 
-	def generate_news(self, items, title_key, publisher_key):
+		cards = {
+			"news" : _news_cards,
+			"tweets" : _tweets_cards
+		}
+		hashs = {
+			"news" : sha256(_news_cards.encode()).hexdigest(),
+			"tweets" : sha256(_tweets_cards.encode()).hexdigest(),
+		}
+
+		return cards, hashs
+
+	def generate_news(self, items, key, title_key, publisher_key):
 
 		cards = []
+		ctr = 0
 
 		for i, item in enumerate(items):
 
@@ -246,9 +258,9 @@ class News:
 					"class" : "btn btn-link accordionButton",
 					"type" : "button",
 					"data-toggle" : "collapse",
-					"data-target" : f"#collapse{self.ctr}",
+					"data-target" : f"#collapse{key}{ctr}",
 					"aria-expanded" : "false",
-					"aria-controls" : f"collapse{self.ctr}"
+					"aria-controls" : f"collapse{key}{ctr}"
 			})
 			card_header = "".join([
 				time_badge,
@@ -260,23 +272,22 @@ class News:
 			card_header = html("h5", card_header, {"class" : "mb-0 accordionTab"})
 			card_header = html("div", card_header, {
 				"class" : "card-header",
-				"id" : f"heading{self.ctr}"
+				"id" : f"heading{key}{ctr}"
 			})
 
 			card_body = ""
 			if summary:
 				card_body = html("div", summary, {"class" : "card-body accordionCardBody"})
 				card_body = html("div", card_body, {
-						"id" : f"collapse{self.ctr}",
+						"id" : f"collapse{key}{ctr}",
 						"class" : "collapse",
-						"aria-labelledby" : f"heading{self.ctr}",
+						"aria-labelledby" : f"heading{key}{ctr}",
 						"data-parent" : "#newsAccordion"
 					})
 
 			card = html("div", card_header + card_body, {"class" : "card bg-dark fade-in"})
 			
 			cards.append(card)
-			self.ctr += 1
+			ctr += 1
 
-		if len(cards) != 0:
-			return "".join(cards)
+		return "".join(cards)
