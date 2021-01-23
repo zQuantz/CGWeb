@@ -33,8 +33,8 @@ def range_filter(field, gte=None, lte=None):
     return {"range" : {field : _filter}}
 
 def search_news(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
-                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
-                categories=None,  **kwargs):
+                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, sentiment_field=None,
+                language=None, authors=None, categories=None, **kwargs):
     
     query = {
         "query" : {
@@ -85,15 +85,15 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
         filters.append(range_filter("timestamp", timestamp_from, timestamp_to))
         
     if sentiment_greater or sentiment_lesser:
-        filters.append(range_filter("sentiment_score", sentiment_greater, sentiment_lesser))
+        filters.append(range_filter(sentiment_field, sentiment_greater, sentiment_lesser))
     
     query['query']['function_score']['query']['bool']['filter'] = filters
 
     return query
 
 def search_tweets(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
-                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
-                hashtags=None, replies_count=None,retweets_count=None,likes_count=None, **kwargs):
+                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, sentiment_field=None, language=None,
+                authors=None, hashtags=None, replies_count=None,retweets_count=None, likes_count=None, **kwargs):
     
     query = {
         "query" : {
@@ -142,7 +142,7 @@ def search_tweets(search_string="", sentiment=None, tickers=None, article_source
         filters.append(range_filter("timestamp", timestamp_from, timestamp_to))
         
     if sentiment_greater or sentiment_lesser:
-        filters.append(range_filter("sentiment_score", sentiment_greater, sentiment_lesser))
+        filters.append(range_filter(sentiment_field, sentiment_greater, sentiment_lesser))
 	
     if replies_count:
         filters.append(range_filter("replies_count", replies_count))
@@ -163,7 +163,8 @@ class News:
 
 	def __init__(self):
 
-		self.es = Elasticsearch(port=8607)
+		# self.es = Elasticsearch(port=8607)
+		self.es = Elasticsearch()
 		self.bm = {
 			">" : "greater",
 			"<" : "lesser"
@@ -184,8 +185,10 @@ class News:
 		query = search_tweets(**params)
 		query['size'] = params['size']
 
-		results = self.es.search(query, "tweets")
-		_tweets_cards = self.generate_news(results['hits']['hits'], "tweets", "tweet", "name")
+		# results = self.es.search(query, "tweets")
+		results = self.es.search(query, "news")
+		_tweets_cards = self.generate_news(results['hits']['hits'], "news", "title", "link")
+		# _tweets_cards = self.generate_news(results['hits']['hits'], "tweets", "tweet", "name")
 
 		cards = {
 			"news" : _news_cards,

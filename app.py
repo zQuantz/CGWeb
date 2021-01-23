@@ -211,7 +211,13 @@ def news():
 	if args.get('sentiment', None):
 
 		sentiment = args.get('sentiment')
-		sentiment, boundary = sentiment[1:], sentiment[:1]
+		if '|' in sentiment:
+			sentiment, boundary = sentiment[2:], sentiment[:1]
+			params['sentiment_field'] = "abs_sentiment_score"
+		else:
+			sentiment, boundary = sentiment[1:], sentiment[:1]
+			params['sentiment_field'] = "sentiment_score"
+
 		params[f'sentiment_{news_obj.bm[boundary]}'] = float(sentiment) / 100
 
 	news_obj.html_params = dict(args)
