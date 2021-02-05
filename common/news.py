@@ -185,10 +185,8 @@ class News:
 		query = search_tweets(**params)
 		query['size'] = params['size']
 
-		# results = self.es.search(query, "tweets")
-		results = self.es.search(query, "news")
-		_tweets_cards = self.generate_news(results['hits']['hits'], "news", "title", "link")
-		# _tweets_cards = self.generate_news(results['hits']['hits'], "tweets", "tweet", "name")
+		results = self.es.search(query, "tweets")
+		_tweets_cards = self.generate_news(results['hits']['hits'], "tweets", "tweet", "name")
 
 		cards = {
 			"news" : _news_cards,
