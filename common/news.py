@@ -163,8 +163,8 @@ class News:
 
 	def __init__(self):
 
-		# self.es = Elasticsearch(port=8607)
-		self.es = Elasticsearch()
+		self.es = Elasticsearch(port=8607)
+		# self.es = Elasticsearch()
 		self.bm = {
 			">" : "greater",
 			"<" : "lesser"
