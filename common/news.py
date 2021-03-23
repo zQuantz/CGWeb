@@ -226,7 +226,7 @@ class News:
 				publisher = item.get("name", "///").upper()
 				link = item.get("link", "")
 
-			time = item['published_datetime']
+			time = item['published_datetime'] if key == 'news' else item['timestamp']
 			try:
 				time = datetime.strptime(time, "%Y-%d-%mT%H:%M:%S")
 			except:
