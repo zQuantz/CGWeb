@@ -42,7 +42,7 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
                     "bool" : {}
                 },
                 "field_value_factor" : {
-                    "field" : "timestamp",
+                    "field" : "published_datetime",
                     "missing" : 0,
                     "factor" : 1
                 }
@@ -56,7 +56,7 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
         ]
     else:
     	query['sort'] = {
-    		"timestamp" : {
+    		"published_datetime" : {
     			"order" : "desc"
     		}
     	}
@@ -81,7 +81,7 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
         filters.append(terms_filter("article_source", article_source))
 
     if timestamp_from or timestamp_to:
-        filters.append(range_filter("timestamp", timestamp_from, timestamp_to))
+        filters.append(range_filter("published_datetime", timestamp_from, timestamp_to))
         
     if sentiment_greater or sentiment_lesser:
         filters.append(range_filter("sentiment_score", sentiment_greater, sentiment_lesser))
@@ -135,7 +135,7 @@ class News:
 			else:
 				publisher = "  /  ".join([link_name, author])
 
-			time = item['timestamp']
+			time = item['published_datetime']
 			try:
 				time = datetime.strptime(time, "%Y-%d-%mT%H:%M:%S")
 			except:
