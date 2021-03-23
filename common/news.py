@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from elasticsearch import Elasticsearch
 from common.utils.html import html
 from urllib.parse import urlsplit
+from hashlib import sha256
 import pandas as pd
 import numpy as np
 import sys, os
@@ -32,8 +33,8 @@ def range_filter(field, gte=None, lte=None):
     return {"range" : {field : _filter}}
 
 def search_news(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
-                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, language=None, authors=None,
-                categories=None):
+                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, sentiment_field=None,
+                language=None, authors=None, categories=None, **kwargs):
     
     query = {
         "query" : {
@@ -72,7 +73,7 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
         filters.append(terms_filter("language", language))
 
     if authors:
-        filters.append(terms_filter("authors", tickers))
+        filters.append(terms_filter("article_source", authors))
 
     if categories:
         filters.append(terms_filter("categories", categories))
@@ -84,7 +85,73 @@ def search_news(search_string="", sentiment=None, tickers=None, article_source=N
         filters.append(range_filter("published_datetime", timestamp_from, timestamp_to))
         
     if sentiment_greater or sentiment_lesser:
-        filters.append(range_filter("sentiment_score", sentiment_greater, sentiment_lesser))
+        filters.append(range_filter(sentiment_field, sentiment_greater, sentiment_lesser))
+    
+    query['query']['function_score']['query']['bool']['filter'] = filters
+
+    return query
+
+def search_tweets(search_string="", sentiment=None, tickers=None, article_source=None, timestamp_from=None,
+                timestamp_to=None, sentiment_greater=None, sentiment_lesser=None, sentiment_field=None, language=None,
+                authors=None, hashtags=None, replies_count=None,retweets_count=None, likes_count=None, **kwargs):
+    
+    query = {
+        "query" : {
+            "function_score" : {
+                "query" : {
+                    "bool" : {}
+                },
+                "field_value_factor" : {
+                    "field" : "timestamp",
+                    "missing" : 0,
+                    "factor" : 1
+                }
+            }                
+        }
+    }
+    
+    if search_string:
+        query['query']['function_score']['query']['bool']['must'] = [
+            {"match" : {"tweet" : search_string}}
+        ]
+    else:
+    	query['sort'] = {
+    		"timestamp" : {
+    			"order" : "desc"
+    		}
+    	}
+
+    filters = []
+    
+    if sentiment:
+        filters.append(terms_filter("sentiment", sentiment))
+
+    if tickers:
+        filters.append(terms_filter("cashtags", tickers))
+
+    if language:
+        filters.append(terms_filter("language", language))
+
+    if authors:
+        filters.append(terms_filter("name", authors))
+   
+    if hashtags:
+        filters.append(terms_filter("hashtags", hashtags))
+
+    if timestamp_from or timestamp_to:
+        filters.append(range_filter("timestamp", timestamp_from, timestamp_to))
+        
+    if sentiment_greater or sentiment_lesser:
+        filters.append(range_filter(sentiment_field, sentiment_greater, sentiment_lesser))
+	
+    if replies_count:
+        filters.append(range_filter("replies_count", replies_count))
+	
+    if retweets_count:
+        filters.append(range_filter("retweets_count", retweets_count))
+	
+    if likes_count:
+        filters.append(range_filter("likes_count", likes_count))
     
     query['query']['function_score']['query']['bool']['filter'] = filters
 
@@ -96,44 +163,68 @@ class News:
 
 	def __init__(self):
 
-		self.reset()
 		self.es = Elasticsearch(port=8607)
-
-	def reset(self):
-
-		self.cards = []
-		self.ctr = 0
+		# self.es = Elasticsearch()
+		self.bm = {
+			">" : "greater",
+			"<" : "lesser"
+		}
+		self.bm_inv = {
+			">" : "<",
+			"<" : ">"
+		}
 
 	def search_news(self, params):
 
 		query = search_news(**params)
-		query['size'] = 100
+		query['size'] = params['size']
 
 		results = self.es.search(query, "news")
-		self.generate_news(results['hits']['hits'])
+		_news_cards = self.generate_news(results['hits']['hits'], "news", "title", "link")
 
-	def generate_news(self, items):
+		query = search_tweets(**params)
+		query['size'] = params['size']
+
+		results = self.es.search(query, "tweets")
+		_tweets_cards = self.generate_news(results['hits']['hits'], "tweets", "tweet", "name")
+
+		cards = {
+			"news" : _news_cards,
+			"tweets" : _tweets_cards
+		}
+		hashs = {
+			"news" : sha256(_news_cards.encode()).hexdigest(),
+			"tweets" : sha256(_tweets_cards.encode()).hexdigest(),
+		}
+
+		return cards, hashs
+
+	def generate_news(self, items, key, title_key, publisher_key):
+
+		cards = []
+		ctr = 0
 
 		for i, item in enumerate(items):
 
 			item = item['_source']
-			title = item.get("title", None)
+			title = item.get(title_key, None)
 			if not title:
 				continue
 
 			summary = item.get("summary", None)
-			author = item.get("author", "")
 
-			link = item.get("link", "http://www..com")
-			link_name = urlsplit(link).netloc.split(".")[1]
-			if link_name == "com":
-				link_name = urlsplit(link).netloc.split(".")[0]
-			link_name = link_name.upper()
+			if publisher_key == "link":
 
-			if author == "":
-				publisher = link_name
+				link = item.get("link", "http://www..com")
+				link_name = urlsplit(link).netloc.split(".")[1]
+				if link_name == "com":
+					link_name = urlsplit(link).netloc.split(".")[0]
+				publisher = link_name.upper()
+
 			else:
-				publisher = "  /  ".join([link_name, author])
+
+				publisher = item.get("name", "///").upper()
+				link = item.get("link", "")
 
 			time = item['published_datetime']
 			try:
@@ -168,9 +259,9 @@ class News:
 					"class" : "btn btn-link accordionButton",
 					"type" : "button",
 					"data-toggle" : "collapse",
-					"data-target" : f"#collapse{self.ctr}",
+					"data-target" : f"#collapse{key}{ctr}",
 					"aria-expanded" : "false",
-					"aria-controls" : f"collapse{self.ctr}"
+					"aria-controls" : f"collapse{key}{ctr}"
 			})
 			card_header = "".join([
 				time_badge,
@@ -182,25 +273,22 @@ class News:
 			card_header = html("h5", card_header, {"class" : "mb-0 accordionTab"})
 			card_header = html("div", card_header, {
 				"class" : "card-header",
-				"id" : f"heading{self.ctr}"
+				"id" : f"heading{key}{ctr}"
 			})
 
 			card_body = ""
 			if summary:
 				card_body = html("div", summary, {"class" : "card-body accordionCardBody"})
 				card_body = html("div", card_body, {
-						"id" : f"collapse{self.ctr}",
+						"id" : f"collapse{key}{ctr}",
 						"class" : "collapse",
-						"aria-labelledby" : f"heading{self.ctr}",
+						"aria-labelledby" : f"heading{key}{ctr}",
 						"data-parent" : "#newsAccordion"
 					})
 
 			card = html("div", card_header + card_body, {"class" : "card bg-dark fade-in"})
 			
-			self.cards.append(card)
-			self.ctr += 1
+			cards.append(card)
+			ctr += 1
 
-		if len(self.cards) != 0:
-			self._cards = "".join(self.cards)
-		else:
-			self._cards = None
+		return "".join(cards)

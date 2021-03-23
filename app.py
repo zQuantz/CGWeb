@@ -20,14 +20,15 @@ import json
 ###################################################################################################
 
 print("Initializing Builder Object")
-connector = Connector()
 
+connector = Connector()
 iv_obj = IV(connector)
 monitor_obj = Monitor(connector)
 surface_obj = Surface(connector)
 builder_obj = Builder(connector)
 density_obj = Density(connector)
 scenarios_obj = Scenarios(connector)
+
 news_obj = News()
 
 print("Builder Object Completed")
@@ -187,8 +188,8 @@ def news():
 	if args.get('tickers', None):
 		params['tickers'] = args.get('tickers').split(",")
 
-	if args.get('categories', None):
-		params['categories'] = args.get('categories').split(",")
+	if args.get('authors', None):
+		params['authors'] = args.get('authors').lower().split(",")
 
 	if args.get('startDate', None):
 		params['timestamp_from'] = args.get('startDate')
@@ -196,14 +197,46 @@ def news():
 	if args.get('endDate', None):
 		params['timestamp_to'] = args.get('endDate')
 
-	if args.get('sentimentValue', None):
-		params[f'sentiment_{args.get("sentimentBoundary")}'] = float(args.get('sentimentValue')) / 100
+	if args.get('size', None):
+		params['size'] = args.get('size')
+	else:
+		params['size'] = 100
 
-	news_obj.params = dict(args)
-	news_obj.reset()
-	news_obj.search_news(params)
+	if args.get('likes', None):
+		params['likes_count'] = args.get('likes')
 
-	return render_template("news.html", news = news_obj)
+	if args.get('hashtags', None):
+		params['hashtags'] = args.get('hashtags').split(",")
+
+	if args.get('sentiment', None):
+
+		sentiment = args.get('sentiment')
+		if '|' in sentiment:
+			sentiment, boundary = sentiment[2:], sentiment[:1]
+			params['sentiment_field'] = "abs_sentiment_score"
+		else:
+			sentiment, boundary = sentiment[1:], sentiment[:1]
+			params['sentiment_field'] = "sentiment_score"
+
+		params[f'sentiment_{news_obj.bm[boundary]}'] = float(sentiment) / 100
+
+	news_obj.html_params = dict(args)
+	news_obj.params = params
+
+	cards, hashs = news_obj.search_news(params)
+
+	return render_template("news.html", news = news_obj, cards = cards, hashs = hashs)
+
+@app.route("/news_update", methods=["GET", "POST"])
+def news_update():
+
+	params = json.loads(request.get_data())
+	cards, hashs = news_obj.search_news(params)
+
+	return json.dumps({
+		"cards" : cards,
+		"hashs" : hashs
+	})
 
 if __name__ == '__main__':
 
