@@ -21,13 +21,13 @@ import json
 
 print("Initializing Builder Object")
 
-connector = Connector()
-iv_obj = IV(connector)
-monitor_obj = Monitor(connector)
-surface_obj = Surface(connector)
-builder_obj = Builder(connector)
-density_obj = Density(connector)
-scenarios_obj = Scenarios(connector)
+#connector = Connector()
+#iv_obj = IV(connector)
+#monitor_obj = Monitor(connector)
+#surface_obj = Surface(connector)
+#builder_obj = Builder(connector)
+#density_obj = Density(connector)
+#scenarios_obj = Scenarios(connector)
 
 news_obj = News()
 
